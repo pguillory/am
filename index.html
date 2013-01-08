@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="am.css" type="text/css">
+
+<table>
+  <tr>
+    <td>
+      <div id="game"></div>
+    </td>
+    <td>
+      <ul>
+        <li>
+          <button id="start">Start</button>
+        </li>
+        <li>
+          <button id="stop">Stop</button>
+        </li>
+    </td>
+  </tr>
+</table>
+
+<script src="jquery.js"></script>
+<script src="am.js"></script>
+<script>
+  var game = Game({ width: 150, height: 100, scale: 2 })
+  game.attach(document.getElementById('game'))
+  game.start()
+  $('#start').click(game.start)
+  $('#stop').click(game.stop)
+</script>
