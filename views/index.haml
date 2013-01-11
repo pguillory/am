@@ -1,0 +1,22 @@
+%link{rel: 'stylesheet', href: '/css/am.css', type: 'text/css'}
+
+%table
+  %tr
+    %td
+      #game
+    %td
+      %ul
+        %li
+          %button#start Start
+        %li
+          %button#stop Stop
+
+%script{ src: '/js/jquery.js' }
+%script{ src: '/js/Game' }
+
+:javascript
+  var game = Game({ width: 100, height: 100, scale: 2 })
+  game.attach(document.getElementById('game'))
+  game.start()
+  $('#start').click(game.start)
+  $('#stop').click(game.stop)
