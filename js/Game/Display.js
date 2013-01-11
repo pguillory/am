@@ -13,29 +13,7 @@ function createCanvas(width, height) {
   return canvas
 }
 
-function bresenham(x0, y0, x1, y1, callback) {
-  var dx = Math.abs(x1 - x0)
-  var dy = Math.abs(y1 - y0)
-  var sx = (x0 < x1) ? 1 : -1
-  var sy = (y0 < y1) ? 1 : -1
-  var err = dx - dy
-
-  while (1) {
-    callback(x0, y0)
-    if (x0 === x1 && y0 === y1) break
-    var e2 = 2 * err
-    if (e2 > -dy) {
-      err -= dy
-      x0 += sx
-    }
-    if (e2 < dx) {
-      err += dx
-      y0 += sy 
-    }
-  }
-}
-
-function Display(width, height, scale, terrain, players, units, bases, projectiles) {
+function Display(width, height, scale, terrain, players, units, bases) {
   var self = {}
 
   var drawCanvas = createCanvas(width, height)
@@ -101,8 +79,8 @@ function Display(width, height, scale, terrain, players, units, bases, projectil
   }
 
   function drawProjectile(projectile) {
-    projectile.lastPosition.tap(function(x1, y1) {
-      projectile.position.tap(function(x0, y0) {
+    projectile.lastPosition.round().tap(function(x1, y1) {
+      projectile.position.round().tap(function(x0, y0) {
         drawStreak(x0, y0, x1, y1, WHITE)
       })
     })
@@ -110,9 +88,9 @@ function Display(width, height, scale, terrain, players, units, bases, projectil
 
   self.draw = function() {
     drawTerrain()
-    bases.forEach(drawBase)
+    units.forEachBase(drawBase)
     units.forEachTroop(drawTroop)
-    projectiles.forEach(drawProjectile)
+    units.forEachProjectile(drawProjectile)
 
     drawContext.putImageData(data, 0, 0)
     outputContext.drawImage(drawCanvas, 0, 0)

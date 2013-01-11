@@ -4,16 +4,19 @@ get '/' do
   haml :index
 end
 
-get '/js/Game' do
+get '/js/*' do
   content_type :js
-  load_js_file('public/js/Game.js')
-  # Dir['public/js/am/*.js'].map{|filename| File.read(filename) }
+  load_js_file("js/#{params[:splat].first}")
 end
 
 def load_js_file(path)
-  # puts "load_js_file(#{path.inspect})"
   basename = File.basename(path, File.extname(path))
-  s = "\n\nvar #{basename} = (function() {\n"
+  s = ''
+  s << "\n"
+  s << "/#{'*' * 80}/\n"
+  s << "/*  /#{path.ljust(74)} */\n"
+  s << "/#{'*' * 80}/\n"
+  s << "var #{basename} = (function() {\n"
   s << indent(File.read(path), 4)
   Dir[File.join(File.dirname(path), basename, '*.js')].each do |child_path|
     s << indent(load_js_file(child_path), 4)

@@ -12,11 +12,12 @@
           %button#stop Stop
 
 %script{ src: '/js/jquery.js' }
-%script{ src: '/js/Game' }
+%script{ src: '/js/Game.js' }
 
 :javascript
-  var game = Game({ width: 100, height: 100, scale: 2 })
-  game.attach(document.getElementById('game'))
+  var game = Game({
+    container: document.getElementById('game'),
+  })
   game.start()
   $('#start').click(game.start)
   $('#stop').click(game.stop)
