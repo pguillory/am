@@ -8,3 +8,8 @@ function Troop(player, position, velocity) {
 Troop.prototype.collidesWithTroop = function(defender) {
   return this.position.collidesWith(defender.position)
 }
+
+Troop.prototype.move = function(terrain) {
+  this.position.add(this.velocity)
+  this.position.y = terrain.drop(this.position.x)
+}

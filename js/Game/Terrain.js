@@ -24,15 +24,20 @@ function Terrain(width, height) {
 
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
-        if (y >= height / 2) {
+        if (y >= height * 0.6) {
           self.set(x, y, DIRT)
+        } else {
+          self.set(x, y, AIR)
         }
         // if (y >= x + height / 2 - 10 || y >= width + height - x - height / 2 - 10) {
         //   self.set(x, y, ROCK)
         // }
-        if (y < height / 2) {
-          self.set(x, y, AIR)
-        }
+        // if (y > height - 10 || x > width - 10 || x < 10) {
+        //   self.set(x, y, ROCK)
+        // }
+        // if (y < height / 2) {
+        //   self.set(x, y, AIR)
+        // }
       }
     }
   }

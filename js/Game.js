@@ -31,8 +31,8 @@ function Game(options) {
   var self = {}
 
   var width = 100
-  var height = 100
-  var scale = 2
+  var height = 70
+  var scale = 3
 
   var terrain = Terrain(width, height)
   var players = Players()

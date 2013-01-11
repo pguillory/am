@@ -3,8 +3,10 @@ var WHITE = new Color(255, 255, 255)
 var TERRAIN_COLOR = [
   new Color(200, 200, 255),
   new Color(145, 122, 92),
-  new Color(100, 100, 100),
+  new Color(135, 112, 82),
 ]
+
+// new Color(100, 100, 100),
 
 function createCanvas(width, height) {
   var canvas = document.createElement('canvas')
@@ -34,6 +36,7 @@ function Display(width, height, scale, terrain, players, units, bases) {
   }
 
   var data = drawContext.createImageData(width, height)
+  var data2 = outputContext.createImageData(width * scale, height * scale)
 
   function drawPixel(x, y, color) {
     var i = (y * data.width + x) * 4
@@ -92,8 +95,26 @@ function Display(width, height, scale, terrain, players, units, bases) {
     units.forEachTroop(drawTroop)
     units.forEachProjectile(drawProjectile)
 
-    drawContext.putImageData(data, 0, 0)
-    outputContext.drawImage(drawCanvas, 0, 0)
+    // drawContext.putImageData(data, 0, 0)
+    // outputContext.drawImage(drawCanvas, 0, 0)
+
+    for (var y = 0; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        for (var o = 0; o < 4; o++) {
+          var i = (y * data.width + x) * 4 + o
+          for (var dy = 0; dy < scale; dy++) {
+            for (var dx = 0; dx < scale; dx++) {
+              var y2 = (y * scale) + dy
+              var x2 = (x * scale) + dx
+              var i2 = (y2 * data2.width + x2) * 4 + o
+              data2.data[i2] = data.data[i]
+            }
+          }
+        }
+      }
+    }
+
+    outputContext.putImageData(data2, 0, 0)
   }
 
   self.attach = function(container) {
