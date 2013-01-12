@@ -64,7 +64,7 @@ function Units(terrain) {
   }
 
   function explode(position) {
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 40; i++) {
       var theta = Math.random() * Math.PI * 2
       var velocity = new Position(Math.cos(theta), Math.sin(theta)).times(Math.random() * 2)
       velocity.y -= 2

@@ -1,7 +1,59 @@
 function Terrain(width, height) {
-  var self = Grid(width, height)
+// function Grid(width, height) {
+  var self = {}
 
-  self.move = function() {
+  var values = []
+
+  self.get = function get(x, y) {
+    if (x < 0 || y < 0 || x >= width || y >= height) {
+      return null
+    }
+    return values[y * width + x]
+  }
+
+  self.onSet = function() {}
+
+  self.set = function set(x, y, value) {
+    values[y * width + x] = value
+    self.onSet(x, y, value)
+  }
+
+  self.forEach = function forEach(callback) {
+    for (var y = 0; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        callback(x, y, get(x, y))
+      }
+    }
+  }
+
+  self.fill = function fill(value) {
+    for (var y = 0; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        values[y * width + x] = value
+      }
+    }
+  }
+
+  self.swap = function swap(x1, y1, x2, y2) {
+    var i1 = y1 * width + x1
+    var i2 = y2 * width + x2
+    var t = values[i1]
+    values[i1] = values[i2]
+    values[i2] = t
+  }
+
+//   return self
+// }
+// 
+// function Terrain(width, height) {
+//   var self = Grid(width, height)
+
+  // var canvas = createCanvas(width, height)
+  // var context = canvas.getContext('2d')
+  // 
+  // self.canvas = canvas
+
+  self.move = function move() {
     for (var y = height - 1; y >= 0; y--) {
       for (var x = width - 1; x >= 0; x--) {
         switch (self.get(x, y)) {
@@ -19,7 +71,7 @@ function Terrain(width, height) {
     }
   }
 
-  self.initialize = function() {
+  self.initialize = function initialize() {
     self.fill(AIR)
 
     for (var y = 0; y < height; y++) {
@@ -42,7 +94,7 @@ function Terrain(width, height) {
     }
   }
 
-  self.drop = function(x) {
+  self.drop = function drop(x) {
     if (self.get(x, 0) !== AIR) {
       throw new Exception('can not drop at ' + x)
     }
