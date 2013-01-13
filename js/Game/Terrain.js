@@ -1,5 +1,4 @@
 function Terrain(width, height) {
-// function Grid(width, height) {
   var self = {}
 
   var values = []
@@ -11,17 +10,17 @@ function Terrain(width, height) {
     return values[y * width + x]
   }
 
-  self.onSet = function() {}
+  self.addEvent('Changed')
 
   self.set = function set(x, y, value) {
     values[y * width + x] = value
-    self.onSet(x, y, value)
+    self.emitChanged(x, y, value)
   }
 
   self.forEach = function forEach(callback) {
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
-        callback(x, y, get(x, y))
+        callback(x, y, values[y * width + x])
       }
     }
   }
@@ -40,18 +39,9 @@ function Terrain(width, height) {
     var t = values[i1]
     values[i1] = values[i2]
     values[i2] = t
+    self.emitChanged(x1, y1, values[i1])
+    self.emitChanged(x2, y2, values[i2])
   }
-
-//   return self
-// }
-// 
-// function Terrain(width, height) {
-//   var self = Grid(width, height)
-
-  // var canvas = createCanvas(width, height)
-  // var context = canvas.getContext('2d')
-  // 
-  // self.canvas = canvas
 
   self.move = function move() {
     for (var y = height - 1; y >= 0; y--) {

@@ -75,7 +75,6 @@ function Units(terrain) {
   function moveProjectiles() {
     projectiles.forEach(function(projectile) {
       projectile.move(terrain, function(impactPosition) {
-        // console.log('impact', impactPosition)
         if (terrain.get(impactPosition.x, impactPosition.y) == DIRT) {
           terrain.set(impactPosition.x, impactPosition.y, AIR)
         }

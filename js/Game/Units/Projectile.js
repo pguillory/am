@@ -16,8 +16,6 @@ Projectile.prototype.move = function(terrain, impact) {
 
   var p0 = this.lastPosition.round()
   var p1 = this.position.round()
-  // console.log('p0', p0.toString())
-  // console.log('p1', p1.toString())
 
   bresenham(p0.x, p0.y, p1.x, p1.y, function(x, y) {
     switch (terrain.get(x, y)) {

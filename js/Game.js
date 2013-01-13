@@ -60,14 +60,12 @@ function Game(options) {
     terrain.move()
     units.move()
     display.draw()
-
-    // console.log('turn', turn, Date.now() - startTime)
   }
 
   display.attach(options.container)
-  display.clicked = function(x, y) {
+  display.onClick(function(x, y) {
     units.fireAt(new Position(x, y))
-  }
+  })
 
   var turnTimeout = null
 
