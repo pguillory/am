@@ -60,6 +60,10 @@ function Game(options) {
     terrain.move()
     units.move()
     display.draw()
+
+    if (turn % 10 == 1) {
+      console.log('turn', turn, '(' + (Date.now() - startTime) + 'ms)')
+    }
   }
 
   display.attach(options.container)
@@ -75,7 +79,7 @@ function Game(options) {
         incrementTurn()
         turnTimeout = null
         self.start()
-      }, 100)
+      }, 0)
     }
   }
 

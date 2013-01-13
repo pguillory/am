@@ -53,18 +53,16 @@ function Display(width, height, scale, terrain, players, units, bases) {
   self.draw = function() {
     // drawTerrain()
 
+    terrainCanvas.paint()
+    mainCanvas.draw(terrainCanvas, 0, 0)
+
     unitCanvas.clear()
     units.forEachBase(drawBase)
     units.forEachTroop(drawTroop)
     units.forEachProjectile(drawProjectile)
-
-    terrainCanvas.paint()
-    mainCanvas.draw(terrainCanvas, 0, 0)
-
     unitCanvas.paint()
     mainCanvas.draw(unitCanvas, 0, 0)
 
-    // mainCanvas.paintSprite(mainSprite, 0, 0)
     scaledCanvas.paint()
   }
 

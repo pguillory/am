@@ -65,3 +65,7 @@ Canvas.prototype.clear = function() {
 Canvas.prototype.toString = function() {
   return 'Canvas(' + this.width + ',' + this.height + ')'
 }
+
+Canvas.prototype.getImageData = function() {
+  return this.context.getImageData(0, 0, this.width, this.height)
+}
