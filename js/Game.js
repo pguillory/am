@@ -1,6 +1,7 @@
 var AIR = 0
 var DIRT = 1
 var ROCK = 2
+var WATER = 3
 
 var LEFT = -1
 var RIGHT = 1
@@ -11,7 +12,7 @@ function Game(options) {
   var self = {}
 
   var width = 100
-  var height = 70
+  var height = 100
   var scale = 3
 
   var terrain = Terrain(width, height)
@@ -25,7 +26,7 @@ function Game(options) {
     players.reset()
 
     var player1 = players.create()
-    units.dropBase(player1, 5, RIGHT)
+    units.dropBase(player1, 4, RIGHT)
 
     var player2 = players.create()
     units.dropBase(player2, width - 5, LEFT)
@@ -52,7 +53,7 @@ function Game(options) {
 
     runTime = Date.now() - startTime
 
-    if (turn % 10 == 0) {
+    if (turn % 100 == 0) {
       console.log('turn', turn, '(' + runTime + 'ms)')
     }
 
@@ -64,11 +65,6 @@ function Game(options) {
   self.start = function() {
     if (turnTimeout == null) {
       incrementTurn()
-      // turnTimeout = setTimeout(function() {
-      //   incrementTurn()
-      //   turnTimeout = null
-      //   self.start()
-      // }, 100)
     }
   }
 

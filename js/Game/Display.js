@@ -7,13 +7,14 @@ function Display(width, height, scale, terrain, players, units, bases) {
   var TERRAIN_COLOR = [
     new Color(200, 200, 255),
     new Color(145, 122, 92),
-    new Color(135, 112, 82),
+    new Color(125, 102, 72),
+    new Color(50, 50, 200),
   ]
 
   var PLAYER_COLOR = [
     new Color(200, 50, 50),
+    new Color(50, 150, 50),
     new Color(50, 50, 200),
-    new Color(50, 200, 50),
   ]
 
   var mainCanvas = new Canvas(width, height)
@@ -36,7 +37,7 @@ function Display(width, height, scale, terrain, players, units, bases) {
   function drawBase(base) {
     base.position.tap(function(x, y) {
       for (var dy = -3; dy <= 0; dy++) {
-        for (var dx = -3; dx < 3; dx++) {
+        for (var dx = -3; dx <= 3; dx++) {
           unitCanvas.setPixel(x + dx, y + dy, PLAYER_COLOR[base.player.id])
         }
       }
@@ -54,16 +55,18 @@ function Display(width, height, scale, terrain, players, units, bases) {
   units.onProjectileMoved(function(p0, p1) {
     unitCanvas.drawStreak(p1.x, p1.y, p0.x, p0.y, WHITE)
   })
+  
+  // units.onShrapnel(function(p0, p1) {
+  //   console.log('shrapnel', p0.toString(), p1.toString())
+  //   unitCanvas.drawStreak(p1.x, p1.y, p0.x, p0.y, WHITE)
+  // })
 
   self.draw = function() {
-    // drawTerrain()
-
     terrainCanvas.paint()
     mainCanvas.draw(terrainCanvas, 0, 0)
 
     units.forEachBase(drawBase)
     units.forEachTroop(drawTroop)
-    // units.forEachProjectile(drawProjectile)
     unitCanvas.paint()
     mainCanvas.draw(unitCanvas, 0, 0)
     unitCanvas.clear()

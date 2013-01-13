@@ -20,13 +20,13 @@ function Units(terrain) {
     bases.push(new Base(player, position, velocity))
   }
 
-  self.fireAt = function(target) {
-    explode(target)
-
-    // var base = bases[0]
-    // var velocity = target.minus(base.position).times(0.17).wiggle(1.0)
-    // // .constrainedToMagnitude(10)
-    // self.createProjectile(base.position, velocity)
+  self.fireAt = function(position) {
+    var base = bases[0]
+    origin = base.position.clone()
+    origin.y -= 3
+    var velocity = position.minus(origin).times(0.17).wiggle(1.0)
+    // .constrainedToMagnitude(10)
+    self.createProjectile(origin, velocity)
   }
 
   self.move = function() {
@@ -60,31 +60,38 @@ function Units(terrain) {
   }
 
   function explode(position) {
-    for (var i = 0; i < 40; i++) {
+    for (var i = 0; i < 50; i++) {
       var theta = Math.random() * Math.PI * 2
-      var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 2)
-      velocity.y -= 2
-      self.createProjectile(position, velocity)
+      var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 20)
+      new Projectile(position, velocity).move(terrain, troops, function(impactPosition) {
+        terrain.set(impactPosition.x, impactPosition.y, AIR)
+      })
     }
   }
+
+  terrain.onScrolled(function() {
+    bases.forEach(function(base) {
+      base.position.y -= 1
+    })
+    projectiles.forEach(function(projectile) {
+      projectile.position.y -= 1
+    })
+  })
 
   self.addEvent('ProjectileMoved')
   Projectile.prototype.onMoved(self.emitProjectileMoved)
 
   function moveProjectiles() {
-    var futureProjectiles = []
-
-    projectiles.forEach(function(projectile) {
-      if (projectile.move(terrain)) {
-        futureProjectiles.push(projectile)
-      }
+    projectiles = projectiles.filter(function(projectile) {
+      return projectile.move(terrain, troops, explode)
     })
-
-    projectiles = futureProjectiles
   }
 
   function moveBases() {
     bases.forEach(function(base) {
+      if (terrain.get(base.position.x, base.position.y + 1) == AIR) {
+        base.position.y += 1
+      }
       if (base.timeForTroop()) {
         self.createTroop(base.player, base.position, base.velocity)
       }

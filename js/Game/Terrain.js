@@ -44,21 +44,59 @@ function Terrain(width, height) {
   }
 
   self.move = function move() {
-    for (var y = height - 1; y >= 0; y--) {
-      for (var x = width - 1; x >= 0; x--) {
-        switch (self.get(x, y)) {
-          case AIR:
-            if (self.get(x, y - 1) == DIRT) {
-              self.swap(x, y, x, y - 1)
-            } else if (self.get(x + 1, y - 1) == DIRT) {
-              self.swap(x, y, x + 1, y - 1)
-            } else if (self.get(x - 1, y - 1) == DIRT) {
-              self.swap(x, y, x - 1, y - 1)
-            }
+    var maxAirY = 0
+    var minDirtY = height
+
+    function fall(x, y) {
+      switch (self.get(x, y)) {
+        case AIR:
+          if (self.get(x, y - 1) == DIRT) {
+            self.swap(x, y, x, y - 1)
+          } else if (self.get(x + 1, y - 1) == DIRT) {
+            self.swap(x, y, x + 1, y - 1)
+          } else if (self.get(x - 1, y - 1) == DIRT) {
+            self.swap(x, y, x - 1, y - 1)
+          }
+          maxAirY = Math.max(maxAirY, y)
           break
+        case DIRT:
+          minDirtY = Math.min(minDirtY, y)
+          break
+      }
+    }
+
+    for (var y = height - 1; y >= 0; y--) {
+      if (y % 2 == 0) {
+        for (var x = width - 1; x >= 0; x--) {
+          fall(x, y)
+        }
+      } else {
+        for (var x = 0; x < width; x++) {
+          fall(x, y)
         }
       }
     }
+
+    if ((maxAirY + minDirtY) / 2 > height / 2) {
+      self.scroll()
+    }
+    // console.log('maxAirY', maxAirY, 'minDirtY', minDirtY)
+  }
+
+  self.addEvent('Scrolled')
+
+  self.scroll = function() {
+    for (var y = 1; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        self.set(x, y - 1, self.get(x, y))
+      }
+    }
+    for (var y = height - 1; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        self.set(x, y, DIRT)
+      }
+    }
+    self.emitScrolled()
   }
 
   self.initialize = function initialize() {
@@ -66,7 +104,7 @@ function Terrain(width, height) {
 
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
-        if (y >= height * 0.6) {
+        if (y >= height / 2) {
           self.set(x, y, DIRT)
         } else {
           self.set(x, y, AIR)
