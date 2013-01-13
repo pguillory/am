@@ -59,10 +59,6 @@ function Units(terrain) {
     })
   }
 
-  function alive(unit) {
-    return unit.hp > 0
-  }
-
   function explode(position) {
     for (var i = 0; i < 40; i++) {
       var theta = Math.random() * Math.PI * 2
@@ -72,16 +68,19 @@ function Units(terrain) {
     }
   }
 
+  self.addEvent('ProjectileMoved')
+  Projectile.prototype.onMoved(self.emitProjectileMoved)
+
   function moveProjectiles() {
+    var futureProjectiles = []
+
     projectiles.forEach(function(projectile) {
-      projectile.move(terrain, function(impactPosition) {
-        if (terrain.get(impactPosition.x, impactPosition.y) == DIRT) {
-          terrain.set(impactPosition.x, impactPosition.y, AIR)
-        }
-      })
+      if (projectile.move(terrain)) {
+        futureProjectiles.push(projectile)
+      }
     })
 
-    projectiles = projectiles.filter(alive)
+    projectiles = futureProjectiles
   }
 
   function moveBases() {

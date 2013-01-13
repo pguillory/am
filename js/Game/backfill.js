@@ -1,16 +1,15 @@
 Object.prototype.addEvent = function(eventName) {
-  var object = this
   var handlers = []
 
-  object['on' + eventName] = function(handler) {
+  this['on' + eventName] = function(handler) {
     handlers.push(handler)
   }
 
-  object['emit' + eventName] = function() {
-    var self = this
+  this['emit' + eventName] = function() {
+    var instance = this
     var eventArguments = arguments
     handlers.forEach(function(handler) {
-      handler.apply(self, eventArguments)
+      handler.apply(instance, eventArguments)
     })
   }
 }

@@ -51,13 +51,9 @@ function Display(width, height, scale, terrain, players, units, bases) {
     })
   }
   
-  function drawProjectile(projectile) {
-    projectile.lastPosition.round().tap(function(x1, y1) {
-      projectile.position.round().tap(function(x0, y0) {
-        unitCanvas.drawStreak(x0, y0, x1, y1, WHITE)
-      })
-    })
-  }
+  units.onProjectileMoved(function(p0, p1) {
+    unitCanvas.drawStreak(p1.x, p1.y, p0.x, p0.y, WHITE)
+  })
 
   self.draw = function() {
     // drawTerrain()
@@ -67,7 +63,7 @@ function Display(width, height, scale, terrain, players, units, bases) {
 
     units.forEachBase(drawBase)
     units.forEachTroop(drawTroop)
-    units.forEachProjectile(drawProjectile)
+    // units.forEachProjectile(drawProjectile)
     unitCanvas.paint()
     mainCanvas.draw(unitCanvas, 0, 0)
     unitCanvas.clear()
