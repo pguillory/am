@@ -15,8 +15,8 @@ function Units(terrain) {
   }
 
   self.dropBase = function(player, x, direction) {
-    var position = new Position(x, terrain.drop(x))
-    var velocity = new Position(direction, 0)
+    var position = new Vector(x, terrain.drop(x))
+    var velocity = new Vector(direction, 0)
     bases.push(new Base(player, position, velocity))
   }
 
@@ -66,7 +66,7 @@ function Units(terrain) {
   function explode(position) {
     for (var i = 0; i < 40; i++) {
       var theta = Math.random() * Math.PI * 2
-      var velocity = new Position(Math.cos(theta), Math.sin(theta)).times(Math.random() * 2)
+      var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 2)
       velocity.y -= 2
       self.createProjectile(position, velocity)
     }

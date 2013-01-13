@@ -17,7 +17,7 @@ Projectile.prototype.move = function(terrain, impact) {
   var p0 = this.lastPosition.round()
   var p1 = this.position.round()
 
-  bresenham(p0.x, p0.y, p1.x, p1.y, function(x, y) {
+  Math.bresenham(p0.x, p0.y, p1.x, p1.y, function(x, y) {
     switch (terrain.get(x, y)) {
       case AIR:
         break;
@@ -26,7 +26,7 @@ Projectile.prototype.move = function(terrain, impact) {
         break;
       default:
         if (this.hp > 0) {
-          impact(new Position(x, y))
+          impact(new Vector(x, y))
         }
         this.hp = 0
         break;

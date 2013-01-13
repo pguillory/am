@@ -5,27 +5,7 @@ var ROCK = 2
 var LEFT = -1
 var RIGHT = 1
 
-function bresenham(x0, y0, x1, y1, callback) {
-  var dx = Math.abs(x1 - x0)
-  var dy = Math.abs(y1 - y0)
-  var sx = (x0 < x1) ? 1 : -1
-  var sy = (y0 < y1) ? 1 : -1
-  var err = dx - dy
-
-  while (1) {
-    callback(x0, y0)
-    if (x0 === x1 && y0 === y1) break
-    var e2 = 2 * err
-    if (e2 > -dy) {
-      err -= dy
-      x0 += sx
-    }
-    if (e2 < dx) {
-      err += dx
-      y0 += sy
-    }
-  }
-}
+var TURN_MS = 100
 
 function Game(options) {
   var self = {}
@@ -44,12 +24,23 @@ function Game(options) {
 
     players.reset()
 
-    var player1 = players.create(0, new Color(200, 50, 50))
+    var player1 = players.create()
     units.dropBase(player1, 5, RIGHT)
 
-    var player2 = players.create(1, new Color(50, 50, 200))
+    var player2 = players.create()
     units.dropBase(player2, width - 5, LEFT)
   })()
+
+  function doTurn() {
+    terrain.move()
+    units.move()
+    display.draw()
+  }
+
+  display.attach(options.container)
+  display.onClick(function(x, y) {
+    units.fireAt(new Vector(x, y))
+  })
 
   var turn = 0
 
@@ -57,29 +48,27 @@ function Game(options) {
     startTime = Date.now()
     turn += 1
 
-    terrain.move()
-    units.move()
-    display.draw()
+    doTurn()
 
-    if (turn % 10 == 1) {
-      console.log('turn', turn, '(' + (Date.now() - startTime) + 'ms)')
+    runTime = Date.now() - startTime
+
+    if (turn % 10 == 0) {
+      console.log('turn', turn, '(' + runTime + 'ms)')
     }
-  }
 
-  display.attach(options.container)
-  display.onClick(function(x, y) {
-    units.fireAt(new Position(x, y))
-  })
+    turnTimeout = setTimeout(incrementTurn, Math.max(0, TURN_MS - runTime))
+  }
 
   var turnTimeout = null
 
   self.start = function() {
     if (turnTimeout == null) {
-      turnTimeout = setTimeout(function() {
-        incrementTurn()
-        turnTimeout = null
-        self.start()
-      }, 0)
+      incrementTurn()
+      // turnTimeout = setTimeout(function() {
+      //   incrementTurn()
+      //   turnTimeout = null
+      //   self.start()
+      // }, 100)
     }
   }
 
