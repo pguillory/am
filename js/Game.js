@@ -6,10 +6,10 @@ var WATER = 3
 var LEFT = -1
 var RIGHT = 1
 
-var TURN_MS = 100
+var TURN_SPEED = 100
 
 function Game(options) {
-  var self = {}
+  var game = {}
 
   var width = 100
   var height = 100
@@ -20,17 +20,25 @@ function Game(options) {
   var units = Units(terrain)
   var display = Display(width, height, scale, terrain, players, units)
 
+  var player1 = players.create()
+  var player2 = players.create()
+
   ;(function initialize() {
     terrain.initialize()
 
     players.reset()
 
-    var player1 = players.create()
     units.dropBase(player1, 4, RIGHT)
-
-    var player2 = players.create()
     units.dropBase(player2, width - 5, LEFT)
   })()
+
+  game.launchChopper = function() {
+    units.launchChopper(player1, 0, RIGHT)
+  }
+
+  game.launchBomber = function() {
+    units.launchBomber(player1, 0, RIGHT)
+  }
 
   function doTurn() {
     terrain.move()
@@ -57,21 +65,21 @@ function Game(options) {
       console.log('turn', turn, '(' + runTime + 'ms)')
     }
 
-    turnTimeout = setTimeout(incrementTurn, Math.max(0, TURN_MS - runTime))
+    turnTimeout = setTimeout(incrementTurn, Math.max(0, TURN_SPEED - runTime))
   }
 
   var turnTimeout = null
 
-  self.start = function() {
+  game.start = function() {
     if (turnTimeout == null) {
       incrementTurn()
     }
   }
 
-  self.stop = function() {
+  game.stop = function() {
     clearTimeout(turnTimeout)
     turnTimeout = null
   }
 
-  return self
+  return game
 }

@@ -16,6 +16,8 @@ Projectile.prototype.move = function(terrain, troops, impacted) {
   var projectileStillGoing = true
 
   Math.bresenham(p0.x, p0.y, p1.x, p1.y, function(x, y) {
+    if (y < 0) return
+
     if (projectileStillGoing) {
       switch (terrain.get(x, y)) {
         case AIR:
@@ -31,6 +33,7 @@ Projectile.prototype.move = function(terrain, troops, impacted) {
           break;
       }
     }
+
     if (projectileStillGoing) {
       troops.forEach(function(troop) {
         if (troop.position.x == x && troop.hp > 0) {

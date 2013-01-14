@@ -43,9 +43,9 @@ Vector.prototype.round = function() {
   return new Vector(Math.round(this.x), Math.round(this.y))
 }
 
-Vector.prototype.collidesWith = function(vector) {
-  return this.x === vector.x
-}
+// Vector.prototype.collidesWith = function(vector) {
+//   return this.x === vector.x
+// }
 
 Vector.prototype.toString = function() {
   return '<' + this.x + ', ' + this.y + '>'

@@ -10,6 +10,10 @@
           %button#start Start
         %li
           %button#stop Stop
+        %li
+          %button#chopper Chopper
+        %li
+          %button#bomber Bomber
 
 %script{ src: '/js/jquery.js' }
 %script{ src: '/js/Game.js' }
@@ -21,3 +25,5 @@
   game.start()
   $('#start').click(game.start)
   $('#stop').click(game.stop)
+  $('#chopper').click(game.launchChopper)
+  $('#bomber').click(game.launchBomber)

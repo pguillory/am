@@ -6,7 +6,7 @@ function Troop(player, position, velocity) {
 }
 
 Troop.prototype.collidesWithTroop = function(defender) {
-  return this.position.collidesWith(defender.position)
+  return Math.abs(this.position.x - defender.position.x) < 2
 }
 
 Troop.prototype.move = function(terrain) {

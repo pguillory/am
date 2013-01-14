@@ -52,14 +52,44 @@ function Display(width, height, scale, terrain, players, units, bases) {
     })
   }
   
+  function drawBomber(bomber) {
+    var color = PLAYER_COLOR[bomber.player.id]
+    bomber.position.tap(function(x, y) {
+      unitCanvas.setPixel(x, y, color)
+      unitCanvas.setPixel(x - 1, y, color)
+      unitCanvas.setPixel(x - 1, y - 1, color)
+      unitCanvas.setPixel(x + 1, y, color)
+    })
+  }
+
+  var turn = 0
+  
+  function drawChopper(chopper) {
+    var color = PLAYER_COLOR[chopper.player.id]
+    var color2 = color.clone()
+    color2.alpha /= 2
+
+    chopper.position.tap(function(x, y) {
+      unitCanvas.setPixel(x, y, color)
+      unitCanvas.setPixel(x - 1, y, color)
+      unitCanvas.setPixel(x - 2, y, color)
+      unitCanvas.setPixel(x + 1, y, color)
+      unitCanvas.setPixel(x, y - 1, color)
+      unitCanvas.setPixel(x, y - 2, color2)
+      turn += 1
+      if (turn % 2 == 0) {
+        unitCanvas.setPixel(x - 1, y - 2, color2)
+        unitCanvas.setPixel(x - 2, y - 2, color2)
+      } else {
+        unitCanvas.setPixel(x + 1, y - 2, color2)
+        unitCanvas.setPixel(x + 2, y - 2, color2)
+      }
+    })
+  }
+
   units.onProjectileMoved(function(p0, p1) {
     unitCanvas.drawStreak(p1.x, p1.y, p0.x, p0.y, WHITE)
   })
-  
-  // units.onShrapnel(function(p0, p1) {
-  //   console.log('shrapnel', p0.toString(), p1.toString())
-  //   unitCanvas.drawStreak(p1.x, p1.y, p0.x, p0.y, WHITE)
-  // })
 
   self.draw = function() {
     terrainCanvas.paint()
@@ -67,6 +97,8 @@ function Display(width, height, scale, terrain, players, units, bases) {
 
     units.forEachBase(drawBase)
     units.forEachTroop(drawTroop)
+    units.forEachBomber(drawBomber)
+    units.forEachChopper(drawChopper)
     unitCanvas.paint()
     mainCanvas.draw(unitCanvas, 0, 0)
     unitCanvas.clear()
