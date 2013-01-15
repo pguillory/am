@@ -9,36 +9,26 @@ var RIGHT = 1
 var TURN_SPEED = 100
 
 function Game(options) {
-  var game = {}
+  var self = {}
 
   var width = 100
   var height = 100
-  var scale = 3
+  var scale = 4
 
   var terrain = Terrain(width, height)
   var players = Players()
   var units = Units(terrain)
   var display = Display(width, height, scale, terrain, players, units)
 
+  terrain.initialize()
+
   var player1 = players.create()
   var player2 = players.create()
 
-  ;(function initialize() {
-    terrain.initialize()
+  var base1 = units.dropBase(player1, 4, RIGHT)
+  var base2 = units.dropBase(player2, width - 5, LEFT)
 
-    players.reset()
-
-    units.dropBase(player1, 4, RIGHT)
-    units.dropBase(player2, width - 5, LEFT)
-  })()
-
-  game.launchChopper = function() {
-    units.launchChopper(player1, 0, RIGHT)
-  }
-
-  game.launchBomber = function() {
-    units.launchBomber(player1, 0, RIGHT)
-  }
+  var computer = new ComputerController(player2, base2, units)
 
   function doTurn() {
     terrain.move()
@@ -47,10 +37,19 @@ function Game(options) {
   }
 
   display.attach(options.container)
+
   display.onClick(function(x, y) {
-    units.fireAt(new Vector(x, y))
+    base1.fireAt(new Vector(x, y))
   })
 
+  self.launchChopper = function() {
+    units.launchChopper(player1, 0, RIGHT)
+  }
+
+  self.launchBomber = function() {
+    units.launchBomber(player1, 0, RIGHT)
+  }
+  
   var turn = 0
 
   function incrementTurn() {
@@ -70,16 +69,16 @@ function Game(options) {
 
   var turnTimeout = null
 
-  game.start = function() {
+  self.start = function() {
     if (turnTimeout == null) {
       incrementTurn()
     }
   }
 
-  game.stop = function() {
+  self.stop = function() {
     clearTimeout(turnTimeout)
     turnTimeout = null
   }
 
-  return game
+  return self
 }

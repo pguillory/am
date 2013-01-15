@@ -6,6 +6,7 @@ function Units(terrain) {
   var bases = []
   var bombers = []
   var choppers = []
+  var smokes = []
 
   self.createTroop = function(player, position, velocity) {
     troops.push(new Troop(player, position, velocity))
@@ -18,7 +19,9 @@ function Units(terrain) {
   self.dropBase = function(player, x, direction) {
     var position = new Vector(x, terrain.drop(x))
     var velocity = new Vector(direction, 0)
-    bases.push(new Base(player, position, velocity))
+    var base = new Base(player, position, velocity)
+    bases.push(base)
+    return base
   }
 
   self.launchBomber = function(player, x, direction) {
@@ -33,31 +36,38 @@ function Units(terrain) {
     choppers.push(new Chopper(player, position, velocity))
   }
 
-  Bomber.prototype.onBomb(function() {
-    self.createProjectile(this.position, this.velocity)
-  })
+  function createSmoke(position) {
+    smokes.push(new Smoke(position))
+  }
 
   function shoot(position, velocity) {
     new Projectile(position, velocity).move(terrain, troops, function(impactPosition) {
       terrain.set(impactPosition.x, impactPosition.y, AIR)
+      createSmoke(impactPosition)
     })
   }
-  
-  Chopper.prototype.onShot(function() {
-    var theta = (0.4 - 0.1 * Math.random()) * Math.PI
-    var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 20)
-    shoot(this.position, velocity)
 
-    // explode(this.position)
-  })
-  
-  self.fireAt = function(position) {
-    var base = bases[0]
-    origin = base.position.clone()
-    origin.y -= 3
-    var velocity = position.minus(origin).times(0.17).wiggle(1.0)
-    self.createProjectile(origin, velocity)
+  function explode(position) {
+    for (var i = 0; i < 50; i++) {
+      var theta = Math.random() * Math.PI * 2
+      var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 20)
+      shoot(position, velocity)
+    }
   }
+
+  Bomber.prototype.onBomb(function() {
+    self.createProjectile(this.position, this.velocity)
+  })
+
+  Chopper.prototype.onShot(function() {
+    var theta = (0.3 - 0.1 * Math.random()) * Math.PI
+    var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 30)
+    shoot(this.position, velocity)
+  })
+
+  Base.prototype.onFire(function(position, velocity) {
+    self.createProjectile(position, velocity)
+  })
 
   self.move = function() {
     moveTroops()
@@ -65,6 +75,7 @@ function Units(terrain) {
     moveBases()
     moveBombers()
     moveChoppers()
+    moveSmokes()
   }
 
   function moveTroops() {
@@ -91,16 +102,6 @@ function Units(terrain) {
     })
   }
 
-  function explode(position) {
-    for (var i = 0; i < 50; i++) {
-      var theta = Math.random() * Math.PI * 2
-      var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 20)
-      new Projectile(position, velocity).move(terrain, troops, function(impactPosition) {
-        terrain.set(impactPosition.x, impactPosition.y, AIR)
-      })
-    }
-  }
-
   terrain.onScrolled(function() {
     bases.forEach(function(base) {
       base.position.y -= 1
@@ -112,6 +113,8 @@ function Units(terrain) {
 
   self.addEvent('ProjectileMoved')
   Projectile.prototype.onMoved(self.emitProjectileMoved)
+  // Projectile.prototype.onImpact(function() {
+  // })
 
   function moveProjectiles() {
     projectiles = projectiles.filter(function(projectile) {
@@ -119,14 +122,13 @@ function Units(terrain) {
     })
   }
 
+  Base.prototype.onTroop(function() {
+    self.createTroop(this.player, this.position, this.velocity)
+  })
+
   function moveBases() {
-    bases.forEach(function(base) {
-      if (terrain.get(base.position.x, base.position.y + 1) == AIR) {
-        base.position.y += 1
-      }
-      if (base.timeForTroop()) {
-        self.createTroop(base.player, base.position, base.velocity)
-      }
+    bases = bases.filter(function(base) {
+      return base.move(terrain)
     })
   }
   
@@ -140,6 +142,21 @@ function Units(terrain) {
     choppers = choppers.filter(function(chopper) {
       return chopper.move(terrain)
     })
+  }
+
+  function moveSmokes() {
+    smokes = smokes.filter(function(smoke) {
+      return smoke.move(terrain)
+    })
+  }
+
+  self.forEach = function(callback) {
+    troops.forEach(callback)
+    projectiles.forEach(callback)
+    bases.forEach(callback)
+    bombers.forEach(callback)
+    choppers.forEach(callback)
+    smokes.forEach(callback)
   }
 
   self.forEachTroop = function(callback) {
@@ -160,6 +177,10 @@ function Units(terrain) {
 
   self.forEachChopper = function(callback) {
     choppers.forEach(callback)
+  }
+
+  self.forEachSmoke = function(callback) {
+    smokes.forEach(callback)
   }
 
   return self

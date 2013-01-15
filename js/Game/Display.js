@@ -2,6 +2,7 @@ function Display(width, height, scale, terrain, players, units, bases) {
   var self = {}
 
   var WHITE = new Color(255, 255, 255)
+  // var SMOKE_COLOR = new Color(255, 255, 255)
   var CLEAR = new Color(0, 0, 0, 0)
 
   var TERRAIN_COLOR = [
@@ -62,8 +63,6 @@ function Display(width, height, scale, terrain, players, units, bases) {
     })
   }
 
-  var turn = 0
-  
   function drawChopper(chopper) {
     var color = PLAYER_COLOR[chopper.player.id]
     var color2 = color.clone()
@@ -76,14 +75,23 @@ function Display(width, height, scale, terrain, players, units, bases) {
       unitCanvas.setPixel(x + 1, y, color)
       unitCanvas.setPixel(x, y - 1, color)
       unitCanvas.setPixel(x, y - 2, color2)
-      turn += 1
-      if (turn % 2 == 0) {
+      if (chopper.rotor > 0) {
         unitCanvas.setPixel(x - 1, y - 2, color2)
         unitCanvas.setPixel(x - 2, y - 2, color2)
       } else {
         unitCanvas.setPixel(x + 1, y - 2, color2)
         unitCanvas.setPixel(x + 2, y - 2, color2)
       }
+    })
+  }
+
+  function drawSmoke(smoke) {
+    var rgb = Math.floor(Math.random() * 100) + 150
+    var a = Math.floor(Math.random() * 255)
+    var color = new Color(rgb, rgb, rgb, a)
+    // SMOKE_COLOR.alpha = Math.floor(Math.random() * 255)
+    smoke.position.tap(function(x, y) {
+      unitCanvas.setPixel(x, y, color)
     })
   }
 
@@ -99,6 +107,7 @@ function Display(width, height, scale, terrain, players, units, bases) {
     units.forEachTroop(drawTroop)
     units.forEachBomber(drawBomber)
     units.forEachChopper(drawChopper)
+    units.forEachSmoke(drawSmoke)
     unitCanvas.paint()
     mainCanvas.draw(unitCanvas, 0, 0)
     unitCanvas.clear()

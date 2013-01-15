@@ -4,6 +4,7 @@ function Projectile(position, velocity) {
 }
 
 Projectile.prototype.addEvent('Moved')
+Projectile.prototype.addEvent('Impact')
 
 Projectile.prototype.move = function(terrain, troops, impacted) {
   var lastPosition = this.position
