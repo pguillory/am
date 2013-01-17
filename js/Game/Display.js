@@ -90,11 +90,12 @@ function Display(width, height, scale, terrain, players, units, bases) {
 
   function drawBomber(bomber) {
     var color = PLAYER_COLOR[bomber.player.id]
+    var direction = bomber.player.direction
     bomber.position.tap(function(x, y) {
       unitCanvas.setPixel(x, y, color)
-      unitCanvas.setPixel(x - 1, y, color)
-      unitCanvas.setPixel(x - 1, y - 1, color)
-      unitCanvas.setPixel(x + 1, y, color)
+      unitCanvas.setPixel(x - direction, y, color)
+      unitCanvas.setPixel(x - direction, y - 1, color)
+      unitCanvas.setPixel(x + direction, y, color)
     })
   }
 

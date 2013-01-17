@@ -11,7 +11,7 @@ var TURN_SPEED = 100
 function Game(options) {
   var self = {}
 
-  var width = 100
+  var width = 200
   var height = 100
   var scale = 3
 
@@ -59,6 +59,19 @@ function Game(options) {
   function incrementTurn() {
     startTime = Date.now()
     turn += 1
+
+    if (turn % 20 === 0) {
+      var x = Math.round((Math.random() * 0.2 + 0.6) * width)
+      var y = 5
+      var target = new Vector(x, y)
+      base2.fireAt(target)
+      units.createSmoke(target)
+      // units.createParatroop(player2, target)
+    }
+
+    if (turn % 127 === 0) {
+      units.launchBomber(player2, width - 1, LEFT)
+    }
 
     doTurn()
 

@@ -16,6 +16,43 @@ Projectile.prototype.move = function(terrain, troops, impacted) {
 
   var projectileStillGoing = true
 
+  function cast(p0, p1, impact) {
+    var going = true
+
+    Math.bresenham(p0.x, p0.y, p1.x, p1.y, function(x, y) {
+      if (y < 0) return
+
+      if (projectileStillGoing) {
+        switch (terrain.get(x, y)) {
+          case AIR:
+            break;
+          case null:
+            going = false
+            break;
+          default:
+            impacted(new Vector(x, y))
+            // this.emitImpact(new Vector(x, y))
+            this.emitMoved(p0, new Vector(x, y))
+            going = false
+            break;
+        }
+      }
+
+      if (going) {
+        troops.forEach(function(troop) {
+          if (troop.position.x == x && troop.hp > 0) {
+            if (troop.position.y == y || troop.position.y - 1 == y) {
+              impacted(new Vector(x, y))
+              // this.emitImpact(new Vector(x, y))
+              troop.hp -= 1
+              going = false
+            }
+          }
+        })
+      }
+    })
+  }
+
   Math.bresenham(p0.x, p0.y, p1.x, p1.y, function(x, y) {
     if (y < 0) return
 
@@ -29,6 +66,7 @@ Projectile.prototype.move = function(terrain, troops, impacted) {
           break;
         default:
           impacted(new Vector(x, y))
+          // this.emitImpact(new Vector(x, y))
           this.emitMoved(p0, new Vector(x, y))
           projectileStillGoing = false
           break;
@@ -40,11 +78,12 @@ Projectile.prototype.move = function(terrain, troops, impacted) {
         if (troop.position.x == x && troop.hp > 0) {
           if (troop.position.y == y || troop.position.y - 1 == y) {
             impacted(new Vector(x, y))
+            // this.emitImpact(new Vector(x, y))
             troop.hp -= 1
             projectileStillGoing = false
           }
         }
-      })
+      }.bind(this))
     }
   }.bind(this))
 

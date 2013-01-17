@@ -40,14 +40,14 @@ function Units(terrain) {
     paratroops.push(new Paratroop(player, position))
   }
 
-  function createSmoke(position) {
+  self.createSmoke = function(position) {
     smokes.push(new Smoke(position))
   }
 
   function shoot(position, velocity) {
     new Projectile(position, velocity).move(terrain, troops, function(impactPosition) {
       terrain.set(impactPosition.x, impactPosition.y, AIR)
-      createSmoke(impactPosition)
+      self.createSmoke(impactPosition)
     })
   }
 
@@ -87,7 +87,11 @@ function Units(terrain) {
   Base.prototype.onFire(function(position, velocity) {
     self.createProjectile(position, velocity)
   })
-  
+
+  Base.prototype.onTroop(function() {
+    self.createTroop(this.player, this.position)
+  })
+
   Paratroop.prototype.onTouchdown(function() {
     self.createTroop(this.player, this.position)
   })
@@ -125,16 +129,17 @@ function Units(terrain) {
       return (troop.hp > 0)
     })
   }
+  
+  Projectile.prototype.onImpact(function(p) {
+    console.log('impact ' + p)
+    // explode(p)
+  })
 
   function moveProjectiles() {
     projectiles = projectiles.filter(function(projectile) {
       return projectile.move(terrain, troops, explode)
     })
   }
-
-  Base.prototype.onTroop(function() {
-    self.createTroop(this.player, this.position)
-  })
 
   function moveBases() {
     bases = bases.filter(function(base) {
