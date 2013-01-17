@@ -1,7 +1,6 @@
-function Base(player, position, velocity) {
+function Base(player, position) {
   this.player = player
   this.position = position
-  this.velocity = velocity
   this.timeToTroop = 0
 }
 

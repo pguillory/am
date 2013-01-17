@@ -1,13 +1,13 @@
-function Bomber(player, position, velocity) {
+function Bomber(player, position) {
   this.player = player
   this.position = position.clone()
-  this.velocity = velocity
+  this.direction = this.player.direction
 }
 
 Bomber.prototype.addEvent('Bomb')
 
 Bomber.prototype.move = function(terrain) {
-  this.position.add(this.velocity)
+  this.position.x += this.direction
 
   if (terrain.get(this.position.x, this.position.y) !== AIR) {
     return false

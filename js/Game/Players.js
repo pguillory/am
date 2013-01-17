@@ -7,8 +7,8 @@ function Players() {
     members = []
   }
 
-  self.create = function() {
-    var player = new Player(members.length)
+  self.create = function(color, direction) {
+    var player = new Player(members.length, color, direction)
     members.push(player)
     return player
   }

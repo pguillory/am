@@ -2,6 +2,10 @@ function Display(width, height, scale, terrain, players, units, bases) {
   var self = {}
 
   var WHITE = new Color(255, 255, 255)
+
+  var PARACHUTE_COLOR = new Color(255, 255, 255)
+  var PARACHUTE_CORD_COLOR = new Color(255, 255, 255, 100)
+
   // var SMOKE_COLOR = new Color(255, 255, 255)
   var CLEAR = new Color(0, 0, 0, 0)
 
@@ -44,6 +48,24 @@ function Display(width, height, scale, terrain, players, units, bases) {
       }
     })
   }
+
+  // var pallette = Pallette.load({
+  //   W: new Color(255, 255, 255)
+  //   P: [null, null, null, 255],
+  // })
+  // 
+  // var troopSprite = pallette.draw([
+  //   'P',
+  //   'P',
+  // ], [1, 0])
+  // 
+  // var paratroopSprite = pallette.draw([
+  //   ' W ',
+  //   'WWW',
+  //   'w w',
+  //   ' P ',
+  //   ' P ',
+  // ], [4, 1])
   
   function drawTroop(troop) {
     var color = PLAYER_COLOR[troop.player.id]
@@ -53,6 +75,19 @@ function Display(width, height, scale, terrain, players, units, bases) {
     })
   }
   
+  function drawParatroop(paratroop) {
+    drawTroop(paratroop)
+
+    paratroop.position.tap(function(x, y) {
+      unitCanvas.setPixel(x    , y - 4, PARACHUTE_COLOR)
+      unitCanvas.setPixel(x - 1, y - 3, PARACHUTE_COLOR)
+      unitCanvas.setPixel(x    , y - 3, PARACHUTE_COLOR)
+      unitCanvas.setPixel(x + 1, y - 3, PARACHUTE_COLOR)
+      unitCanvas.setPixel(x - 1, y - 2, PARACHUTE_CORD_COLOR)
+      unitCanvas.setPixel(x + 1, y - 2, PARACHUTE_CORD_COLOR)
+    })
+  }
+
   function drawBomber(bomber) {
     var color = PLAYER_COLOR[bomber.player.id]
     bomber.position.tap(function(x, y) {
@@ -108,6 +143,7 @@ function Display(width, height, scale, terrain, players, units, bases) {
     units.forEachBomber(drawBomber)
     units.forEachChopper(drawChopper)
     units.forEachSmoke(drawSmoke)
+    units.forEachParatroop(drawParatroop)
     unitCanvas.paint()
     mainCanvas.draw(unitCanvas, 0, 0)
     unitCanvas.clear()

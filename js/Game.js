@@ -13,7 +13,7 @@ function Game(options) {
 
   var width = 100
   var height = 100
-  var scale = 4
+  var scale = 3
 
   var terrain = Terrain(width, height)
   var players = Players()
@@ -22,11 +22,11 @@ function Game(options) {
 
   terrain.initialize()
 
-  var player1 = players.create()
-  var player2 = players.create()
+  var player1 = players.create(new Color(200, 50, 50), RIGHT)
+  var player2 = players.create(new Color(50, 150, 50), LEFT)
 
-  var base1 = units.dropBase(player1, 4, RIGHT)
-  var base2 = units.dropBase(player2, width - 5, LEFT)
+  var base1 = units.dropBase(player1, 4)
+  var base2 = units.dropBase(player2, width - 5)
 
   var computer = new ComputerController(player2, base2, units)
 
@@ -48,6 +48,10 @@ function Game(options) {
 
   self.launchBomber = function() {
     units.launchBomber(player1, 0, RIGHT)
+  }
+  
+  self.createParatroop = function() {
+    units.createParatroop(player1, new Vector(Math.round(width / 2), 5))
   }
   
   var turn = 0

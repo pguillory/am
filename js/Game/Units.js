@@ -7,19 +7,19 @@ function Units(terrain) {
   var bombers = []
   var choppers = []
   var smokes = []
+  var paratroops = []
 
-  self.createTroop = function(player, position, velocity) {
-    troops.push(new Troop(player, position, velocity))
+  self.createTroop = function(player, position) {
+    troops.push(new Troop(player, position))
   }
 
   self.createProjectile = function(position, velocity) {
     projectiles.push(new Projectile(position, velocity))
   }
 
-  self.dropBase = function(player, x, direction) {
+  self.dropBase = function(player, x) {
     var position = new Vector(x, terrain.drop(x))
-    var velocity = new Vector(direction, 0)
-    var base = new Base(player, position, velocity)
+    var base = new Base(player, position)
     bases.push(base)
     return base
   }
@@ -34,6 +34,10 @@ function Units(terrain) {
     var position = new Vector(x, terrain.drop(x) - 10)
     var velocity = new Vector(direction, 0)
     choppers.push(new Chopper(player, position, velocity))
+  }
+
+  self.createParatroop = function(player, position) {
+    paratroops.push(new Paratroop(player, position))
   }
 
   function createSmoke(position) {
@@ -55,8 +59,23 @@ function Units(terrain) {
     }
   }
 
+  terrain.onScrolled(function() {
+    bases.forEach(function(base) {
+      base.position.y -= 1
+    })
+    projectiles.forEach(function(projectile) {
+      projectile.position.y -= 1
+    })
+  })
+
+  self.addEvent('ProjectileMoved')
+  Projectile.prototype.onMoved(self.emitProjectileMoved)
+  // Projectile.prototype.onImpact(function() {
+  // })
+
   Bomber.prototype.onBomb(function() {
-    self.createProjectile(this.position, this.velocity)
+    // self.createParatroop(this.player, this.position)
+    self.createProjectile(this.position, new Vector(this.direction, 0))
   })
 
   Chopper.prototype.onShot(function() {
@@ -68,6 +87,10 @@ function Units(terrain) {
   Base.prototype.onFire(function(position, velocity) {
     self.createProjectile(position, velocity)
   })
+  
+  Paratroop.prototype.onTouchdown(function() {
+    self.createTroop(this.player, this.position)
+  })
 
   self.move = function() {
     moveTroops()
@@ -76,6 +99,7 @@ function Units(terrain) {
     moveBombers()
     moveChoppers()
     moveSmokes()
+    moveParatroops()
   }
 
   function moveTroops() {
@@ -102,20 +126,6 @@ function Units(terrain) {
     })
   }
 
-  terrain.onScrolled(function() {
-    bases.forEach(function(base) {
-      base.position.y -= 1
-    })
-    projectiles.forEach(function(projectile) {
-      projectile.position.y -= 1
-    })
-  })
-
-  self.addEvent('ProjectileMoved')
-  Projectile.prototype.onMoved(self.emitProjectileMoved)
-  // Projectile.prototype.onImpact(function() {
-  // })
-
   function moveProjectiles() {
     projectiles = projectiles.filter(function(projectile) {
       return projectile.move(terrain, troops, explode)
@@ -123,7 +133,7 @@ function Units(terrain) {
   }
 
   Base.prototype.onTroop(function() {
-    self.createTroop(this.player, this.position, this.velocity)
+    self.createTroop(this.player, this.position)
   })
 
   function moveBases() {
@@ -150,14 +160,20 @@ function Units(terrain) {
     })
   }
 
-  self.forEach = function(callback) {
-    troops.forEach(callback)
-    projectiles.forEach(callback)
-    bases.forEach(callback)
-    bombers.forEach(callback)
-    choppers.forEach(callback)
-    smokes.forEach(callback)
+  function moveParatroops() {
+    paratroops = paratroops.filter(function(paratroop) {
+      return paratroop.move(terrain)
+    })
   }
+
+  // self.forEach = function(callback) {
+  //   troops.forEach(callback)
+  //   projectiles.forEach(callback)
+  //   bases.forEach(callback)
+  //   bombers.forEach(callback)
+  //   choppers.forEach(callback)
+  //   smokes.forEach(callback)
+  // }
 
   self.forEachTroop = function(callback) {
     troops.forEach(callback)
@@ -181,6 +197,10 @@ function Units(terrain) {
 
   self.forEachSmoke = function(callback) {
     smokes.forEach(callback)
+  }
+
+  self.forEachParatroop = function(callback) {
+    paratroops.forEach(callback)
   }
 
   return self

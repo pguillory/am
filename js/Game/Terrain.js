@@ -80,7 +80,6 @@ function Terrain(width, height) {
     if ((maxAirY + minDirtY) / 2 > height / 2) {
       self.scroll()
     }
-    // console.log('maxAirY', maxAirY, 'minDirtY', minDirtY)
   }
 
   self.addEvent('Scrolled')
@@ -124,7 +123,7 @@ function Terrain(width, height) {
 
   self.drop = function drop(x) {
     if (self.get(x, 0) !== AIR) {
-      throw new Exception('can not drop at ' + x)
+      throw 'can not drop at ' + x
     }
     for (var y = 1; y < height; y++) {
       if (self.get(x, y) !== AIR) {
