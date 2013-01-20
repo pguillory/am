@@ -2,17 +2,19 @@ var AIR = 0
 var DIRT = 1
 var ROCK = 2
 var WATER = 3
+var GOLD = 4
 
 var LEFT = -1
 var RIGHT = 1
 
 var TURN_SPEED = 100
 
+var width = 200
+var height = 100
+
 function Game(options) {
   var self = {}
 
-  var width = 200
-  var height = 100
   var scale = 3
 
   var terrain = Terrain(width, height)
@@ -78,7 +80,7 @@ function Game(options) {
     runTime = Date.now() - startTime
 
     if (turn % 100 == 0) {
-      console.log('turn', turn, '(' + runTime + 'ms)')
+      console.log('turn ' + turn + ' (' + runTime + 'ms) ' + player1 + ' ' + player2)
     }
 
     turnTimeout = setTimeout(incrementTurn, Math.max(0, TURN_SPEED - runTime))

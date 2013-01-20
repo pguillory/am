@@ -2,7 +2,7 @@ function Terrain(width, height) {
   var self = {}
 
   var values = []
-
+  
   self.get = function get(x, y) {
     if (x < 0 || y < 0 || x >= width || y >= height) {
       return null
@@ -50,16 +50,16 @@ function Terrain(width, height) {
     function fall(x, y) {
       switch (self.get(x, y)) {
         case AIR:
-          if (self.get(x, y - 1) == DIRT) {
+          if (self.get(x, y - 1) > AIR) {
             self.swap(x, y, x, y - 1)
-          } else if (self.get(x + 1, y - 1) == DIRT) {
+          } else if (self.get(x + 1, y - 1) > AIR) {
             self.swap(x, y, x + 1, y - 1)
-          } else if (self.get(x - 1, y - 1) == DIRT) {
+          } else if (self.get(x - 1, y - 1) > AIR) {
             self.swap(x, y, x - 1, y - 1)
           }
           maxAirY = Math.max(maxAirY, y)
           break
-        case DIRT:
+        default:
           minDirtY = Math.min(minDirtY, y)
           break
       }
@@ -92,7 +92,12 @@ function Terrain(width, height) {
     }
     for (var y = height - 1; y < height; y++) {
       for (var x = 0; x < width; x++) {
-        self.set(x, y, DIRT)
+        if (Math.random() < 0.05) {
+          self.set(x, y, GOLD)
+        } else {
+          self.set(x, y, DIRT)
+        }
+        // self.set(x, y, DIRT)
       }
     }
     self.emitScrolled()
@@ -104,7 +109,11 @@ function Terrain(width, height) {
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
         if (y >= height / 2) {
-          self.set(x, y, DIRT)
+          if (Math.random() < 0.05) {
+            self.set(x, y, GOLD)
+          } else {
+            self.set(x, y, DIRT)
+          }
         } else {
           self.set(x, y, AIR)
         }
@@ -130,6 +139,7 @@ function Terrain(width, height) {
         return y - 1
       }
     }
+    return height - 1
   }
 
   return self

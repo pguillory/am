@@ -8,6 +8,7 @@ function Units(terrain) {
   var choppers = []
   var smokes = []
   var paratroops = []
+  var looters = []
 
   self.createTroop = function(player, position) {
     troops.push(new Troop(player, position))
@@ -46,7 +47,9 @@ function Units(terrain) {
 
   function shoot(position, velocity) {
     new Projectile(position, velocity).move(terrain, troops, function(impactPosition) {
-      terrain.set(impactPosition.x, impactPosition.y, AIR)
+      if (terrain.get(impactPosition.x, impactPosition.y) == DIRT) {
+        terrain.set(impactPosition.x, impactPosition.y, AIR)
+      }
       self.createSmoke(impactPosition)
     })
   }
@@ -73,6 +76,11 @@ function Units(terrain) {
   // Projectile.prototype.onImpact(function() {
   // })
 
+  Projectile.prototype.onImpact(function(p) {
+    console.log('impact ' + p)
+    // explode(p)
+  })
+
   Bomber.prototype.onBomb(function() {
     // self.createParatroop(this.player, this.position)
     self.createProjectile(this.position, new Vector(this.direction, 0))
@@ -80,7 +88,7 @@ function Units(terrain) {
 
   Chopper.prototype.onShot(function() {
     var theta = (0.3 - 0.1 * Math.random()) * Math.PI
-    var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 30)
+    var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 50)
     shoot(this.position, velocity)
   })
 
@@ -96,6 +104,19 @@ function Units(terrain) {
     self.createTroop(this.player, this.position)
   })
 
+  Troop.prototype.onLoot(function() {
+    var x = this.position.x
+    var y = terrain.drop(x) + 1
+    var position = new Vector(x, y)
+    var material = terrain.get(x, y)
+    terrain.set(x, y, AIR)
+    looters.push(new Looter(this.player, position, material))
+  })
+
+  Looter.prototype.onDone(function() {
+    self.createTroop(this.player, this.position)
+  })
+
   self.move = function() {
     moveTroops()
     moveProjectiles()
@@ -104,6 +125,7 @@ function Units(terrain) {
     moveChoppers()
     moveSmokes()
     moveParatroops()
+    moveLooters()
   }
 
   function moveTroops() {
@@ -130,11 +152,6 @@ function Units(terrain) {
     })
   }
   
-  Projectile.prototype.onImpact(function(p) {
-    console.log('impact ' + p)
-    // explode(p)
-  })
-
   function moveProjectiles() {
     projectiles = projectiles.filter(function(projectile) {
       return projectile.move(terrain, troops, explode)
@@ -168,6 +185,12 @@ function Units(terrain) {
   function moveParatroops() {
     paratroops = paratroops.filter(function(paratroop) {
       return paratroop.move(terrain)
+    })
+  }
+
+  function moveLooters() {
+    looters = looters.filter(function(looter) {
+      return looter.move(terrain)
     })
   }
 
@@ -206,6 +229,10 @@ function Units(terrain) {
 
   self.forEachParatroop = function(callback) {
     paratroops.forEach(callback)
+  }
+
+  self.forEachLooter = function(callback) {
+    looters.forEach(callback)
   }
 
   return self

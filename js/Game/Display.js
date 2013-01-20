@@ -14,6 +14,9 @@ function Display(width, height, scale, terrain, players, units, bases) {
     new Color(145, 122, 92),
     new Color(125, 102, 72),
     new Color(50, 50, 200),
+    // new Color(245, 242, 61),
+    new Color(225, 222, 51),
+    // new Color(217, 215, 132),
   ]
 
   var PLAYER_COLOR = [
@@ -88,6 +91,15 @@ function Display(width, height, scale, terrain, players, units, bases) {
     })
   }
 
+  function drawLooter(looter) {
+    drawTroop(looter)
+
+    var color = TERRAIN_COLOR[looter.material]
+    looter.position.tap(function(x, y) {
+      unitCanvas.setPixel(x, y - 2, color)
+    })
+  }
+
   function drawBomber(bomber) {
     var color = PLAYER_COLOR[bomber.player.id]
     var direction = bomber.player.direction
@@ -145,6 +157,8 @@ function Display(width, height, scale, terrain, players, units, bases) {
     units.forEachChopper(drawChopper)
     units.forEachSmoke(drawSmoke)
     units.forEachParatroop(drawParatroop)
+    units.forEachLooter(drawLooter)
+    
     unitCanvas.paint()
     mainCanvas.draw(unitCanvas, 0, 0)
     unitCanvas.clear()
@@ -155,6 +169,15 @@ function Display(width, height, scale, terrain, players, units, bases) {
   self.attach = function(container) {
     $(scaledCanvas.element).click(function(event) {
       event.preventDefault()
+      var offset = this.totalOffset()
+      var x = event.pageX - offset.x
+      var y = event.pageY - offset.y
+      scaledCanvas.emitClick(x, y)
+    })
+    .on('touchstart', function(event) {
+      event.preventDefault()
+
+      var touch = event.touches[0]
       var offset = this.totalOffset()
       var x = event.pageX - offset.x
       var y = event.pageY - offset.y
