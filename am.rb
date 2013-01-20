@@ -18,7 +18,7 @@ class MyApp < Sinatra::Base
     s << "/*  /#{path.ljust(74)} */\n"
     s << "/#{'*' * 80}/\n"
     s << "var #{basename} = (function() {\n"
-    Dir[File.join(File.dirname(path), basename, '*.js')].each do |child_path|
+    Dir[File.join(File.dirname(path), basename, '*.js')].sort.each do |child_path|
       s << indent(load_js_file(child_path), 4)
     end
     s << indent(File.read(path), 4)
