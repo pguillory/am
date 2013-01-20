@@ -1,3 +1,5 @@
+var EXPLOSION_SIZE = 50
+
 function Units(terrain) {
   var self = {}
 
@@ -119,9 +121,9 @@ function Units(terrain) {
   }
 
   function explode(position) {
-    for (var i = 0; i < 50; i++) {
+    for (var i = 0; i < EXPLOSION_SIZE; i++) {
       var theta = Math.random() * Math.PI * 2
-      var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 20)
+      var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 10 + 5)
       shoot(position, velocity)
     }
   }
@@ -152,8 +154,16 @@ function Units(terrain) {
 
   Chopper.prototype.onShot(function() {
     var theta = (0.3 - 0.1 * Math.random()) * Math.PI
-    var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 50)
+    var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 50 + 50)
     shoot(this.position, velocity)
+  })
+
+  Chopper.prototype.onCrash(function() {
+    explode(this.position)
+  })
+
+  Bomber.prototype.onCrash(function() {
+    explode(this.position)
   })
 
   Base.prototype.onFire(function(position, velocity) {

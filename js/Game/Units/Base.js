@@ -16,8 +16,39 @@ Base.prototype.fireAt = function(target) {
 Base.prototype.addEvent('Troop')
 
 Base.prototype.move = function(terrain) {
-  if (terrain.get(this.position.x, this.position.y + 1) === AIR) {
+  var airUnderBase = false
+  var dirtUnderBase = false
+
+  for (var dx = -3; dx <= 3; dx++) {
+    switch (terrain.get(this.position.x + dx, this.position.y + 1)) {
+    case AIR:
+      airUnderBase = true
+      break
+    case null:
+      break
+    default:
+      dirtUnderBase = true
+      break
+    }
+  }
+
+  if (this.player.id === 0) {
+    console.log('player ' + this.player + ' air=' + airUnderBase + ' dirt=' + dirtUnderBase)
+  }
+
+  if (airUnderBase) {
+    if (dirtUnderBase) {
+      for (var dx = -3; dx <= 3; dx++) {
+        terrain.set(this.position.x + dx, this.position.y + 1, AIR)
+      }
+    }
     this.position.y += 1
+  } else {
+    for (var dy = -3; dy <= 0; dy++) {
+      for (var dx = -3; dx <= 3; dx++) {
+        terrain.set(this.position.x + dx, this.position.y + dy, AIR)
+      }
+    }
   }
 
   this.timeToTroop += 1
@@ -27,4 +58,15 @@ Base.prototype.move = function(terrain) {
   }
 
   return true
+}
+
+Base.prototype.draw = function(canvas) {
+  var color = this.player.color
+  this.position.tap(function(x, y) {
+    for (var dy = -3; dy <= 0; dy++) {
+      for (var dx = -3; dx <= 3; dx++) {
+        canvas.setPixel(x + dx, y + dy, color)
+      }
+    }
+  })
 }

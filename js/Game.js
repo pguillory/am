@@ -49,8 +49,8 @@ function Game(options) {
   var player1 = players.create(new Color(200, 50, 50), RIGHT)
   var player2 = players.create(new Color(50, 50, 150), LEFT)
 
-  var base1 = units.dropBase(player1, 4)
-  var base2 = units.dropBase(player2, width - 5)
+  var base1 = units.dropBase(player1, 5)
+  var base2 = units.dropBase(player2, width - 6)
 
   var computer = new ComputerController(player2, base2, units)
 
@@ -140,8 +140,9 @@ function Game(options) {
     var unit = units.selectNear(player1, new Vector(x, y))
     if (unit) {
       unit.activate()
+    } else {
+      base1.fireAt(new Vector(x, y))
     }
-    // base1.fireAt(new Vector(x, y))
   })
 
   self.launchChopper = function() {
@@ -170,7 +171,7 @@ function Game(options) {
 
     if (turn % 37 === 0) {
       var x = Math.round((Math.random() * 0.2 + 0.6) * width)
-      var y = 5
+      var y = 0
       var target = new Vector(x, y)
       base2.fireAt(target)
       units.createSmoke(target)

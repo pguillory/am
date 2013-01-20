@@ -29,15 +29,15 @@ function Display(width, height, scale, terrain, players, units, bases) {
 
   var unitCanvas = new Canvas(width, height)
   
-  function drawBase(base) {
-    base.position.tap(function(x, y) {
-      for (var dy = -3; dy <= 0; dy++) {
-        for (var dx = -3; dx <= 3; dx++) {
-          unitCanvas.setPixel(x + dx, y + dy, base.player.color)
-        }
-      }
-    })
-  }
+  // function drawBase(base) {
+  //   base.position.tap(function(x, y) {
+  //     for (var dy = -3; dy <= 0; dy++) {
+  //       for (var dx = -3; dx <= 3; dx++) {
+  //         unitCanvas.setPixel(x + dx, y + dy, base.player.color)
+  //       }
+  //     }
+  //   })
+  // }
 
   // var pallette = Pallette.load({
   //   W: new Color(255, 255, 255)
@@ -133,20 +133,22 @@ function Display(width, height, scale, terrain, players, units, bases) {
   units.onProjectileMoved(function(p0, p1) {
     unitCanvas.drawStreak(p1.x, p1.y, p0.x, p0.y, WHITE)
   })
+  
+  function drawUnit(unit) {
+    unit.draw(unitCanvas)
+  }
 
   self.draw = function() {
     terrainCanvas.paint()
     mainCanvas.draw(terrainCanvas, 0, 0)
 
-    units.forEachTroop(function(troop) {
-      troop.draw(unitCanvas)
-    })
+    units.forEachTroop(drawUnit)
 
     // units.forEachLooter(function(troop) {
     //   troop.draw(unitCanvas)
     // })
 
-    units.forEachBase(drawBase)
+    units.forEachBase(drawUnit)
     units.forEachBomber(drawBomber)
     units.forEachChopper(drawChopper)
     units.forEachSmoke(function(smoke) {
