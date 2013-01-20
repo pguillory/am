@@ -83,6 +83,17 @@ function Terrain(width, height) {
   }
 
   self.addEvent('Scrolled')
+  
+  function randomMineral() {
+    var r = Math.random()
+    if (r < 0.001) {
+      return DIAMOND
+    } else if (r < 0.03) {
+      return GOLD
+    } else {
+      return DIRT
+    }
+  }
 
   self.scroll = function() {
     for (var y = 1; y < height; y++) {
@@ -92,12 +103,7 @@ function Terrain(width, height) {
     }
     for (var y = height - 1; y < height; y++) {
       for (var x = 0; x < width; x++) {
-        if (Math.random() < 0.05) {
-          self.set(x, y, GOLD)
-        } else {
-          self.set(x, y, DIRT)
-        }
-        // self.set(x, y, DIRT)
+        self.set(x, y, randomMineral())
       }
     }
     self.emitScrolled()
@@ -109,11 +115,7 @@ function Terrain(width, height) {
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
         if (y >= height / 2) {
-          if (Math.random() < 0.05) {
-            self.set(x, y, GOLD)
-          } else {
-            self.set(x, y, DIRT)
-          }
+          self.set(x, y, randomMineral())
         } else {
           self.set(x, y, AIR)
         }

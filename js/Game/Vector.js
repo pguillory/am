@@ -43,6 +43,11 @@ Vector.prototype.round = function() {
   return new Vector(Math.round(this.x), Math.round(this.y))
 }
 
+Vector.prototype.magnitude = function() {
+  return Math.sqrt(this.x * this.x + this.y * this.y)
+}
+
+
 // Vector.prototype.collidesWith = function(vector) {
 //   return this.x === vector.x
 // }

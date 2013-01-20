@@ -8,7 +8,29 @@ function Units(terrain) {
   var choppers = []
   var smokes = []
   var paratroops = []
-  var looters = []
+  // var looters = []
+
+  self.nearestTo = function(position) {
+    var min = 10
+    var result = null
+    bombers.forEach(function(bomber) {
+      var distance = bomber.position.minus(position).magnitude()
+      if (min > distance) {
+        min = distance
+        result = bomber
+      }
+    })
+    troops.forEach(function(troop) {
+      if (troop.activatable()) {
+        var distance = troop.position.minus(position).magnitude()
+        if (min > distance) {
+          min = distance
+          result = troop
+        }
+      }
+    })
+    return result
+  }
 
   self.createTroop = function(player, position) {
     troops.push(new Troop(player, position))
@@ -28,7 +50,9 @@ function Units(terrain) {
   self.launchBomber = function(player, x, direction) {
     var position = new Vector(x, 5)
     var velocity = new Vector(direction, 0)
-    bombers.push(new Bomber(player, position, velocity))
+    var bomber = new Bomber(player, position, velocity)
+    bombers.push(bomber)
+    return bomber
   }
 
   self.launchChopper = function(player, x, direction) {
@@ -44,6 +68,42 @@ function Units(terrain) {
   self.createSmoke = function(position) {
     smokes.push(new Smoke(position))
   }
+
+  // function probe(p0, p1, impact) {
+  //   var going = true
+  // 
+  //   Math.bresenham(p0.x, p0.y, p1.x, p1.y, function(x, y) {
+  //     if (x < 0 || x >= width ||
+  //         y < 0 || y >= height) return
+  // 
+  //     var p = new Vector(x, y)
+  // 
+  //     if (projectileStillGoing) {
+  //       switch (terrain.get(x, y)) {
+  //         case AIR:
+  //           break;
+  //         default:
+  //           return false
+  //           impacted(p)
+  //           // this.emitImpact(new Vector(x, y))
+  //           this.emitMoved(p0, p)
+  //           going = false
+  //           break;
+  //       }
+  //     }
+  // 
+  //     if (going) {
+  //       troops.forEach(function(troop) {
+  //         if (troop.touches(p)) {
+  //           impacted(p)
+  //           // this.emitImpact(new Vector(x, y))
+  //           troop.hp -= 1
+  //           going = false
+  //         }
+  //       })
+  //     }
+  //   })
+  // }
 
   function shoot(position, velocity) {
     new Projectile(position, velocity).move(terrain, troops, function(impactPosition) {
@@ -104,18 +164,18 @@ function Units(terrain) {
     self.createTroop(this.player, this.position)
   })
 
-  Troop.prototype.onLoot(function() {
-    var x = this.position.x
-    var y = terrain.drop(x) + 1
-    var position = new Vector(x, y)
-    var material = terrain.get(x, y)
-    terrain.set(x, y, AIR)
-    looters.push(new Looter(this.player, position, material))
-  })
-
-  Looter.prototype.onDone(function() {
-    self.createTroop(this.player, this.position)
-  })
+  // Troop.prototype.onLoot(function() {
+  //   var x = this.position.x
+  //   var y = terrain.drop(x) + 1
+  //   var position = new Vector(x, y)
+  //   var material = terrain.get(x, y)
+  //   terrain.set(x, y, AIR)
+  //   troops.push(new Looter(this.player, position, material))
+  // })
+  // 
+  // Looter.prototype.onDone(function() {
+  //   self.createTroop(this.player, this.position)
+  // })
 
   self.move = function() {
     moveTroops()
@@ -125,7 +185,7 @@ function Units(terrain) {
     moveChoppers()
     moveSmokes()
     moveParatroops()
-    moveLooters()
+    // moveLooters()
   }
 
   function moveTroops() {
@@ -142,13 +202,13 @@ function Units(terrain) {
         }
       })
 
-      if (attacks > 0) {
-        troop.move(terrain)
-      }
+      // if (attacks > 0) {
+      //   troop.move(terrain)
+      // }
     })
 
     troops = troops.filter(function(troop) {
-      return (troop.hp > 0)
+      return troop.move(terrain, troops)
     })
   }
   
@@ -188,11 +248,11 @@ function Units(terrain) {
     })
   }
 
-  function moveLooters() {
-    looters = looters.filter(function(looter) {
-      return looter.move(terrain)
-    })
-  }
+  // function moveLooters() {
+  //   looters = looters.filter(function(looter) {
+  //     return looter.move(terrain)
+  //   })
+  // }
 
   // self.forEach = function(callback) {
   //   troops.forEach(callback)
@@ -205,6 +265,7 @@ function Units(terrain) {
 
   self.forEachTroop = function(callback) {
     troops.forEach(callback)
+    // looters.forEach(callback)
   }
 
   self.forEachProjectile = function(callback) {
@@ -229,10 +290,6 @@ function Units(terrain) {
 
   self.forEachParatroop = function(callback) {
     paratroops.forEach(callback)
-  }
-
-  self.forEachLooter = function(callback) {
-    looters.forEach(callback)
   }
 
   return self

@@ -3,6 +3,25 @@ var DIRT = 1
 var ROCK = 2
 var WATER = 3
 var GOLD = 4
+var DIAMOND = 5
+
+var TERRAIN_COLOR = [
+  new Color(220, 220, 255),
+  new Color(145, 122, 92),
+  new Color(125, 102, 72),
+  new Color(50, 50, 200),
+  new Color(215, 212, 11),
+  new Color(142, 245, 255),
+]
+
+var TERRAIN_VALUE = [
+  0,
+  0,
+  0,
+  0,
+  1,
+  100,
+]
 
 var LEFT = -1
 var RIGHT = 1
@@ -15,7 +34,7 @@ var height = 100
 function Game(options) {
   var self = {}
 
-  var scale = 3
+  var scale = 4
 
   var terrain = Terrain(width, height)
   var players = Players()
@@ -41,7 +60,11 @@ function Game(options) {
   display.attach(options.container)
 
   display.onClick(function(x, y) {
-    base1.fireAt(new Vector(x, y))
+    var unit = units.nearestTo(new Vector(x, y))
+    if (unit) {
+      unit.activate()
+    }
+    // base1.fireAt(new Vector(x, y))
   })
 
   self.launchChopper = function() {
@@ -62,7 +85,7 @@ function Game(options) {
     startTime = Date.now()
     turn += 1
 
-    if (turn % 20 === 0) {
+    if (turn % 37 === 0) {
       var x = Math.round((Math.random() * 0.2 + 0.6) * width)
       var y = 5
       var target = new Vector(x, y)
@@ -71,8 +94,9 @@ function Game(options) {
       // units.createParatroop(player2, target)
     }
 
-    if (turn % 127 === 0) {
-      units.launchBomber(player2, width - 1, LEFT)
+    if (turn % 327 === 0) {
+      var bomber = units.launchBomber(player2, width - 1, LEFT)
+      bomber.activate()
     }
 
     doTurn()

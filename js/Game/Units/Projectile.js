@@ -16,41 +16,6 @@ Projectile.prototype.move = function(terrain, troops, impacted) {
 
   var projectileStillGoing = true
 
-  function linecast(p0, p1, impact) {
-    var going = true
-
-    Math.bresenham(p0.x, p0.y, p1.x, p1.y, function(x, y) {
-      if (x < 0 || x >= width ||
-          y < 0 || y >= height) return
-
-      var p = new Vector(x, y)
-
-      if (projectileStillGoing) {
-        switch (terrain.get(x, y)) {
-          case AIR:
-            break;
-          default:
-            impacted(p)
-            // this.emitImpact(new Vector(x, y))
-            this.emitMoved(p0, p)
-            going = false
-            break;
-        }
-      }
-
-      if (going) {
-        troops.forEach(function(troop) {
-          if (troop.touches(p)) {
-            impacted(p)
-            // this.emitImpact(new Vector(x, y))
-            troop.hp -= 1
-            going = false
-          }
-        })
-      }
-    })
-  }
-
   Math.bresenham(p0.x, p0.y, p1.x, p1.y, function(x, y) {
     if (y < 0) return
 

@@ -9,16 +9,6 @@ function Display(width, height, scale, terrain, players, units, bases) {
   // var SMOKE_COLOR = new Color(255, 255, 255)
   var CLEAR = new Color(0, 0, 0, 0)
 
-  var TERRAIN_COLOR = [
-    new Color(200, 200, 255),
-    new Color(145, 122, 92),
-    new Color(125, 102, 72),
-    new Color(50, 50, 200),
-    // new Color(245, 242, 61),
-    new Color(225, 222, 51),
-    // new Color(217, 215, 132),
-  ]
-
   var PLAYER_COLOR = [
     new Color(200, 50, 50),
     new Color(50, 150, 50),
@@ -91,14 +81,14 @@ function Display(width, height, scale, terrain, players, units, bases) {
     })
   }
 
-  function drawLooter(looter) {
-    drawTroop(looter)
-
-    var color = TERRAIN_COLOR[looter.material]
-    looter.position.tap(function(x, y) {
-      unitCanvas.setPixel(x, y - 2, color)
-    })
-  }
+  // function drawLooter(looter) {
+  //   drawTroop(looter)
+  // 
+  //   var color = TERRAIN_COLOR[looter.material]
+  //   looter.position.tap(function(x, y) {
+  //     unitCanvas.setPixel(x, y - 2, color)
+  //   })
+  // }
 
   function drawBomber(bomber) {
     var color = PLAYER_COLOR[bomber.player.id]
@@ -151,13 +141,19 @@ function Display(width, height, scale, terrain, players, units, bases) {
     terrainCanvas.paint()
     mainCanvas.draw(terrainCanvas, 0, 0)
 
+    units.forEachTroop(function(troop) {
+      troop.draw(unitCanvas)
+    })
+
+    // units.forEachLooter(function(troop) {
+    //   troop.draw(unitCanvas)
+    // })
+
     units.forEachBase(drawBase)
-    units.forEachTroop(drawTroop)
     units.forEachBomber(drawBomber)
     units.forEachChopper(drawChopper)
     units.forEachSmoke(drawSmoke)
     units.forEachParatroop(drawParatroop)
-    units.forEachLooter(drawLooter)
     
     unitCanvas.paint()
     mainCanvas.draw(unitCanvas, 0, 0)
