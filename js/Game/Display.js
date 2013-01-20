@@ -6,9 +6,6 @@ function Display(width, height, scale, terrain, players, units, bases) {
   var PARACHUTE_COLOR = new Color(255, 255, 255)
   var PARACHUTE_CORD_COLOR = new Color(255, 255, 255, 100)
 
-  // var SMOKE_COLOR = new Color(255, 255, 255)
-  var CLEAR = new Color(0, 0, 0, 0)
-
   var PLAYER_COLOR = [
     new Color(200, 50, 50),
     new Color(50, 150, 50),
@@ -36,7 +33,7 @@ function Display(width, height, scale, terrain, players, units, bases) {
     base.position.tap(function(x, y) {
       for (var dy = -3; dy <= 0; dy++) {
         for (var dx = -3; dx <= 3; dx++) {
-          unitCanvas.setPixel(x + dx, y + dy, PLAYER_COLOR[base.player.id])
+          unitCanvas.setPixel(x + dx, y + dy, base.player.color)
         }
       }
     })
@@ -61,7 +58,7 @@ function Display(width, height, scale, terrain, players, units, bases) {
   // ], [4, 1])
   
   function drawTroop(troop) {
-    var color = PLAYER_COLOR[troop.player.id]
+    var color = troop.player.color
     troop.position.tap(function(x, y) {
       unitCanvas.setPixel(x, y, color)
       unitCanvas.setPixel(x, y - 1, color)
@@ -91,7 +88,7 @@ function Display(width, height, scale, terrain, players, units, bases) {
   // }
 
   function drawBomber(bomber) {
-    var color = PLAYER_COLOR[bomber.player.id]
+    var color = bomber.player.color
     var direction = bomber.player.direction
     bomber.position.tap(function(x, y) {
       unitCanvas.setPixel(x, y, color)
@@ -102,7 +99,7 @@ function Display(width, height, scale, terrain, players, units, bases) {
   }
 
   function drawChopper(chopper) {
-    var color = PLAYER_COLOR[chopper.player.id]
+    var color = chopper.player.color
     var color2 = color.clone()
     color2.alpha /= 2
 
@@ -123,15 +120,15 @@ function Display(width, height, scale, terrain, players, units, bases) {
     })
   }
 
-  function drawSmoke(smoke) {
-    var rgb = Math.floor(Math.random() * 100) + 150
-    var a = Math.floor(Math.random() * 255)
-    var color = new Color(rgb, rgb, rgb, a)
-    // SMOKE_COLOR.alpha = Math.floor(Math.random() * 255)
-    smoke.position.tap(function(x, y) {
-      unitCanvas.setPixel(x, y, color)
-    })
-  }
+  // function drawSmoke(smoke) {
+  //   var rgb = Math.floor(Math.random() * 100) + 150
+  //   var a = Math.floor(Math.random() * 255)
+  //   var color = new Color(rgb, rgb, rgb, a)
+  //   // SMOKE_COLOR.alpha = Math.floor(Math.random() * 255)
+  //   smoke.position.tap(function(x, y) {
+  //     unitCanvas.setPixel(x, y, color)
+  //   })
+  // }
 
   units.onProjectileMoved(function(p0, p1) {
     unitCanvas.drawStreak(p1.x, p1.y, p0.x, p0.y, WHITE)
@@ -152,7 +149,9 @@ function Display(width, height, scale, terrain, players, units, bases) {
     units.forEachBase(drawBase)
     units.forEachBomber(drawBomber)
     units.forEachChopper(drawChopper)
-    units.forEachSmoke(drawSmoke)
+    units.forEachSmoke(function(smoke) {
+      smoke.draw(unitCanvas)
+    })
     units.forEachParatroop(drawParatroop)
     
     unitCanvas.paint()
@@ -162,7 +161,7 @@ function Display(width, height, scale, terrain, players, units, bases) {
     scaledCanvas.paint()
   }
 
-  self.attach = function(container) {
+  self.attach = function() {
     $(scaledCanvas.element).click(function(event) {
       event.preventDefault()
       var offset = this.totalOffset()
@@ -180,7 +179,7 @@ function Display(width, height, scale, terrain, players, units, bases) {
       scaledCanvas.emitClick(x, y)
     })
 
-    container.appendChild(scaledCanvas.element)
+    document.body.appendChild(scaledCanvas.element)
   }
 
   return self

@@ -7,7 +7,8 @@ function Troop(player, position) {
   this.digging = false
 }
 
-// Troop.prototype.addEvent('Loot')
+Troop.prototype.addEvent('Loot')
+Troop.prototype.addEvent('Dig')
 
 Troop.prototype.collidesWithTroop = function(defender) {
   return Math.abs(this.position.x - defender.position.x) < 2
@@ -48,12 +49,18 @@ Troop.prototype.move = function(terrain) {
 
   this.position.y = terrain.drop(this.position.x)
 
+  if (this.position.y > height - 10) {
+    this.digging = false
+  }
+
   if (this.loot === null) {
     var material = terrain.get(this.position.x, this.position.y + 1)
     if (this.digging && material === DIRT) {
+      this.emitDig()
       terrain.set(this.position.x, this.position.y + 1, AIR)
     }
     else if (material > DIRT) {
+      this.emitLoot(material)
       this.digging = false
       this.loot = material
       terrain.set(this.position.x, this.position.y + 1, AIR)

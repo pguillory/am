@@ -1,35 +1,9 @@
 %head
-  %meta{ name: 'viewport', content: 'width=max-device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' }
   %link{ rel: 'stylesheet', href: '/css/am.css', type: 'text/css' }
 
-%body{ unselectable: 'on' }
-  %table
-    %tr
-      %td
-        #game
-      %td
-        %ul
-          %li
-            %button#start Start
-          %li
-            %button#stop Stop
-          %li
-            %button#chopper Chopper
-          %li
-            %button#bomber Bomber
-          %li
-            %button#paratroop Paratroop
-
+%body
   %script{ src: '/js/jquery.js' }
   %script{ src: '/js/Game.js' }
 
   :javascript
-    var game = Game({
-      container: document.getElementById('game'),
-    })
-    game.start()
-    $('#start').click(game.start)
-    $('#stop').click(game.stop)
-    $('#chopper').click(game.launchChopper)
-    $('#bomber').click(game.launchBomber)
-    $('#paratroop').click(game.createParatroop)
+    Game().start()

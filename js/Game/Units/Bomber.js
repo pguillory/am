@@ -4,6 +4,7 @@ function Bomber(player, position) {
   this.direction = this.player.direction
   this.timeToBomb = 0
   this.bombing = false
+  this.bombs = 5
 }
 
 Bomber.prototype.activate = function() {
@@ -13,16 +14,17 @@ Bomber.prototype.activate = function() {
 Bomber.prototype.addEvent('Bomb')
 
 Bomber.prototype.move = function(terrain) {
-  this.position.x += this.direction
+  this.position.x += this.direction * 2
 
   if (terrain.get(this.position.x, this.position.y) !== AIR) {
     return false
   }
 
-  if (this.bombing) {
+  if (this.bombing && this.bombs > 0) {
     if (this.timeToBomb <= 0) {
       this.emitBomb()
-      this.timeToBomb = 13
+      this.bombs -= 1
+      this.timeToBomb = 3
     } else {
       this.timeToBomb -= 1
     }

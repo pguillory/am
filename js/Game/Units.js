@@ -10,22 +10,26 @@ function Units(terrain) {
   var paratroops = []
   // var looters = []
 
-  self.nearestTo = function(position) {
+  self.selectNear = function(player, position) {
     var min = 10
     var result = null
     bombers.forEach(function(bomber) {
-      var distance = bomber.position.minus(position).magnitude()
-      if (min > distance) {
-        min = distance
-        result = bomber
+      if (bomber.player === player) {
+        var distance = bomber.position.minus(position).magnitude()
+        if (min > distance) {
+          min = distance
+          result = bomber
+        }
       }
     })
     troops.forEach(function(troop) {
-      if (troop.activatable()) {
-        var distance = troop.position.minus(position).magnitude()
-        if (min > distance) {
-          min = distance
-          result = troop
+      if (troop.player === player) {
+        if (troop.activatable()) {
+          var distance = troop.position.minus(position).magnitude()
+          if (min > distance) {
+            min = distance
+            result = troop
+          }
         }
       }
     })
@@ -162,6 +166,10 @@ function Units(terrain) {
 
   Paratroop.prototype.onTouchdown(function() {
     self.createTroop(this.player, this.position)
+  })
+
+  Troop.prototype.onDig(function() {
+    smokes.push(new Dust(this.position))
   })
 
   // Troop.prototype.onLoot(function() {
