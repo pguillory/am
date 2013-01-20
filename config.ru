@@ -1,0 +1,2 @@
+require './am'
+run MyApp

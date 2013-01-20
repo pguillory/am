@@ -1,1 +1,1 @@
-web: bundle exec ruby am.rb
+web: bundle exec rackup -p $PORT
