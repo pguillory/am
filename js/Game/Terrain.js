@@ -87,7 +87,7 @@ function Terrain(width, height) {
   self.addEvent('Scrolled')
   
   var frequencies = [
-    [0, 99, 1, 0, 0, 0, 0, 0],
+    [0, 98, 3, 0, 0, 0, 0, 0],
     // [0, 98, 2, 0, 0, 0, 0, 0],
     [0, 96, 4, 0, 0, 0, 0, 0],
     [0, 95, 4, 1, 0, 0, 0, 0],

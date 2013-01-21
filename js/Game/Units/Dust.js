@@ -30,8 +30,8 @@ Dust.prototype.move = function(terrain) {
       x = p.x
       y = terrain.drop(x)
       terrain.set(x, y, this.material)
-      return false
     }
+    return false
   }
 
   // return true
