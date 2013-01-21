@@ -19,9 +19,21 @@ canvas {
 
 .gold-counter {
   position: absolute;
-/*  left: 0;*/
   top: 0;
-  text-shadow: 1px 1px 2px black;
-  font-size: 24px;
-  margin: 0 10px;
+/*  bottom: 0;*/
+
+  color: black;
+  text-shadow: 1px 1px 2px white;
+
+  color: white;
+  text-shadow: 2px 2px 2px black;
+
+  font-size: 30px;
+  margin: 5px;
+  -webkit-user-select: none;
+  
+  border: 1px solid black;
+  border-radius: 6px;
+  padding: 0.02em 0.3em;
+  background: rgba(50, 50, 50, 0.5)
 }

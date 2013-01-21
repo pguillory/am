@@ -47,6 +47,14 @@ Vector.prototype.magnitude = function() {
   return Math.sqrt(this.x * this.x + this.y * this.y)
 }
 
+Vector.prototype.constrain = function(maxMagnitude) {
+  if (this.magnitude() > maxMagnitude) {
+    return this.times(maxMagnitude / this.magnitude())
+  } else {
+    return this
+  }
+}
+
 
 // Vector.prototype.collidesWith = function(vector) {
 //   return this.x === vector.x

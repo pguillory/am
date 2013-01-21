@@ -7,6 +7,10 @@ function Bomber(player, position) {
   this.bombs = 4
 }
 
+Bomber.prototype.goldValue = function() {
+  return 10 + this.bombs
+}
+
 Bomber.prototype.activate = function() {
   this.bombing = true
 }

@@ -16,6 +16,14 @@ var TERRAIN_COLOR = [
 
 var DUST_COLOR = TERRAIN_COLOR[DIRT].clone()
 
+var STARTING_GOLD = 0
+var FUEL_SURCHARGE = 1
+
+var GOLD_FREQUENCY = 0.03
+var GEM_FREQUENCY = 0.001
+
+var TURNS_PER_COMPUTER_SHOT = 37
+
 var TERRAIN_VALUE = [
   0,
   0,
@@ -41,7 +49,12 @@ function Game(options) {
   var terrain = Terrain(width, height)
   var players = Players()
   var units = Units(terrain)
-  var display = Display(width, height, scale, terrain, players, units)
+
+  var reticle = {
+    x: null,
+    y: null,
+    active: false,
+  }
 
   terrain.initialize()
 
@@ -53,32 +66,17 @@ function Game(options) {
 
   var computer = new ComputerController(player2, base2, units)
 
+  var display = Display(width, height, scale, terrain, players, units, reticle, base1)
+
   function doTurn() {
     terrain.move()
     units.move()
     display.draw()
   }
 
-  var mouse = {
-    x: null,
-    y: null,
-    down: false,
-  }
-
   $(document).on('mousemove', function(event) {
-    mouse.x = Math.floor(event.pageX / scale)
-    mouse.y = Math.floor(event.pageY / scale)
-    // console.log('mouse', mouse)
-  })
-
-  $(document).on('mousedown', function(event) {
-    mouse.down = true
-    // console.log('mouse', mouse)
-  })
-
-  $(document).on('mouseup', function(event) {
-    mouse.down = false
-    // console.log('mouse', mouse)
+    reticle.x = Math.floor(event.pageX * width / event.target.clientWidth)
+    reticle.y = Math.floor(event.pageY * height / event.target.clientHeight)
   })
 
   $(window).on('keyup', function(event) {
@@ -88,8 +86,7 @@ function Game(options) {
       case 17: //control
       case 18: // alt
       case 224: // command
-        mouse.down = false
-        // console.log('mouse', mouse)
+        reticle.active = false
         break
     }
   })
@@ -101,10 +98,12 @@ function Game(options) {
       case 17: //control
       case 18: // alt
       case 224: // command
-        mouse.down = true
-        // console.log('mouse', mouse)
+        reticle.active = true
         break
       case 27: // escape
+        document.webkitCancelFullScreen()
+        self.pause()
+        break
       case 80: // p
         self.pause()
         break
@@ -128,7 +127,7 @@ function Game(options) {
       //   self.createParatroop()
       //   break
       default:
-        console.log('key', event.keyCode)
+        // console.log('key', event.keyCode)
         break
     }
   })
@@ -136,11 +135,11 @@ function Game(options) {
   display.attach()
 
   var goldCounter1 = $('<div class="gold-counter">')
-      .css({color: TERRAIN_COLOR[GOLD].toStyle(), left: '0'})
+      .css({/*color: TERRAIN_COLOR[GOLD].toStyle(),*/ left: '0'})
       .appendTo(document.body)
 
   var goldCounter2 = $('<div class="gold-counter">')
-      .css({color: TERRAIN_COLOR[GOLD].toStyle(), right: '0'})
+      .css({/*color: TERRAIN_COLOR[GOLD].toStyle(),*/ right: '0'})
       .appendTo(document.body)
 
   Player.prototype.onGoldChanged(function() {
@@ -150,8 +149,8 @@ function Game(options) {
       goldCounter2.text(this.gold)
     }
   })
-  player1.gainGold(10)
-  player2.gainGold(10)
+  player1.gainGold(STARTING_GOLD)
+  player2.gainGold(STARTING_GOLD)
 
   display.onClick(function(x, y) {
     // var unit = units.selectNear(player1, new Vector(x, y))
@@ -172,16 +171,16 @@ function Game(options) {
     if (activeBomber) {
       activeBomber.activate()
     } else {
-      if (player1.gold >= 10) {
-        player1.deductGold(10)
+      if (player1.gold >= 0) {
         activeBomber = units.launchBomber(player1, 0, RIGHT)
+        player1.deductGold(activeBomber.goldValue() + FUEL_SURCHARGE)
       }
     }
   }
 
   units.onEgress(function(unit) {
     if (activeBomber === unit) {
-      player1.gainGold(6)
+      unit.player.gainGold(unit.goldValue())
       activeBomber = null
     }
   })
@@ -196,21 +195,16 @@ function Game(options) {
     startTime = Date.now()
     turn += 1
     
-    console.log('activeBomber', activeBomber)
-
-    if (mouse.down) {
-      units.createSmoke(new Vector(mouse.x, mouse.y))
-      units.createSmoke(new Vector(mouse.x, mouse.y))
-      units.createSmoke(new Vector(mouse.x, mouse.y))
+    if (reticle.active) {
+      units.createSmoke(new Vector(reticle.x, reticle.y))
     }
 
-    if (turn % 37 === 0) {
+    if (turn % TURNS_PER_COMPUTER_SHOT === 0) {
       var x = Math.round((Math.random() * 0.2 + 0.6) * width)
       var y = 0
       var target = new Vector(x, y)
       base2.fireAt(target)
       units.createSmoke(target)
-      // units.createParatroop(player2, target)
     }
 
     // if (turn % 327 === 0) {

@@ -10,6 +10,7 @@ Base.prototype.fireAt = function(target) {
   origin = this.position.clone()
   origin.y -= 3
   var velocity = target.minus(origin).times(0.17).wiggle(1.0)
+  velocity.y -= 3
   this.emitFire(origin, velocity)
 }
 

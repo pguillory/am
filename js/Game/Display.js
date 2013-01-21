@@ -1,8 +1,12 @@
-function Display(width, height, scale, terrain, players, units, bases) {
+function Display(width, height, scale, terrain, players, units, reticle, base1) {
   var self = {}
 
   var WHITE = new Color(255, 255, 255)
+  var RED = new Color(255, 0, 0)
+  var GREEN = new Color(0, 255, 0)
+  var BLUE = new Color(0, 0, 255)
 
+  var LASER_COLOR = new Color(255, 0, 0, 50)
   var PARACHUTE_COLOR = new Color(255, 255, 255)
   var PARACHUTE_CORD_COLOR = new Color(255, 255, 255, 100)
 
@@ -138,6 +142,45 @@ function Display(width, height, scale, terrain, players, units, bases) {
     unit.draw(unitCanvas)
   }
 
+  function drawReticle() {
+    var p = base1.position.clone()
+    p.y -= 3
+    var d = new Vector(reticle.x, reticle.y).minus(p).times(0.17)
+    d.y -= 3
+    var visible = true
+    var done = false
+    for (var i = 0; i < 50; i++) {
+      if (done) break
+      p2 = p.plus(d)
+      pr = p.round()
+      pr2 = p2.round()
+      // console.log('points ' + pr + ' ' + pr2)
+      var first = true
+      Math.bresenham(pr.x, pr.y, pr2.x, pr2.y, function(x, y) {
+        if (x < 0 || x >= width) {
+          done = true
+          return
+        }
+        if (done) return
+        if (first) {
+          first = false
+          return
+        }
+        if (terrain.get(x, y) > AIR) {
+          done = true
+          return
+        }
+        if (visible) {
+          unitCanvas.setPixel(x, y, LASER_COLOR)
+        }
+        visible = !visible
+      })
+      d.y += 1
+      p = p2
+    //   break
+    }
+  }
+
   self.draw = function() {
     terrainCanvas.paint()
     mainCanvas.draw(terrainCanvas, 0, 0)
@@ -155,7 +198,11 @@ function Display(width, height, scale, terrain, players, units, bases) {
       smoke.draw(unitCanvas)
     })
     units.forEachParatroop(drawParatroop)
-    
+
+    if (reticle.active) {
+      drawReticle()
+    }
+
     unitCanvas.paint()
     mainCanvas.draw(unitCanvas, 0, 0)
     unitCanvas.clear()

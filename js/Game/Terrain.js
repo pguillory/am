@@ -86,13 +86,18 @@ function Terrain(width, height) {
   
   function randomMineral() {
     var r = Math.random()
-    if (r < 0.001) {
+
+    if (r < GEM_FREQUENCY) {
       return DIAMOND
-    } else if (r < 0.03) {
-      return GOLD
     } else {
-      return DIRT
+      r -= GEM_FREQUENCY
     }
+
+    if (r < GOLD_FREQUENCY) {
+      return GOLD
+    }
+
+    return DIRT
   }
 
   self.scroll = function() {
