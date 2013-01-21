@@ -166,18 +166,18 @@ function Display(width, height, scale, terrain, players, units, bases) {
   self.attach = function() {
     $(scaledCanvas.element).click(function(event) {
       event.preventDefault()
-      var offset = this.totalOffset()
-      var x = event.pageX - offset.x
-      var y = event.pageY - offset.y
+      // var offset = this.totalOffset()
+      var x = event.pageX //- offset.x
+      var y = event.pageY //- offset.y
       scaledCanvas.emitClick(x, y)
     })
     .on('touchstart', function(event) {
       event.preventDefault()
 
       var touch = event.touches[0]
-      var offset = this.totalOffset()
-      var x = event.pageX - offset.x
-      var y = event.pageY - offset.y
+      // var offset = this.totalOffset()
+      var x = event.pageX //- offset.x
+      var y = event.pageY //- offset.y
       scaledCanvas.emitClick(x, y)
     })
 

@@ -24,7 +24,7 @@ HTMLCanvasElement.prototype.totalOffset = function() {
       y += element.offsetTop - element.scrollTop
   } while (element = element.offsetParent)
 
-  return new Vector(x, y)
+  return {x: x, y: y}
 }
 
 Math.bresenham = function(x0, y0, x1, y1, callback) {

@@ -12,8 +12,10 @@ function ScaledCanvas(canvas, scale) {
   this.imageData = this.context.createImageData(this.width, this.height)
 
   this.onClick(function(x, y) {
-    canvas.emitClick(Math.floor(x / scale), Math.floor(y / scale))
-  })
+    x = Math.floor(x * canvas.width / this.element.clientWidth)
+    y = Math.floor(y * canvas.height / this.element.clientHeight)
+    canvas.emitClick(x, y)
+  }.bind(this))
 }
 
 ScaledCanvas.prototype.addEvent('Click')

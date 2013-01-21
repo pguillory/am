@@ -147,9 +147,14 @@ function Units(terrain) {
     // explode(p)
   })
 
+  self.addEvent('Egress')
+  Bomber.prototype.onEgress(function() {
+    self.emitEgress(this)
+  })
+
   Bomber.prototype.onBomb(function() {
-    // self.createParatroop(this.player, this.position)
-    self.createProjectile(this.position, new Vector(this.direction, 0))
+    self.createParatroop(this.player, this.position)
+    // self.createProjectile(this.position, new Vector(this.direction, 0))
   })
 
   Chopper.prototype.onShot(function() {

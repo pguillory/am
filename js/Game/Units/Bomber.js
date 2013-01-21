@@ -4,7 +4,7 @@ function Bomber(player, position) {
   this.direction = this.player.direction
   this.timeToBomb = 0
   this.bombing = false
-  this.bombs = 4
+  this.bombs = 8
 }
 
 Bomber.prototype.activate = function() {
@@ -12,6 +12,7 @@ Bomber.prototype.activate = function() {
 }
 
 Bomber.prototype.addEvent('Bomb')
+Bomber.prototype.addEvent('Egress')
 Bomber.prototype.addEvent('Crash')
 
 Bomber.prototype.move = function(terrain) {
@@ -21,6 +22,7 @@ Bomber.prototype.move = function(terrain) {
     case AIR:
       break
     case null:
+      this.emitEgress()
       return false
     default:
       this.emitCrash()

@@ -12,3 +12,7 @@ Color.prototype.clone = function() {
 Color.prototype.toString = function() {
   return 'Color(' + this.red + ',' + this.green + ',' + this.blue + ')'
 }
+
+Color.prototype.toStyle = function() {
+  return 'rgba(' + this.red + ',' + this.green + ',' + this.blue + ',' + this.alpha + ')'
+}

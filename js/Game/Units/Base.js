@@ -33,7 +33,7 @@ Base.prototype.move = function(terrain) {
   }
 
   if (this.player.id === 0) {
-    console.log('player ' + this.player + ' air=' + airUnderBase + ' dirt=' + dirtUnderBase)
+    // console.log('player ' + this.player + ' air=' + airUnderBase + ' dirt=' + dirtUnderBase)
   }
 
   if (airUnderBase) {

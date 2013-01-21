@@ -37,7 +37,7 @@ Troop.prototype.move = function(terrain) {
     this.position.x += this.direction
     if (this.position.x < 0 || this.position.x >= width) {
       if (this.loot) {
-        this.player.gold += TERRAIN_VALUE[this.loot]
+        this.player.gainGold(TERRAIN_VALUE[this.loot])
         this.loot = null
       }
       this.direction = -this.direction

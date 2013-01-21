@@ -12,7 +12,6 @@ var TERRAIN_COLOR = [
   new Color(50, 50, 200),
   new Color(215, 212, 11),
   new Color(50, 200, 50),
-  // new Color(142, 245, 255),
 ]
 
 var DUST_COLOR = TERRAIN_COLOR[DIRT].clone()
@@ -125,9 +124,9 @@ function Game(options) {
       case 67: // c
         self.launchChopper()
         break
-      case 84: // t
-        self.createParatroop()
-        break
+      // case 84: // t
+      //   self.createParatroop()
+      //   break
       default:
         console.log('key', event.keyCode)
         break
@@ -135,6 +134,24 @@ function Game(options) {
   })
 
   display.attach()
+
+  var goldCounter1 = $('<div class="gold-counter">')
+      .css({color: TERRAIN_COLOR[GOLD].toStyle(), left: '0'})
+      .appendTo(document.body)
+
+  var goldCounter2 = $('<div class="gold-counter">')
+      .css({color: TERRAIN_COLOR[GOLD].toStyle(), right: '0'})
+      .appendTo(document.body)
+
+  Player.prototype.onGoldChanged(function() {
+    if (this === player1) {
+      goldCounter1.text(this.gold)
+    } else if (this === player2) {
+      goldCounter2.text(this.gold)
+    }
+  })
+  player1.emitGoldChanged()
+  player2.emitGoldChanged()
 
   display.onClick(function(x, y) {
     var unit = units.selectNear(player1, new Vector(x, y))
@@ -148,20 +165,34 @@ function Game(options) {
   self.launchChopper = function() {
     units.launchChopper(player1, 0, RIGHT)
   }
+  
+  var activeBomber = null
 
   self.launchBomber = function() {
-    units.launchBomber(player1, 0, RIGHT)
+    if (activeBomber) {
+      activeBomber.activate()
+    } else {
+      activeBomber = units.launchBomber(player1, 0, RIGHT)
+    }
   }
-  
-  self.createParatroop = function() {
-    units.createParatroop(player1, new Vector(Math.round(width / 2), 5))
-  }
+
+  units.onEgress(function(unit) {
+    if (activeBomber === unit) {
+      activeBomber = null
+    }
+  })
+
+  // self.createParatroop = function() {
+  //   units.createParatroop(player1, new Vector(Math.round(width / 2), 5))
+  // }
   
   var turn = 0
 
   function incrementTurn() {
     startTime = Date.now()
     turn += 1
+    
+    console.log('activeBomber', activeBomber)
 
     if (mouse.down) {
       units.createSmoke(new Vector(mouse.x, mouse.y))
