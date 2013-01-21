@@ -5,11 +5,13 @@ function Chopper(player, position, velocity) {
   this.rotor = 1
   this.shooting = false
   this.timeToShot = 0
+  this.water = 100 * this.level
 }
 
-Chopper.prototype.level = 1
+Chopper.prototype.level = 3
 
 Chopper.prototype.addEvent('Shot')
+Chopper.prototype.addEvent('Spray')
 Chopper.prototype.addEvent('Crash')
 Chopper.prototype.addEvent('Egress')
 
@@ -39,16 +41,19 @@ Chopper.prototype.move = function(terrain) {
   }
 
   if (this.shooting) {
-    // if (this.timeToShot <= 0) {
-      for (var i = 0; i < this.level; i++) {
-        var theta = (0.3 - 0.1 * Math.random()) * Math.PI
-        var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 50 + 50)
-        this.emitShot(velocity)
-      }
-    //   this.timeToShot = 1
-    // } else {
-    //   this.timeToShot -= 1
+    // for (var i = 0; i < this.level; i++) {
+    //   var theta = (0.3 - 0.1 * Math.random()) * Math.PI
+    //   var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 50 + 50)
+    //   this.emitShot(velocity)
     // }
+
+    for (var i = 0; i < this.level * 5; i++) {
+      if (this.water > 0) {
+        this.water -= 1
+        var velocity = new Vector(0, 0.5).wiggle(0.5)
+        this.emitSpray(velocity)
+      }
+    }
   }
 
   return true

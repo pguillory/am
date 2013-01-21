@@ -49,32 +49,53 @@ function Terrain(width, height) {
     var maxAirY = 0
     var minDirtY = height
 
-    function fall(x, y) {
+    function fall(x, y, direction) {
       switch (self.get(x, y)) {
         case AIR:
-          if (self.get(x, y - 1) > AIR) {
-            self.swap(x, y, x, y - 1)
-          } else if (self.get(x + 1, y - 1) > AIR) {
-            self.swap(x, y, x + 1, y - 1)
-          } else if (self.get(x - 1, y - 1) > AIR) {
-            self.swap(x, y, x - 1, y - 1)
-          }
           maxAirY = Math.max(maxAirY, y)
           break
+        case WATER:
+          if (y + 1 < height) {
+            if (self.get(x, y + 1) < WATER) {
+              return self.swap(x, y, x, y + 1)
+            }
+            if (x + direction < width && x + direction >= 0 && self.get(x + direction, y + 1) < WATER) {
+              return self.swap(x, y, x + direction, y + 1)
+            }
+            if (x - direction < width && x - direction >= 0 && self.get(x - direction, y + 1) < WATER) {
+              return self.swap(x, y, x - direction, y + 1)
+            }
+          }
+          if (x + direction < width && x + direction >= 0 && self.get(x + direction, y) < WATER) {
+            return self.swap(x, y, x + direction, y)
+          }
+          if (x - direction < width && x - direction >= 0 && self.get(x - direction, y) < WATER) {
+            return self.swap(x, y, x - direction, y)
+          }
+          break
         default:
+          if (y + 1 >= height) {
+          } else if (self.get(x, y + 1) < DIRT) {
+            self.swap(x, y, x, y + 1)
+          } else if (x + 1 < width && self.get(x + 1, y + 1) < DIRT) {
+            self.swap(x, y, x + 1, y + 1)
+          } else if (x > 0 && self.get(x - 1, y + 1) < DIRT) {
+            self.swap(x, y, x - 1, y + 1)
+          }
           minDirtY = Math.min(minDirtY, y)
           break
       }
     }
 
     for (var y = height - 1; y >= 0; y--) {
-      if (y % 2 == 0) {
+      if (Math.random() < 0.5) {
+      // if (y % 2 == 0) {
         for (var x = width - 1; x >= 0; x--) {
-          fall(x, y)
+          fall(x, y, 1)
         }
       } else {
         for (var x = 0; x < width; x++) {
-          fall(x, y)
+          fall(x, y, -1)
         }
       }
     }
@@ -87,23 +108,22 @@ function Terrain(width, height) {
   self.addEvent('Scrolled')
   
   var frequencies = [
-    [0, 98, 3, 0, 0, 0, 0, 0],
-    // [0, 98, 2, 0, 0, 0, 0, 0],
-    [0, 96, 4, 0, 0, 0, 0, 0],
-    [0, 95, 4, 1, 0, 0, 0, 0],
-    [0, 95, 3, 2, 0, 0, 0, 0],
-    [0, 95, 1, 4, 0, 0, 0, 0],
-    [0, 95, 0, 4, 1, 0, 0, 0],
-    [0, 95, 0, 3, 2, 0, 0, 0],
-    [0, 95, 0, 1, 4, 0, 0, 0],
-    [0, 95, 0, 0, 4, 1, 0, 0],
-    [0, 95, 0, 0, 3, 2, 0, 0],
-    [0, 95, 0, 0, 1, 4, 0, 0],
-    [0, 95, 0, 0, 0, 4, 1, 0],
-    [0, 95, 0, 0, 0, 3, 2, 0],
-    [0, 95, 0, 0, 0, 1, 4, 0],
-    [0, 95, 0, 0, 0, 1, 3, 1],
-    [0, 95, 0, 0, 0, 0, 4, 1],
+    [0, 0, 98, 3, 0, 0, 0, 0, 0],
+    [0, 0, 96, 4, 0, 0, 0, 0, 0],
+    [0, 0, 95, 4, 1, 0, 0, 0, 0],
+    [0, 0, 95, 3, 2, 0, 0, 0, 0],
+    [0, 0, 95, 1, 4, 0, 0, 0, 0],
+    [0, 0, 95, 0, 4, 1, 0, 0, 0],
+    [0, 0, 95, 0, 3, 2, 0, 0, 0],
+    [0, 0, 95, 0, 1, 4, 0, 0, 0],
+    [0, 0, 95, 0, 0, 4, 1, 0, 0],
+    [0, 0, 95, 0, 0, 3, 2, 0, 0],
+    [0, 0, 95, 0, 0, 1, 4, 0, 0],
+    [0, 0, 95, 0, 0, 0, 4, 1, 0],
+    [0, 0, 95, 0, 0, 0, 3, 2, 0],
+    [0, 0, 95, 0, 0, 0, 1, 4, 0],
+    [0, 0, 95, 0, 0, 0, 1, 3, 1],
+    [0, 0, 95, 0, 0, 0, 0, 4, 1],
   ]
 
   function randomMineral() {
@@ -121,24 +141,6 @@ function Terrain(width, height) {
     }
     
     return DIRT
-
-    console.log('level', level)
-    console.log('r1', r1)
-    console.log('r', r)
-    console.log('freq', freq)
-    throw 'uh oh!'
-    return AIR
-    // if (r < GEM_FREQUENCY) {
-    //   return DIAMOND
-    // } else {
-    //   r -= GEM_FREQUENCY
-    // }
-    // 
-    // if (r < GOLD_FREQUENCY) {
-    //   return GOLD
-    // }
-    // 
-    // return DIRT
   }
 
   self.scroll = function() {

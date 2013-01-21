@@ -55,13 +55,14 @@ Troop.prototype.move = function(terrain) {
 
   if (this.loot === null) {
     var material = terrain.get(this.position.x, this.position.y + 1)
-    if (this.digging && material === DIRT) {
-      this.emitDig()
-      terrain.set(this.position.x, this.position.y + 1, AIR)
-    }
-    else if (material > DIRT) {
+    // if (this.digging && material === DIRT) {
+    //   this.emitDig()
+    //   terrain.set(this.position.x, this.position.y + 1, AIR)
+    // }
+    // else 
+    if (material > DIRT) {
       this.emitLoot(material)
-      this.digging = false
+      // this.digging = false
       this.loot = material
       terrain.set(this.position.x, this.position.y + 1, AIR)
       this.direction = -this.player.direction

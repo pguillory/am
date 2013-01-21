@@ -1,15 +1,17 @@
 var AIR = 0
-var DIRT = 1
-var IRON = 2
-var OBSIDIAN = 3
-var EMERALD = 4
-var SAPPHIRE = 5
-var AMETHYST = 6
-var DIAMOND = 7
+var WATER = 1
+var DIRT = 2
+var IRON = 3
+var OBSIDIAN = 4
+var EMERALD = 5
+var SAPPHIRE = 6
+var AMETHYST = 7
+var DIAMOND = 8
 // RUBY, SAPPHIRE
 
 var TERRAIN_COLOR = [
   new Color(210, 210, 255), // air
+  new Color(50, 50, 200),   // water
   new Color(145, 122, 92),  // dirt
   new Color(160, 160, 160), // iron
   new Color(60, 60, 60),    // obisidian
@@ -26,16 +28,13 @@ var TERRAIN_COLOR = [
 var STARTING_GOLD = 100
 var FUEL_SURCHARGE = 1
 
-var GOLD_FREQUENCY = 0.03
-var GEM_FREQUENCY = 0.001
-var DIRT_FREQUENCY = 0.97
-
 var TURNS_PER_COMPUTER_SHOT = 37000
 
 var EXCAVATOR_VALUE = 1
 var CHOPPER_VALUE = 10
 
 var TERRAIN_VALUE = [
+  0,
   0,
   0,
   1,
@@ -181,8 +180,6 @@ function Game(options) {
   player2.gainGold(STARTING_GOLD)
 
   display.onClick(function(x, y) {
-    sound.tink.play()
-
     base1.fireAt(new Vector(x, y))
   })
 

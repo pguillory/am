@@ -85,6 +85,10 @@ function Units(terrain) {
     smokes.push(new Smoke(position))
   }
 
+  self.createDust = function(position, velocity, material) {
+    smokes.push(new Dust(position, velocity, material))
+  }
+
   // function probe(p0, p1, impact) {
   //   var going = true
   // 
@@ -123,7 +127,8 @@ function Units(terrain) {
 
   function shoot(position, velocity) {
     new Projectile(position, velocity).move(terrain, troops, function(impactPosition) {
-      if (terrain.get(impactPosition.x, impactPosition.y) == DIRT) {
+      var material = terrain.get(impactPosition.x, impactPosition.y)
+      if (material === DIRT || material === WATER) {
         terrain.set(impactPosition.x, impactPosition.y, AIR)
       }
       self.createSmoke(impactPosition)
@@ -172,8 +177,10 @@ function Units(terrain) {
     projectile.position.x += this.direction * 2
   })
 
-  Chopper.prototype.onShot(function(velocity) {
-    shoot(this.position, velocity)
+  Chopper.prototype.onSpray(function(velocity) {
+    // shoot(this.position, velocity)
+    // smokes.push(new Dust(this.position, WATER))
+    self.createDust(this.position, velocity, WATER)
 
     // self.createProjectile(this.position, velocity)
     
@@ -209,7 +216,8 @@ function Units(terrain) {
   })
 
   Excavator.prototype.onDig(function(material) {
-    smokes.push(new Dust(this.position, material))
+    // smokes.push(new Dust(this.position, material))
+    self.createDust(this.position, new Vector(0, -3).wiggle(2), material)
   })
 
   self.addEvent('ExcavatorDied')

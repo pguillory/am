@@ -1,7 +1,7 @@
-function Dust(position, material) {
+function Dust(position, velocity, material) {
   this.position = position.clone()
   this.position.y -= 1
-  this.velocity = new Vector(0, -3).wiggle(2)
+  this.velocity = velocity
   this.material = material
   this.color = TERRAIN_COLOR[material].clone()
   // this.color.alpha = 200
@@ -26,8 +26,8 @@ Dust.prototype.move = function(terrain) {
 
   var p = this.position.round()
   if (terrain.get(p.x, p.y) !== AIR) {
-    if (this.material > DIRT) {
-      x = p.x
+    if (this.material !== DIRT) {
+      x = p.x + Math.floor(Math.random() * 3) - 1
       y = terrain.drop(x)
       terrain.set(x, y, this.material)
     }
