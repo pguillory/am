@@ -163,6 +163,7 @@ function Units(terrain) {
     // explode(p)
   })
 
+  self.addEvent('Crash')
   self.addEvent('Egress')
   Bomber.prototype.onEgress(function() {
     self.emitEgress(this)
@@ -179,7 +180,7 @@ function Units(terrain) {
 
   Chopper.prototype.onSpray(function(velocity) {
     // shoot(this.position, velocity)
-    // smokes.push(new Dust(this.position, WATER))
+
     self.createDust(this.position, velocity, WATER)
 
     // self.createProjectile(this.position, velocity)
@@ -189,10 +190,12 @@ function Units(terrain) {
 
   Chopper.prototype.onCrash(function() {
     explode(this.position, 50)
+    self.emitCrash(this)
   })
 
   Bomber.prototype.onCrash(function() {
     explode(this.position, 50)
+    self.emitCrash(this)
   })
 
   Base.prototype.onFire(function(position, velocity) {
@@ -217,6 +220,14 @@ function Units(terrain) {
 
   Excavator.prototype.onDig(function(material) {
     // smokes.push(new Dust(this.position, material))
+    if (material === WATER) {
+      if (Math.random() < 0.5) {
+        for (var i = 0; i < 5; i++) {
+          self.createSmoke(this.position)
+        }
+        return
+      }
+    }
     self.createDust(this.position, new Vector(0, -3).wiggle(2), material)
   })
 

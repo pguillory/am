@@ -55,6 +55,8 @@ function Terrain(width, height) {
           maxAirY = Math.max(maxAirY, y)
           break
         case WATER:
+          TERRAIN_COLOR[WATER].alpha = Math.floor(Math.random(100) + 100)
+          direction = (Math.random() < 0.5) ? 1 : -1
           if (y + 1 < height) {
             if (self.get(x, y + 1) < WATER) {
               return self.swap(x, y, x, y + 1)

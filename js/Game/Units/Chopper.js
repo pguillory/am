@@ -5,7 +5,7 @@ function Chopper(player, position, velocity) {
   this.rotor = 1
   this.shooting = false
   this.timeToShot = 0
-  this.water = 100 * this.level
+  this.water = 50 * this.level
 }
 
 Chopper.prototype.level = 3
@@ -47,7 +47,7 @@ Chopper.prototype.move = function(terrain) {
     //   this.emitShot(velocity)
     // }
 
-    for (var i = 0; i < this.level * 5; i++) {
+    for (var i = 0; i < this.level * 2; i++) {
       if (this.water > 0) {
         this.water -= 1
         var velocity = new Vector(0, 0.5).wiggle(0.5)

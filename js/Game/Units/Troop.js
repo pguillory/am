@@ -9,6 +9,7 @@ function Troop(player, position) {
 
 Troop.prototype.addEvent('Loot')
 Troop.prototype.addEvent('Dig')
+Troop.prototype.addEvent('DeliveredLoot')
 
 Troop.prototype.collidesWithTroop = function(defender) {
   return Math.abs(this.position.x - defender.position.x) < 2
@@ -28,48 +29,47 @@ Troop.prototype.move = function(terrain) {
   if (this.hp <= 0) {
     if (this.loot) {
       var y = terrain.drop(this.position.x)
-      terrain.set(this.position.x, y, this.loot)
+      terrain.set(this.position.x, y - 1, this.loot)
     }
     return false
   }
 
-  if (this.digging === false) {
-    this.position.x += this.direction
-    if (this.position.x < 0 || this.position.x >= width) {
-      if (this.loot) {
-        this.player.gainGold(TERRAIN_VALUE[this.loot])
-        this.loot = null
-      }
-      this.direction = -this.direction
-      return this.move(terrain)
-      // // this.hp = 0
-      // return false
+  this.position.x += this.direction
+
+  if (this.position.x < 0 || this.position.x >= width) {
+    if (this.loot) {
+      this.emitDeliveredLoot()
+      this.player.gainGold(TERRAIN_VALUE[this.loot])
+      this.loot = null
     }
+    this.direction = -this.direction
+    return this.move(terrain)
+    // // this.hp = 0
+    // return false
   }
 
   this.position.y = terrain.drop(this.position.x)
 
-  if (this.position.y > height - 10) {
-    this.digging = false
-  }
+  var material = terrain.get(this.position.x, this.position.y + 1)
 
-  if (this.loot === null) {
-    var material = terrain.get(this.position.x, this.position.y + 1)
-    // if (this.digging && material === DIRT) {
-    //   this.emitDig()
-    //   terrain.set(this.position.x, this.position.y + 1, AIR)
-    // }
-    // else 
-    if (material > DIRT) {
-      this.emitLoot(material)
-      // this.digging = false
-      this.loot = material
-      terrain.set(this.position.x, this.position.y + 1, AIR)
-      this.direction = -this.player.direction
-      // this.emitLoot()
-      // return false
-      // this.hp = 0
-    }
+  switch (material) {
+    case DIRT:
+      break
+    case WATER:
+      // this.position.y += 1
+      break
+    default:
+      if (this.loot === null) {
+        this.emitLoot(material)
+        // this.digging = false
+        this.loot = material
+        terrain.set(this.position.x, this.position.y + 1, AIR)
+        this.direction = -this.player.direction
+        // this.emitLoot()
+        // return false
+        // this.hp = 0
+      }
+      break
   }
 
   return true

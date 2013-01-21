@@ -28,7 +28,7 @@ var TERRAIN_COLOR = [
 var STARTING_GOLD = 100
 var FUEL_SURCHARGE = 1
 
-var TURNS_PER_COMPUTER_SHOT = 37000
+var TURNS_PER_COMPUTER_SHOT = 37
 
 var EXCAVATOR_VALUE = 1
 var CHOPPER_VALUE = 10
@@ -217,6 +217,17 @@ function Game(options) {
   units.onExcavatorDied(function(excavator) {
     if (activeExcavator == excavator) {
       activeExcavator = null
+    }
+  })
+
+  units.onCrash(function(unit) {
+    switch (unit) {
+      case activeBomber:
+        activeBomber = null
+        break
+      case activeChopper:
+        activeChopper = null
+        break
     }
   })
 
