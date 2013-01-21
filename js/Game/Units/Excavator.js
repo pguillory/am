@@ -1,4 +1,5 @@
-var HARD_HAT_COLOR = new Color(215, 212, 11)
+// var HARD_HAT_COLOR = new Color(215, 212, 11)
+var HARD_HAT_COLOR = new Color(0, 200, 0)
 
 function Excavator(player, position) {
   this.player = player
@@ -9,18 +10,28 @@ function Excavator(player, position) {
 }
 
 Excavator.prototype.addEvent('Dig')
-Excavator.prototype.addEvent('Throw')
+Excavator.prototype.addEvent('Death')
+
+Excavator.prototype.collidesWithTroop = function(defender) {
+  return Math.abs(this.position.x - defender.position.x) < 2
+}
 
 Excavator.prototype.activatable = function() {
-  return (this.digging === false)
+  return true
 }
 
 Excavator.prototype.activate = function() {
-  this.digging = true
+  if (this.digging) {
+    this.digging = false
+  } else {
+    this.digging = true
+    this.direction = -this.direction
+  }
 }
 
 Excavator.prototype.move = function(terrain) {
   if (this.hp <= 0) {
+    this.emitDeath()
     return false
   }
 
@@ -38,24 +49,14 @@ Excavator.prototype.move = function(terrain) {
     this.digging = false
   }
 
-  var material = terrain.get(this.position.x, this.position.y + 1)
-  if (this.digging && material === DIRT) {
-    this.emitDig()
-    terrain.set(this.position.x, this.position.y + 1, AIR)
-  }
-  else if (material > DIRT) {
-    this.emitLoot(material)
-    this.digging = false
-    this.loot = material
-    terrain.set(this.position.x, this.position.y + 1, AIR)
-    this.direction = -this.player.direction
-    // this.emitLoot()
-    // return false
-    // this.hp = 0
+  if (this.digging) {
+    var material = terrain.get(this.position.x, this.position.y + 1)
+    this.emitDig(material)
+    this.position.y += 1
+    terrain.set(this.position.x, this.position.y, AIR)
   }
 
   return true
-  // return (this.hp > 0)
 }
 
 Excavator.prototype.touches = function(position) {

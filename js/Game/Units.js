@@ -42,6 +42,12 @@ function Units(terrain) {
     troops.push(new Troop(player, position))
   }
 
+  self.createExcavator = function(player, position) {
+    var excavator = new Excavator(player, position)
+    troops.push(excavator)
+    return excavator
+  }
+
   self.createProjectile = function(position, velocity) {
     projectiles.push(new Projectile(position, velocity))
   }
@@ -153,8 +159,8 @@ function Units(terrain) {
   })
 
   Bomber.prototype.onBomb(function() {
-    self.createParatroop(this.player, this.position)
-    // self.createProjectile(this.position, new Vector(this.direction, 0))
+    // self.createParatroop(this.player, this.position)
+    self.createProjectile(this.position, new Vector(this.direction, 0))
   })
 
   Chopper.prototype.onShot(function() {
@@ -179,12 +185,25 @@ function Units(terrain) {
     self.createTroop(this.player, this.position)
   })
 
+  self.addEvent('ExcavatorSpawned')
+  Base.prototype.onExcavator(function() {
+    var unit = self.createExcavator(this.player, this.position)
+    self.emitExcavatorSpawned(unit)
+  })
+
+  // Excavator.prototype.
+
   Paratroop.prototype.onTouchdown(function() {
     self.createTroop(this.player, this.position)
   })
 
-  Troop.prototype.onDig(function() {
-    smokes.push(new Dust(this.position))
+  Excavator.prototype.onDig(function(material) {
+    smokes.push(new Dust(this.position, material))
+  })
+
+  self.addEvent('ExcavatorDied')
+  Excavator.prototype.onDeath(function() {
+    self.emitExcavatorDied(this)
   })
 
   // Troop.prototype.onLoot(function() {

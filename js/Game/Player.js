@@ -3,6 +3,7 @@ function Player(id, color, direction) {
   this.color = color
   this.direction = direction
   this.gold = 0
+  this.excavatorRequisitioned = false
 }
 
 Player.prototype.addEvent('GoldChanged')

@@ -16,13 +16,15 @@ var TERRAIN_COLOR = [
 
 var DUST_COLOR = TERRAIN_COLOR[DIRT].clone()
 
-var STARTING_GOLD = 0
+var STARTING_GOLD = 100
 var FUEL_SURCHARGE = 1
 
 var GOLD_FREQUENCY = 0.03
 var GEM_FREQUENCY = 0.001
 
 var TURNS_PER_COMPUTER_SHOT = 37
+
+var EXCAVATOR_VALUE = 1
 
 var TERRAIN_VALUE = [
   0,
@@ -123,11 +125,15 @@ function Game(options) {
       case 67: // c
         self.launchChopper()
         break
-      // case 84: // t
-      //   self.createParatroop()
-      //   break
+      case 88: // x
+        if (activeExcavator) {
+          activeExcavator.activate()
+        } else {
+          player1.excavatorRequisitioned = true
+        }
+        break
       default:
-        // console.log('key', event.keyCode)
+        console.log('key', event.keyCode)
         break
     }
   })
@@ -177,6 +183,19 @@ function Game(options) {
       }
     }
   }
+
+  var activeExcavator = null
+
+  units.onExcavatorSpawned(function(excavator) {
+    activeExcavator = excavator
+    excavator.player.deductGold(EXCAVATOR_VALUE)
+  })
+
+  units.onExcavatorDied(function(excavator) {
+    if (activeExcavator == excavator) {
+      activeExcavator = null
+    }
+  })
 
   units.onEgress(function(unit) {
     if (activeBomber === unit) {

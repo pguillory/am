@@ -15,6 +15,7 @@ Base.prototype.fireAt = function(target) {
 }
 
 Base.prototype.addEvent('Troop')
+Base.prototype.addEvent('Excavator')
 
 Base.prototype.move = function(terrain) {
   var airUnderBase = false
@@ -55,7 +56,12 @@ Base.prototype.move = function(terrain) {
   this.timeToTroop += 1
   this.timeToTroop %= 10
   if (this.timeToTroop == 1) {
-    this.emitTroop()
+    if (this.player.excavatorRequisitioned) {
+      this.player.excavatorRequisitioned = false
+      this.emitExcavator()
+    } else {
+      this.emitTroop()
+    }
   }
 
   return true
