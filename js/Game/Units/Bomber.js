@@ -4,7 +4,7 @@ function Bomber(player, position) {
   this.direction = this.player.direction
   this.timeToBomb = 0
   this.bombing = false
-  this.bombs = 8
+  this.bombs = 4
 }
 
 Bomber.prototype.activate = function() {

@@ -150,8 +150,8 @@ function Game(options) {
       goldCounter2.text(this.gold)
     }
   })
-  player1.emitGoldChanged()
-  player2.emitGoldChanged()
+  player1.gainGold(10)
+  player2.gainGold(10)
 
   display.onClick(function(x, y) {
     // var unit = units.selectNear(player1, new Vector(x, y))
