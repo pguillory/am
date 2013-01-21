@@ -181,12 +181,9 @@ function Game(options) {
   player2.gainGold(STARTING_GOLD)
 
   display.onClick(function(x, y) {
-    // var unit = units.selectNear(player1, new Vector(x, y))
-    // if (unit) {
-    //   unit.activate()
-    // } else {
-      base1.fireAt(new Vector(x, y))
-    // }
+    sound.tink.play()
+
+    base1.fireAt(new Vector(x, y))
   })
 
   var activeChopper = null

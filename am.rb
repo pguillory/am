@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'base64'
 
 class MyApp < Sinatra::Base
   get '/' do
@@ -18,12 +19,24 @@ class MyApp < Sinatra::Base
     s << "/*  /#{path.ljust(74)} */\n"
     s << "/#{'*' * 80}/\n"
     s << "var #{basename} = (function() {\n"
+
+    Dir[File.join(File.dirname(path), basename, '*.wav')].sort.each do |child_path|
+      s << load_wav_file(child_path)
+    end
+
     Dir[File.join(File.dirname(path), basename, '*.js')].sort.each do |child_path|
       s << indent(load_js_file(child_path), 4)
     end
     s << indent(File.read(path), 4)
-    s << "\nreturn #{basename} })();\n\n"
+    s << "\n;return #{basename} })();\n\n"
     s
+  end
+
+  def load_wav_file(path)
+    basename = File.basename(path, File.extname(path))
+    data_uri = "data:audio/wav;base64,#{Base64.encode64(File.read(path))}"
+    data_uri_string = data_uri.lines.map(&:strip).map(&:inspect).join(" +\n")
+    "var #{basename} = new Audio(\n#{indent(data_uri_string, 4)});\n"
   end
 
   def indent(s, depth)

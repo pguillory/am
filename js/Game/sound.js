@@ -1,0 +1,3 @@
+var sound = {
+  tink: tink
+}
