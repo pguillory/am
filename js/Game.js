@@ -10,11 +10,10 @@ var TERRAIN_COLOR = [
   new Color(145, 122, 92),
   new Color(125, 102, 72),
   new Color(50, 50, 200),
-  new Color(215, 212, 11),
-  new Color(50, 200, 50),
+  // new Color(215, 212, 11),
+  new Color(160, 160, 160),
+  new Color(235, 84, 222),
 ]
-
-var DUST_COLOR = TERRAIN_COLOR[DIRT].clone()
 
 var STARTING_GOLD = 100
 var FUEL_SURCHARGE = 1

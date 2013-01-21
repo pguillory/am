@@ -1,5 +1,5 @@
-// var HARD_HAT_COLOR = new Color(215, 212, 11)
-var HARD_HAT_COLOR = new Color(0, 200, 0)
+var HARD_HAT_COLOR = new Color(215, 212, 11)
+// var HARD_HAT_COLOR = new Color(0, 200, 0)
 
 function Excavator(player, position) {
   this.player = player
@@ -7,6 +7,7 @@ function Excavator(player, position) {
   this.direction = player.direction
   this.hp = 1
   this.digging = false
+  this.level = 2
 }
 
 Excavator.prototype.addEvent('Dig')
@@ -50,14 +51,31 @@ Excavator.prototype.move = function(terrain) {
   }
 
   if (this.digging) {
-    var material = terrain.get(this.position.x, this.position.y + 1)
-    this.emitDig(material)
-    this.position.y += 1
-    terrain.set(this.position.x, this.position.y, AIR)
+    // this.digToward(terrain, 0, 1)
+    // this.digToward(terrain, this.direction, 1)
+    // this.digToward(terrain, -this.direction, 1)
+    for (var i = 0; i < this.level; i++) {
+      var material = terrain.get(this.position.x, this.position.y + 1)
+      if (material) {
+        this.emitDig(material)
+        this.position.y += 1
+        terrain.set(this.position.x, this.position.y, AIR)
+      }
+    }
+  } else {
+    this.position.y = terrain.drop(this.position.x)
   }
 
   return true
 }
+
+// Excavator.prototype.digToward = function(terrain, dx, dy) {
+//   var material = terrain.get(this.position.x + dx, this.position.y + dy)
+//   if (material) {
+//     this.emitDig(material)
+//     terrain.set(this.position.x + dx, this.position.y + dy, AIR)
+//   }
+// }
 
 Excavator.prototype.touches = function(position) {
   if (troop.position.x == position.x && troop.hp > 0) {

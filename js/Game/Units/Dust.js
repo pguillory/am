@@ -4,7 +4,8 @@ function Dust(position, material) {
   this.velocity = new Vector(0, -3).wiggle(2)
   this.material = material
   this.color = TERRAIN_COLOR[material].clone()
-  this.color.alpha = 200
+  // this.color.alpha = 200
+
   // this.color = new Color(0, 255, 0)
   // this.ttl = 8
   // this.color.alpha = Math.floor(Math.random() * 55) + 200
