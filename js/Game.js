@@ -154,12 +154,12 @@ function Game(options) {
   player2.emitGoldChanged()
 
   display.onClick(function(x, y) {
-    var unit = units.selectNear(player1, new Vector(x, y))
-    if (unit) {
-      unit.activate()
-    } else {
+    // var unit = units.selectNear(player1, new Vector(x, y))
+    // if (unit) {
+    //   unit.activate()
+    // } else {
       base1.fireAt(new Vector(x, y))
-    }
+    // }
   })
 
   self.launchChopper = function() {
@@ -172,12 +172,16 @@ function Game(options) {
     if (activeBomber) {
       activeBomber.activate()
     } else {
-      activeBomber = units.launchBomber(player1, 0, RIGHT)
+      if (player1.gold >= 10) {
+        player1.deductGold(10)
+        activeBomber = units.launchBomber(player1, 0, RIGHT)
+      }
     }
   }
 
   units.onEgress(function(unit) {
     if (activeBomber === unit) {
+      player1.gainGold(6)
       activeBomber = null
     }
   })

@@ -12,6 +12,16 @@ Player.prototype.gainGold = function(amount) {
   this.emitGoldChanged()
 }
 
+Player.prototype.deductGold = function(amount) {
+  // if (this.gold > amount) {
+    this.gold -= amount
+    this.emitGoldChanged()
+    return true
+  // } else {
+  //   return false
+  // }
+}
+
 Player.prototype.toString = function() {
   return 'Player(' + this.id + ', ' + this.gold + 'g)'
 }
