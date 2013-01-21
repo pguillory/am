@@ -185,6 +185,10 @@ function Display(width, height, scale, terrain, players, units, reticle, base1) 
     terrainCanvas.paint()
     mainCanvas.draw(terrainCanvas, 0, 0)
 
+    if (reticle.active) {
+      drawReticle()
+    }
+
     units.forEachTroop(drawUnit)
 
     // units.forEachLooter(function(troop) {
@@ -198,10 +202,6 @@ function Display(width, height, scale, terrain, players, units, reticle, base1) 
       smoke.draw(unitCanvas)
     })
     units.forEachParatroop(drawParatroop)
-
-    if (reticle.active) {
-      drawReticle()
-    }
 
     unitCanvas.paint()
     mainCanvas.draw(unitCanvas, 0, 0)

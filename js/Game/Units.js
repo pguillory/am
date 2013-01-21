@@ -12,31 +12,31 @@ function Units(terrain) {
   var paratroops = []
   // var looters = []
 
-  self.selectNear = function(player, position) {
-    var min = 10
-    var result = null
-    bombers.forEach(function(bomber) {
-      if (bomber.player === player) {
-        var distance = bomber.position.minus(position).magnitude()
-        if (min > distance) {
-          min = distance
-          result = bomber
-        }
-      }
-    })
-    troops.forEach(function(troop) {
-      if (troop.player === player) {
-        if (troop.activatable()) {
-          var distance = troop.position.minus(position).magnitude()
-          if (min > distance) {
-            min = distance
-            result = troop
-          }
-        }
-      }
-    })
-    return result
-  }
+  // self.selectNear = function(player, position) {
+  //   var min = 10
+  //   var result = null
+  //   bombers.forEach(function(bomber) {
+  //     if (bomber.player === player) {
+  //       var distance = bomber.position.minus(position).magnitude()
+  //       if (min > distance) {
+  //         min = distance
+  //         result = bomber
+  //       }
+  //     }
+  //   })
+  //   troops.forEach(function(troop) {
+  //     if (troop.player === player) {
+  //       if (troop.activatable()) {
+  //         var distance = troop.position.minus(position).magnitude()
+  //         if (min > distance) {
+  //           min = distance
+  //           result = troop
+  //         }
+  //       }
+  //     }
+  //   })
+  //   return result
+  // }
 
   self.createTroop = function(player, position) {
     troops.push(new Troop(player, position))
@@ -48,8 +48,10 @@ function Units(terrain) {
     return excavator
   }
 
-  self.createProjectile = function(position, velocity) {
-    projectiles.push(new Projectile(position, velocity))
+  self.createProjectile = function(position, velocity, warheadSize) {
+    var projectile = new Projectile(position, velocity, warheadSize)
+    projectiles.push(projectile)
+    return projectile
   }
 
   self.dropBase = function(player, x) {
@@ -70,7 +72,9 @@ function Units(terrain) {
   self.launchChopper = function(player, x, direction) {
     var position = new Vector(x, terrain.drop(x) - 10)
     var velocity = new Vector(direction, 0)
-    choppers.push(new Chopper(player, position, velocity))
+    var chopper = new Chopper(player, position, velocity)
+    choppers.push(chopper)
+    return chopper
   }
 
   self.createParatroop = function(player, position) {
@@ -126,8 +130,9 @@ function Units(terrain) {
     })
   }
 
-  function explode(position) {
-    for (var i = 0; i < EXPLOSION_SIZE; i++) {
+  function explode(position, size) {
+    size = size || EXPLOSION_SIZE
+    for (var i = 0; i < size; i++) {
       var theta = Math.random() * Math.PI * 2
       var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 10 + 5)
       shoot(position, velocity)
@@ -157,28 +162,34 @@ function Units(terrain) {
   Bomber.prototype.onEgress(function() {
     self.emitEgress(this)
   })
+  Chopper.prototype.onEgress(function() {
+    self.emitEgress(this)
+  })
 
   Bomber.prototype.onBomb(function() {
     // self.createParatroop(this.player, this.position)
-    self.createProjectile(this.position, new Vector(this.direction, 0))
+    var projectile = self.createProjectile(this.position, new Vector(this.direction, 0), 40)
+    projectile.position.x += this.direction * 2
   })
 
-  Chopper.prototype.onShot(function() {
-    var theta = (0.3 - 0.1 * Math.random()) * Math.PI
-    var velocity = new Vector(Math.cos(theta), Math.sin(theta)).times(Math.random() * 50 + 50)
+  Chopper.prototype.onShot(function(velocity) {
     shoot(this.position, velocity)
+
+    // self.createProjectile(this.position, velocity)
+    
+    // projectiles.push(new Projectile(this.position, velocity, size))
   })
 
   Chopper.prototype.onCrash(function() {
-    explode(this.position)
+    explode(this.position, 50)
   })
 
   Bomber.prototype.onCrash(function() {
-    explode(this.position)
+    explode(this.position, 50)
   })
 
   Base.prototype.onFire(function(position, velocity) {
-    self.createProjectile(position, velocity)
+    self.createProjectile(position, velocity, 25)
   })
 
   Base.prototype.onTroop(function() {
@@ -240,7 +251,8 @@ function Units(terrain) {
             troop.collidesWithTroop(defender) &&
             defender.hp > 0) {
           attacks -= 1
-          defender.hp -= 1
+          // defender.hp -= 1
+          explode(troop.position, 10)
         }
       })
 
@@ -256,7 +268,9 @@ function Units(terrain) {
   
   function moveProjectiles() {
     projectiles = projectiles.filter(function(projectile) {
-      return projectile.move(terrain, troops, explode)
+      return projectile.move(terrain, troops, function(position) {
+        explode(position, projectile.warheadSize)
+      })
     })
   }
 

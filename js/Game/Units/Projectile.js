@@ -1,6 +1,7 @@
-function Projectile(position, velocity) {
+function Projectile(position, velocity, warheadSize) {
   this.position = position.clone()
   this.velocity = velocity.clone()
+  this.warheadSize = warheadSize
 }
 
 Projectile.prototype.addEvent('Moved')

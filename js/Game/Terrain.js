@@ -3,6 +3,8 @@ function Terrain(width, height) {
 
   var values = []
   
+  level = 0
+
   self.get = function get(x, y) {
     if (x < 0 || y < 0 || x >= width || y >= height) {
       return null
@@ -84,20 +86,59 @@ function Terrain(width, height) {
 
   self.addEvent('Scrolled')
   
+  var frequencies = [
+    [0, 99, 1, 0, 0, 0, 0, 0],
+    // [0, 98, 2, 0, 0, 0, 0, 0],
+    [0, 96, 4, 0, 0, 0, 0, 0],
+    [0, 95, 4, 1, 0, 0, 0, 0],
+    [0, 95, 3, 2, 0, 0, 0, 0],
+    [0, 95, 1, 4, 0, 0, 0, 0],
+    [0, 95, 0, 4, 1, 0, 0, 0],
+    [0, 95, 0, 3, 2, 0, 0, 0],
+    [0, 95, 0, 1, 4, 0, 0, 0],
+    [0, 95, 0, 0, 4, 1, 0, 0],
+    [0, 95, 0, 0, 3, 2, 0, 0],
+    [0, 95, 0, 0, 1, 4, 0, 0],
+    [0, 95, 0, 0, 0, 4, 1, 0],
+    [0, 95, 0, 0, 0, 3, 2, 0],
+    [0, 95, 0, 0, 0, 1, 4, 0],
+    [0, 95, 0, 0, 0, 1, 3, 1],
+    [0, 95, 0, 0, 0, 0, 4, 1],
+  ]
+
   function randomMineral() {
-    var r = Math.random()
+    var freq = frequencies[Math.min(Math.floor(level / 9), frequencies.length - 1)]
 
-    if (r < GEM_FREQUENCY) {
-      return DIAMOND
-    } else {
-      r -= GEM_FREQUENCY
+    var r = Math.floor(Math.random() * 100)
+    var r1 = r
+
+    for (var material = 1; material < 8; material++) {
+      if (r < freq[material]) {
+        return material
+      } else {
+        r -= freq[material]
+      }
     }
-
-    if (r < GOLD_FREQUENCY) {
-      return GOLD
-    }
-
+    
     return DIRT
+
+    console.log('level', level)
+    console.log('r1', r1)
+    console.log('r', r)
+    console.log('freq', freq)
+    throw 'uh oh!'
+    return AIR
+    // if (r < GEM_FREQUENCY) {
+    //   return DIAMOND
+    // } else {
+    //   r -= GEM_FREQUENCY
+    // }
+    // 
+    // if (r < GOLD_FREQUENCY) {
+    //   return GOLD
+    // }
+    // 
+    // return DIRT
   }
 
   self.scroll = function() {
@@ -106,34 +147,31 @@ function Terrain(width, height) {
         self.set(x, y - 1, self.get(x, y))
       }
     }
-    for (var y = height - 1; y < height; y++) {
-      for (var x = 0; x < width; x++) {
-        self.set(x, y, randomMineral())
-      }
+
+    for (var x = 0; x < width; x++) {
+      self.set(x, height - 1, randomMineral())
     }
+    level += 1
+
     self.emitScrolled()
   }
 
   self.initialize = function initialize() {
     self.fill(AIR)
 
-    for (var y = 0; y < height; y++) {
+    var surfaceY = Math.round(height / 2)
+
+    for (var y = 0; y < surfaceY; y++) {
       for (var x = 0; x < width; x++) {
-        if (y >= height / 2) {
-          self.set(x, y, randomMineral())
-        } else {
-          self.set(x, y, AIR)
-        }
-        // if (y >= x + height / 2 - 10 || y >= width + height - x - height / 2 - 10) {
-        //   self.set(x, y, ROCK)
-        // }
-        // if (y > height - 10 || x > width - 10 || x < 10) {
-        //   self.set(x, y, ROCK)
-        // }
-        // if (y < height / 2) {
-        //   self.set(x, y, AIR)
-        // }
+        self.set(x, y, AIR)
       }
+    }
+
+    for (var y = surfaceY; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        self.set(x, y, randomMineral())
+      }
+      level += 1
     }
   }
 

@@ -1,37 +1,49 @@
 var AIR = 0
 var DIRT = 1
-var ROCK = 2
-var WATER = 3
-var GOLD = 4
-var DIAMOND = 5
+var IRON = 2
+var OBSIDIAN = 3
+var EMERALD = 4
+var SAPPHIRE = 5
+var AMETHYST = 6
+var DIAMOND = 7
+// RUBY, SAPPHIRE
 
 var TERRAIN_COLOR = [
-  new Color(210, 210, 255),
-  new Color(145, 122, 92),
-  new Color(125, 102, 72),
-  new Color(50, 50, 200),
-  // new Color(215, 212, 11),
-  new Color(160, 160, 160),
-  new Color(235, 84, 222),
+  new Color(210, 210, 255), // air
+  new Color(145, 122, 92),  // dirt
+  new Color(160, 160, 160), // iron
+  new Color(60, 60, 60),    // obisidian
+  new Color(43, 240, 17),   // emerald
+  new Color(235, 84, 222),  // amethyst
+  new Color(152, 237, 250), // sapphire
+  new Color(255, 255, 255), // diamond
 ]
+
+// new Color(125, 102, 72),
+// new Color(50, 50, 200),
+// new Color(215, 212, 11),
 
 var STARTING_GOLD = 100
 var FUEL_SURCHARGE = 1
 
 var GOLD_FREQUENCY = 0.03
 var GEM_FREQUENCY = 0.001
+var DIRT_FREQUENCY = 0.97
 
-var TURNS_PER_COMPUTER_SHOT = 37
+var TURNS_PER_COMPUTER_SHOT = 37000
 
 var EXCAVATOR_VALUE = 1
+var CHOPPER_VALUE = 10
 
 var TERRAIN_VALUE = [
   0,
   0,
-  0,
-  0,
   1,
+  2,
+  5,
   10,
+  20,
+  50,
 ]
 
 var LEFT = -1
@@ -86,7 +98,7 @@ function Game(options) {
       case 16: // shift
       case 17: //control
       case 18: // alt
-      case 224: // command
+      // case 224: // command
         reticle.active = false
         break
     }
@@ -98,7 +110,7 @@ function Game(options) {
       case 16: // shift
       case 17: //control
       case 18: // alt
-      case 224: // command
+      // case 224: // command
         reticle.active = true
         break
       case 27: // escape
@@ -124,6 +136,17 @@ function Game(options) {
       case 67: // c
         self.launchChopper()
         break
+      case 83: // s
+        for (var y = 0; y < 10; y++) {
+          for (var x = 0; x < width; x++) {
+            terrain.set(x, y, AIR)
+          }
+        }
+        terrain.scroll()
+        // for (var x = turn % 10; x < width; x += 10) {
+        //   units.createProjectile(new Vector(x, 0), new Vector(0, 0))
+        // }
+        break
       case 88: // x
         if (activeExcavator) {
           activeExcavator.activate()
@@ -140,11 +163,11 @@ function Game(options) {
   display.attach()
 
   var goldCounter1 = $('<div class="gold-counter">')
-      .css({/*color: TERRAIN_COLOR[GOLD].toStyle(),*/ left: '0'})
+      .css({left: '0'})
       .appendTo(document.body)
 
   var goldCounter2 = $('<div class="gold-counter">')
-      .css({/*color: TERRAIN_COLOR[GOLD].toStyle(),*/ right: '0'})
+      .css({right: '0'})
       .appendTo(document.body)
 
   Player.prototype.onGoldChanged(function() {
@@ -166,8 +189,15 @@ function Game(options) {
     // }
   })
 
+  var activeChopper = null
+
   self.launchChopper = function() {
-    units.launchChopper(player1, 0, RIGHT)
+    if (activeChopper) {
+      activeChopper.activate()
+    } else {
+      activeChopper = units.launchChopper(player1, 0, RIGHT)
+      player1.deductGold(CHOPPER_VALUE + FUEL_SURCHARGE)
+    }
   }
   
   var activeBomber = null
@@ -176,10 +206,10 @@ function Game(options) {
     if (activeBomber) {
       activeBomber.activate()
     } else {
-      if (player1.gold >= 0) {
+      // if (player1.gold >= 0) {
         activeBomber = units.launchBomber(player1, 0, RIGHT)
         player1.deductGold(activeBomber.goldValue() + FUEL_SURCHARGE)
-      }
+      // }
     }
   }
 
@@ -197,9 +227,15 @@ function Game(options) {
   })
 
   units.onEgress(function(unit) {
-    if (activeBomber === unit) {
-      unit.player.gainGold(unit.goldValue())
-      activeBomber = null
+    switch (unit) {
+      case activeBomber:
+        unit.player.gainGold(unit.goldValue())
+        activeBomber = null
+        break
+      case activeChopper:
+        unit.player.gainGold(CHOPPER_VALUE)
+        activeChopper = null
+        break
     }
   })
 
@@ -218,11 +254,12 @@ function Game(options) {
     }
 
     if (turn % TURNS_PER_COMPUTER_SHOT === 0) {
-      var x = Math.round((Math.random() * 0.2 + 0.6) * width)
+      var x = Math.round((Math.random() * 0.2 + 0.7) * width)
       var y = 0
       var target = new Vector(x, y)
       base2.fireAt(target)
       units.createSmoke(target)
+      // units.createParatroop(player2, target)
     }
 
     // if (turn % 327 === 0) {
