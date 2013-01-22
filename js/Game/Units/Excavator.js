@@ -1,5 +1,5 @@
-var HARD_HAT_COLOR = new Color(215, 212, 11)
-// var HARD_HAT_COLOR = new Color(0, 200, 0)
+// var HARD_HAT_COLOR = new Color(215, 212, 11)
+var HARD_HAT_COLOR = new Color(253, 178, 50)
 
 function Excavator(player, position) {
   this.player = player

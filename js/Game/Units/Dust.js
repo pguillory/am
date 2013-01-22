@@ -20,11 +20,12 @@ Dust.prototype.move = function(terrain) {
   this.velocity.y += 0.5
   this.position.add(this.velocity)
 
-  if (this.position.x < 0 || this.position.x >= terrain.width) {
+  var p = this.position.round()
+
+  if (p.x < 0 || p.x >= terrain.width) {
     return false
   }
 
-  var p = this.position.round()
   if (terrain.get(p.x, p.y) !== AIR) {
     if (this.material !== DIRT) {
       x = p.x + Math.floor(Math.random() * 3) - 1

@@ -135,6 +135,9 @@ function Game(options) {
       case 67: // c
         self.launchChopper()
         break
+      case 84: // t
+        self.launchTransport()
+        break
       case 83: // s
         for (var y = 0; y < 10; y++) {
           for (var x = 0; x < width; x++) {
@@ -142,9 +145,6 @@ function Game(options) {
           }
         }
         terrain.scroll()
-        // for (var x = turn % 10; x < width; x += 10) {
-        //   units.createProjectile(new Vector(x, 0), new Vector(0, 0))
-        // }
         break
       case 88: // x
         if (activeExcavator) {
@@ -154,7 +154,7 @@ function Game(options) {
         }
         break
       default:
-        console.log('key', event.keyCode)
+        // console.log('key', event.keyCode)
         break
     }
   })
@@ -194,16 +194,23 @@ function Game(options) {
     }
   }
   
-  var activeBomber = null
+  var activePlane = null
 
   self.launchBomber = function() {
-    if (activeBomber) {
-      activeBomber.activate()
+    if (activePlane) {
+      activePlane.activate()
     } else {
-      // if (player1.gold >= 0) {
-        activeBomber = units.launchBomber(player1, 0, RIGHT)
-        player1.deductGold(activeBomber.goldValue() + FUEL_SURCHARGE)
-      // }
+      activePlane = units.launchBomber(player1, 0, RIGHT)
+      player1.deductGold(activePlane.goldValue() + FUEL_SURCHARGE)
+    }
+  }
+
+  self.launchTransport = function() {
+    if (activePlane) {
+      activePlane.activate()
+    } else {
+      activePlane = units.launchTransport(player1, 0, RIGHT)
+      player1.deductGold(activePlane.goldValue() + FUEL_SURCHARGE)
     }
   }
 
@@ -222,8 +229,8 @@ function Game(options) {
 
   units.onCrash(function(unit) {
     switch (unit) {
-      case activeBomber:
-        activeBomber = null
+      case activePlane:
+        activePlane = null
         break
       case activeChopper:
         activeChopper = null
@@ -233,9 +240,9 @@ function Game(options) {
 
   units.onEgress(function(unit) {
     switch (unit) {
-      case activeBomber:
+      case activePlane:
         unit.player.gainGold(unit.goldValue())
-        activeBomber = null
+        activePlane = null
         break
       case activeChopper:
         unit.player.gainGold(CHOPPER_VALUE)
@@ -276,9 +283,9 @@ function Game(options) {
 
     runTime = Date.now() - startTime
 
-    if (turn % 100 == 0) {
-      console.log('turn ' + turn + ' (' + runTime + 'ms) ' + player1 + ' ' + player2)
-    }
+    // if (turn % 100 == 0) {
+    //   console.log('turn ' + turn + ' (' + runTime + 'ms) ' + player1 + ' ' + player2)
+    // }
 
     turnTimeout = setTimeout(incrementTurn, Math.max(0, TURN_SPEED - runTime))
   }

@@ -69,6 +69,14 @@ function Units(terrain) {
     return bomber
   }
 
+  self.launchTransport = function(player, x, direction) {
+    var position = new Vector(x, 5)
+    // var velocity = new Vector(direction, 0)
+    var plane = new Transport(player, position/*, velocity*/)
+    bombers.push(plane)
+    return plane
+  }
+
   self.launchChopper = function(player, x, direction) {
     var position = new Vector(x, terrain.drop(x) - 10)
     var velocity = new Vector(direction, 0)
@@ -167,17 +175,22 @@ function Units(terrain) {
 
   self.addEvent('Crash')
   self.addEvent('Egress')
-  Bomber.prototype.onEgress(function() {
+
+  Plane.prototype.onEgress(function() {
     self.emitEgress(this)
   })
+
   Chopper.prototype.onEgress(function() {
     self.emitEgress(this)
   })
 
   Bomber.prototype.onBomb(function() {
-    // self.createParatroop(this.player, this.position)
     var projectile = self.createProjectile(this.position, new Vector(this.direction * 2, 0), 40)
     projectile.position.x += this.direction
+  })
+
+  Transport.prototype.onTroop(function() {
+    self.createParatroop(this.player, this.position)
   })
 
   Chopper.prototype.onSpray(function(velocity) {
@@ -196,7 +209,7 @@ function Units(terrain) {
     self.emitCrash(this)
   })
 
-  Bomber.prototype.onCrash(function() {
+  Plane.prototype.onCrash(function() {
     explode(this.position, 50)
     self.emitCrash(this)
   })

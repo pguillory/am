@@ -1,11 +1,13 @@
 function Bomber(player, position) {
-  this.player = player
-  this.position = position.clone()
-  this.direction = this.player.direction
+  Bomber.prototype.__proto__ = Plane.prototype
+  Plane.call(this, player, position)
+
   this.timeToBomb = 0
   this.bombing = false
   this.bombs = 4
 }
+
+Bomber.prototype.addEvent('Bomb')
 
 Bomber.prototype.goldValue = function() {
   return 10 + this.bombs
@@ -15,22 +17,9 @@ Bomber.prototype.activate = function() {
   this.bombing = true
 }
 
-Bomber.prototype.addEvent('Bomb')
-Bomber.prototype.addEvent('Egress')
-Bomber.prototype.addEvent('Crash')
-
 Bomber.prototype.move = function(terrain) {
-  this.position.x += this.direction * 2
-
-  switch (terrain.get(this.position.x, this.position.y)) {
-    case AIR:
-      break
-    case null:
-      this.emitEgress()
-      return false
-    default:
-      this.emitCrash()
-      return false
+  if (Plane.prototype.move.call(this, terrain) === false) {
+    return false
   }
 
   if (this.bombing && this.bombs > 0) {
