@@ -86,7 +86,9 @@ function Units(terrain) {
   }
 
   self.createDust = function(position, velocity, material) {
-    smokes.push(new Dust(position, velocity, material))
+    var dust = new Dust(position, velocity, material)
+    smokes.push(dust)
+    return dust
   }
 
   // function probe(p0, p1, impact) {
@@ -174,14 +176,15 @@ function Units(terrain) {
 
   Bomber.prototype.onBomb(function() {
     // self.createParatroop(this.player, this.position)
-    var projectile = self.createProjectile(this.position, new Vector(this.direction, 0), 40)
-    projectile.position.x += this.direction * 2
+    var projectile = self.createProjectile(this.position, new Vector(this.direction * 2, 0), 40)
+    projectile.position.x += this.direction
   })
 
   Chopper.prototype.onSpray(function(velocity) {
     // shoot(this.position, velocity)
 
-    self.createDust(this.position, velocity, WATER)
+    var dust = self.createDust(this.position, velocity, WATER)
+    dust.position.y += 1
 
     // self.createProjectile(this.position, velocity)
     

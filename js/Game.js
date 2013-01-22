@@ -11,7 +11,7 @@ var DIAMOND = 8
 
 var TERRAIN_COLOR = [
   new Color(210, 210, 255), // air
-  new Color(50, 50, 200),   // water
+  new Color(100, 100, 200),   // water
   new Color(145, 122, 92),  // dirt
   new Color(160, 160, 160), // iron
   new Color(60, 60, 60),    // obisidian
