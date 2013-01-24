@@ -181,6 +181,7 @@ function Game(options) {
 
   display.onClick(function(x, y) {
     base1.fireAt(new Vector(x, y))
+    SOUNDS.pistol()
   })
 
   var activeChopper = null

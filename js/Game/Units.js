@@ -146,6 +146,7 @@ function Units(terrain) {
   }
 
   function explode(position, size) {
+    SOUNDS.explosion()
     size = size || EXPLOSION_SIZE
     for (var i = 0; i < size; i++) {
       var theta = Math.random() * Math.PI * 2
