@@ -1,6 +1,6 @@
-function Transport(player, position) {
+function Transport(player, position, velocity) {
   Transport.prototype.__proto__ = Plane.prototype
-  Plane.call(this, player, position)
+  Plane.call(this, player, position, velocity)
 
   this.timeToDrop = 0
   this.dropping = false

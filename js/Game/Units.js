@@ -63,7 +63,7 @@ function Units(terrain) {
 
   self.launchBomber = function(player, x, direction) {
     var position = new Vector(x, 5)
-    var velocity = new Vector(direction, 0)
+    var velocity = new Vector(direction * 2, 0)
     var bomber = new Bomber(player, position, velocity)
     bombers.push(bomber)
     return bomber
@@ -71,8 +71,16 @@ function Units(terrain) {
 
   self.launchTransport = function(player, x, direction) {
     var position = new Vector(x, 5)
-    // var velocity = new Vector(direction, 0)
-    var plane = new Transport(player, position/*, velocity*/)
+    var velocity = new Vector(direction * 2, 0)
+    var plane = new Transport(player, position, velocity)
+    bombers.push(plane)
+    return plane
+  }
+
+  self.launchGunship = function(player, x, direction) {
+    var position = new Vector(x, 5)
+    var velocity = new Vector(direction, 0)
+    var plane = new Gunship(player, position, velocity)
     bombers.push(plane)
     return plane
   }
@@ -147,6 +155,7 @@ function Units(terrain) {
 
   function explode(position, size) {
     SOUNDS.explosion()
+
     size = size || EXPLOSION_SIZE
     for (var i = 0; i < size; i++) {
       var theta = Math.random() * Math.PI * 2
@@ -186,8 +195,8 @@ function Units(terrain) {
   })
 
   Bomber.prototype.onBomb(function() {
-    var projectile = self.createProjectile(this.position, new Vector(this.direction * 2, 0), 40)
-    projectile.position.x += this.direction
+    var projectile = self.createProjectile(this.position, new Vector(this.player.direction * 2, 0), 40)
+    projectile.position.x += this.player.direction
   })
 
   Transport.prototype.onTroop(function() {
@@ -217,6 +226,10 @@ function Units(terrain) {
 
   Base.prototype.onFire(function(position, velocity) {
     self.createProjectile(position, velocity, 25)
+  })
+
+  Gunship.prototype.onShot(function(velocity) {
+    self.createProjectile(this.position, velocity, 15)
   })
 
   Base.prototype.onTroop(function() {

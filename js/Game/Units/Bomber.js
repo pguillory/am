@@ -1,6 +1,6 @@
-function Bomber(player, position) {
+function Bomber(player, position, velocity) {
   Bomber.prototype.__proto__ = Plane.prototype
-  Plane.call(this, player, position)
+  Plane.call(this, player, position, velocity)
 
   this.timeToBomb = 0
   this.bombing = false

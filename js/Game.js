@@ -135,6 +135,9 @@ function Game(options) {
       case 67: // c
         self.launchChopper()
         break
+      case 71: // g
+        self.launchGunship()
+        break
       case 84: // t
         self.launchTransport()
         break
@@ -180,7 +183,12 @@ function Game(options) {
   player2.gainGold(STARTING_GOLD)
 
   display.onClick(function(x, y) {
-    base1.fireAt(new Vector(x, y))
+    // if (activePlane && activePlane.aimable) {
+    //   activePlane.fireAt(new Vector(x, y))
+    // } else {
+      base1.fireAt(new Vector(x, y))
+    // }
+
     SOUNDS.pistol()
   })
 
@@ -211,6 +219,15 @@ function Game(options) {
       activePlane.activate()
     } else {
       activePlane = units.launchTransport(player1, 0, RIGHT)
+      player1.deductGold(activePlane.goldValue() + FUEL_SURCHARGE)
+    }
+  }
+
+  self.launchGunship = function() {
+    if (activePlane) {
+      activePlane.activate(reticle)
+    } else {
+      activePlane = units.launchGunship(player1, 0, RIGHT)
       player1.deductGold(activePlane.goldValue() + FUEL_SURCHARGE)
     }
   }
