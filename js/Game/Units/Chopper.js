@@ -58,3 +58,26 @@ Chopper.prototype.move = function(terrain) {
 
   return true
 }
+
+Chopper.prototype.draw = function(canvas) {
+  var color = this.player.color
+  var color2 = color.clone()
+  color2.alpha /= 2
+  var rotor = this.rotor
+
+  this.position.tap(function(x, y) {
+    canvas.setPixel(x, y, color)
+    canvas.setPixel(x - 1, y, color)
+    canvas.setPixel(x - 2, y, color)
+    canvas.setPixel(x + 1, y, color)
+    canvas.setPixel(x, y - 1, color)
+    canvas.setPixel(x, y - 2, color2)
+    if (rotor > 0) {
+      canvas.setPixel(x - 1, y - 2, color2)
+      canvas.setPixel(x - 2, y - 2, color2)
+    } else {
+      canvas.setPixel(x + 1, y - 2, color2)
+      canvas.setPixel(x + 2, y - 2, color2)
+    }
+  })
+}

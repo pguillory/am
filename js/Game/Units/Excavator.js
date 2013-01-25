@@ -1,5 +1,6 @@
 // var HARD_HAT_COLOR = new Color(215, 212, 11)
-var HARD_HAT_COLOR = new Color(253, 178, 50)
+var HARD_HAT_COLOR = new Color(233, 158, 20)
+var BLACK = new Color(0, 0, 0)
 
 function Excavator(player, position) {
   this.player = player
@@ -91,8 +92,9 @@ Excavator.prototype.draw = function(canvas) {
   var color = this.player.color
 
   this.position.tap(function(x, y) {
-    canvas.setPixel(x, y, color)
+    canvas.setPixel(x, y, BLACK)
     canvas.setPixel(x, y - 1, color)
-    canvas.setPixel(x, y - 2, HARD_HAT_COLOR)
+    canvas.setPixel(x, y - 2, color)
+    // canvas.setPixel(x, y - 2, HARD_HAT_COLOR)
   })
 }

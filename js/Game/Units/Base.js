@@ -2,11 +2,15 @@ function Base(player, position) {
   this.player = player
   this.position = position
   this.timeToTroop = 0
+  this.timeToFire = 0
+  this.reticle = new Reticle(this.position)
 }
 
 Base.prototype.addEvent('Fire')
 
 Base.prototype.fireAt = function(target) {
+  SOUNDS.pistol()
+
   origin = this.position.clone()
   origin.y -= 3
   var velocity = target.minus(origin).times(0.17).wiggle(1.0)
@@ -68,10 +72,18 @@ Base.prototype.move = function(terrain) {
     }
   }
 
+  this.timeToFire -= 1
+  if (this.reticle && this.reticle.fire && this.timeToFire <= 0) {
+    this.fireAt(this.reticle.target)
+    this.timeToFire = 9
+  }
+
   return true
 }
 
 Base.prototype.draw = function(canvas) {
+  this.reticle.draw(canvas)
+
   var color = this.player.color
   this.position.tap(function(x, y) {
     for (var dy = -3; dy <= 0; dy++) {

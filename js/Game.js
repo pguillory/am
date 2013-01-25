@@ -62,12 +62,6 @@ function Game(options) {
   var players = Players()
   var units = Units(terrain)
 
-  var reticle = {
-    x: null,
-    y: null,
-    active: false,
-  }
-
   terrain.initialize()
 
   var player1 = players.create(new Color(200, 50, 50), RIGHT)
@@ -76,9 +70,11 @@ function Game(options) {
   var base1 = units.dropBase(player1, 5)
   var base2 = units.dropBase(player2, width - 6)
 
+  var reticle = base1.reticle
+
   var computer = new ComputerController(player2, base2, units)
 
-  var display = Display(width, height, scale, terrain, players, units, reticle, base1)
+  var display = Display(width, height, scale, terrain, players, units, base1)
 
   function doTurn() {
     terrain.move()
@@ -87,18 +83,18 @@ function Game(options) {
   }
 
   $(document).on('mousemove', function(event) {
-    reticle.x = Math.floor(event.pageX * width / event.target.clientWidth)
-    reticle.y = Math.floor(event.pageY * height / event.target.clientHeight)
+    reticle.target.x = Math.floor(event.pageX * width / event.target.clientWidth)
+    reticle.target.y = Math.floor(event.pageY * height / event.target.clientHeight)
   })
 
   $(window).on('keyup', function(event) {
     // event.preventDefault()
     switch (event.keyCode) {
       case 16: // shift
+        reticle.lase = false
+        break
       case 17: //control
-      case 18: // alt
-      // case 224: // command
-        reticle.active = false
+        reticle.fire = false
         break
     }
   })
@@ -107,13 +103,15 @@ function Game(options) {
     // event.preventDefault()
     switch (event.keyCode) {
       case 16: // shift
-      case 17: //control
-      case 18: // alt
-      // case 224: // command
-        reticle.active = true
+        reticle.lase = true
         break
+      case 17: //control
+        reticle.fire = true
+        break
+      // case 18: // alt
+      // case 224: // command
       case 27: // escape
-        document.webkitCancelFullScreen()
+      case 32: // space
         self.pause()
         break
       case 80: // p
@@ -183,13 +181,7 @@ function Game(options) {
   player2.gainGold(STARTING_GOLD)
 
   display.onClick(function(x, y) {
-    // if (activePlane && activePlane.aimable) {
-    //   activePlane.fireAt(new Vector(x, y))
-    // } else {
-      base1.fireAt(new Vector(x, y))
-    // }
-
-    SOUNDS.pistol()
+    base1.fireAt(new Vector(x, y))
   })
 
   var activeChopper = null
@@ -225,9 +217,10 @@ function Game(options) {
 
   self.launchGunship = function() {
     if (activePlane) {
-      activePlane.activate(reticle)
+      activePlane.activate()
     } else {
       activePlane = units.launchGunship(player1, 0, RIGHT)
+      reticle = activePlane.reticle
       player1.deductGold(activePlane.goldValue() + FUEL_SURCHARGE)
     }
   }
@@ -249,6 +242,7 @@ function Game(options) {
     switch (unit) {
       case activePlane:
         activePlane = null
+        reticle = base1.reticle
         break
       case activeChopper:
         activeChopper = null
@@ -261,6 +255,7 @@ function Game(options) {
       case activePlane:
         unit.player.gainGold(unit.goldValue())
         activePlane = null
+        reticle = base1.reticle
         break
       case activeChopper:
         unit.player.gainGold(CHOPPER_VALUE)
@@ -279,10 +274,6 @@ function Game(options) {
     startTime = Date.now()
     turn += 1
     
-    if (reticle.active) {
-      units.createSmoke(new Vector(reticle.x, reticle.y))
-    }
-
     if (turn % TURNS_PER_COMPUTER_SHOT === 0) {
       var x = Math.round((Math.random() * 0.2 + 0.7) * width)
       var y = 0

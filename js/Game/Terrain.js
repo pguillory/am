@@ -134,7 +134,7 @@ function Terrain(width, height) {
     var r = Math.floor(Math.random() * 100)
     var r1 = r
 
-    for (var material = 1; material < 8; material++) {
+    for (var material = 1; material < 9; material++) {
       if (r < freq[material]) {
         return material
       } else {

@@ -1,3 +1,6 @@
+var PARACHUTE_COLOR = new Color(255, 255, 255)
+var PARACHUTE_CORD_COLOR = new Color(255, 255, 255, 100)
+
 function Paratroop(player, position) {
   this.player = player
   this.position = position.clone()
@@ -20,4 +23,17 @@ Paratroop.prototype.move = function(terrain) {
     this.emitTouchdown()
     return false
   }
+}
+
+Paratroop.prototype.draw = function(canvas) {
+  Troop.prototype.draw.call(this, canvas)
+
+  this.position.tap(function(x, y) {
+    canvas.setPixel(x    , y - 4, PARACHUTE_COLOR)
+    canvas.setPixel(x - 1, y - 3, PARACHUTE_COLOR)
+    canvas.setPixel(x    , y - 3, PARACHUTE_COLOR)
+    canvas.setPixel(x + 1, y - 3, PARACHUTE_COLOR)
+    canvas.setPixel(x - 1, y - 2, PARACHUTE_CORD_COLOR)
+    canvas.setPixel(x + 1, y - 2, PARACHUTE_CORD_COLOR)
+  })
 }

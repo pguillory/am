@@ -23,3 +23,14 @@ Plane.prototype.move = function(terrain) {
 
   return true
 }
+
+Plane.prototype.draw = function(canvas) {
+  var color = this.player.color
+  var direction = this.player.direction
+  this.position.tap(function(x, y) {
+    canvas.setPixel(x, y, color)
+    canvas.setPixel(x - direction, y, color)
+    canvas.setPixel(x - direction, y - 1, color)
+    canvas.setPixel(x + direction, y, color)
+  })
+}

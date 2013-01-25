@@ -1,5 +1,8 @@
+var WHITE = new Color(255, 255, 255)
+
 function Projectile(position, velocity, warheadSize) {
   this.position = position.clone()
+  this.lastPosition = this.position
   this.velocity = velocity.clone()
   this.warheadSize = warheadSize
 }
@@ -8,11 +11,11 @@ Projectile.prototype.addEvent('Moved')
 Projectile.prototype.addEvent('Impact')
 
 Projectile.prototype.move = function(terrain, troops, impacted) {
-  var lastPosition = this.position
+  this.lastPosition = this.position
   this.position = this.position.plus(this.velocity)
   this.velocity.y += 1
 
-  var p0 = lastPosition.round()
+  var p0 = this.lastPosition.round()
   var p1 = this.position.round()
 
   var projectileStillGoing = true
@@ -60,4 +63,10 @@ Projectile.prototype.move = function(terrain, troops, impacted) {
 
 Projectile.prototype.toString = function() {
   return 'Projectile(' + this.position.toString() + ', ' + this.velocity.toString() + ')'
+}
+
+Projectile.prototype.draw = function(canvas) {
+  var p1 = this.position.round()
+  var p0 = this.lastPosition.round()
+  canvas.drawStreak(p1.x, p1.y, p0.x, p0.y, WHITE)
 }

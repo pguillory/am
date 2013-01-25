@@ -154,8 +154,6 @@ function Units(terrain) {
   }
 
   function explode(position, size) {
-    SOUNDS.explosion()
-
     size = size || EXPLOSION_SIZE
     for (var i = 0; i < size; i++) {
       var theta = Math.random() * Math.PI * 2
@@ -194,9 +192,10 @@ function Units(terrain) {
     self.emitEgress(this)
   })
 
-  Bomber.prototype.onBomb(function() {
-    var projectile = self.createProjectile(this.position, new Vector(this.player.direction * 2, 0), 40)
-    projectile.position.x += this.player.direction
+  Bomber.prototype.onBomb(function(position, velocity, warhead) {
+    self.createProjectile(position, velocity, warhead)
+    // var projectile = self.createProjectile(this.position, new Vector(this.player.direction * 2, 0), 40)
+    // projectile.position.x += this.player.direction
   })
 
   Transport.prototype.onTroop(function() {
@@ -292,22 +291,20 @@ function Units(terrain) {
 
   function moveTroops() {
     troops.forEach(function(troop) {
-      var attacks = 1
+      var detonate = false
 
       troops.forEach(function(defender) {
-        if (attacks > 0 &&
-            troop.player !== defender.player &&
-            troop.collidesWithTroop(defender) &&
-            defender.hp > 0) {
-          attacks -= 1
-          // defender.hp -= 1
-          explode(troop.position, 10)
+        if (detonate) return
+
+        if (troop.player !== defender.player &&
+            troop.collidesWithTroop(defender)) {
+          detonate = true
         }
       })
 
-      // if (attacks > 0) {
-      //   troop.move(terrain)
-      // }
+      if (detonate) {
+        explode(troop.position, 10)
+      }
     })
 
     troops = troops.filter(function(troop) {
@@ -318,6 +315,7 @@ function Units(terrain) {
   function moveProjectiles() {
     projectiles = projectiles.filter(function(projectile) {
       return projectile.move(terrain, troops, function(position) {
+        SOUNDS.explosion()
         explode(position, projectile.warheadSize)
       })
     })
@@ -359,14 +357,15 @@ function Units(terrain) {
   //   })
   // }
 
-  // self.forEach = function(callback) {
-  //   troops.forEach(callback)
-  //   projectiles.forEach(callback)
-  //   bases.forEach(callback)
-  //   bombers.forEach(callback)
-  //   choppers.forEach(callback)
-  //   smokes.forEach(callback)
-  // }
+  self.forEach = function(callback) {
+    troops.forEach(callback)
+    projectiles.forEach(callback)
+    bases.forEach(callback)
+    bombers.forEach(callback)
+    choppers.forEach(callback)
+    smokes.forEach(callback)
+    paratroops.forEach(callback)
+  }
 
   self.forEachTroop = function(callback) {
     troops.forEach(callback)
