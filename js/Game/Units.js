@@ -91,7 +91,7 @@ function Units(terrain) {
 
   self.launchGunship = function(player, x, direction) {
     var position = new Vector(x, 5)
-    var velocity = new Vector(direction, 0)
+    var velocity = new Vector(direction * 2, 0)
     var plane = new Gunship(player, position, velocity)
     bombers.push(plane)
     return plane
@@ -240,7 +240,7 @@ function Units(terrain) {
   })
 
   Gunship.prototype.onShot(function(velocity) {
-    self.createProjectile(this.position, velocity, 15)
+    self.createProjectile(this.position, velocity, 10)
   })
 
   Base.prototype.onTroop(function() {

@@ -55,6 +55,10 @@ Vector.prototype.constrain = function(maxMagnitude) {
   }
 }
 
+Vector.prototype.normalize = function() {
+  return this.times(1 / this.magnitude())
+}
+
 
 // Vector.prototype.collidesWith = function(vector) {
 //   return this.x === vector.x

@@ -1,22 +1,24 @@
 function Base(player, position) {
   this.player = player
   this.position = position
+  this.origin = position.clone()
+  this.origin.y -= 3
   this.timeToTroop = 0
   this.timeToFire = 0
-  this.reticle = new Reticle(this.position)
+  this.reticle = new Reticle(this.origin)
 }
 
 Base.prototype.addEvent('Fire')
 
-Base.prototype.fireAt = function(target) {
-  SOUNDS.pistol()
-
-  origin = this.position.clone()
-  origin.y -= 3
-  var velocity = target.minus(origin).times(0.17).wiggle(1.0)
-  velocity.y -= 3
-  this.emitFire(origin, velocity)
-}
+// Base.prototype.fireAt = function() {
+//   SOUNDS.pistol()
+//   this.emitFire(this.origin, this.reticle.velocity.wiggle(1.0))
+// 
+//   // origin = this.position.clone()
+//   // origin.y -= 3
+//   // var velocity = target.minus(this.origin).times(0.18).wiggle(1.0)
+//   // velocity.y -= 3
+// }
 
 Base.prototype.addEvent('Troop')
 Base.prototype.addEvent('Excavator')
@@ -71,10 +73,14 @@ Base.prototype.move = function(terrain) {
       this.emitTroop()
     }
   }
+  
+  this.origin.y = this.position.y - 3
+  this.reticle.velocity = this.reticle.target.minus(this.origin).times(0.18)
 
   this.timeToFire -= 1
   if (this.reticle && this.reticle.fire && this.timeToFire <= 0) {
-    this.fireAt(this.reticle.target)
+    SOUNDS.pistol()
+    this.emitFire(this.origin, this.reticle.velocity.wiggle(1.0))
     this.timeToFire = 9
   }
 
