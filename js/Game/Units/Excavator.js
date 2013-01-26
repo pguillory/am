@@ -10,7 +10,7 @@ function Excavator(player, position) {
   this.digging = false
 }
 
-Excavator.prototype.level = 1
+Excavator.prototype.level = 2
 
 Excavator.prototype.addEvent('Dig')
 Excavator.prototype.addEvent('Death')
@@ -92,9 +92,12 @@ Excavator.prototype.draw = function(canvas) {
   var color = this.player.color
 
   this.position.tap(function(x, y) {
-    canvas.setPixel(x, y, BLACK)
     canvas.setPixel(x, y - 1, color)
     canvas.setPixel(x, y - 2, color)
+
+    canvas.setPixel(x, y, BLACK)
+    canvas.setPixel(x - 1, y - 1, BLACK)
+    canvas.setPixel(x + 1, y - 1, BLACK)
     // canvas.setPixel(x, y - 2, HARD_HAT_COLOR)
   })
 }

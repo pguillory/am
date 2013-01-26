@@ -35,25 +35,28 @@ Troop.prototype.move = function(terrain) {
   }
 
   this.position.x += this.direction
+  this.position.y = terrain.drop(this.position.x)
 
-  if (this.position.x < 0 || this.position.x >= width) {
+  if (this.position.x < 8 || this.position.x >= width - 8) {
     if (this.loot) {
-      this.emitDeliveredLoot()
-      this.player.gainGold(TERRAIN_VALUE[this.loot])
+      // this.emitDeliveredLoot()
+      // this.player.gainGold(TERRAIN_VALUE[this.loot])
+      terrain.set(this.position.x, this.position.y - 1, this.loot)
       this.loot = null
     }
-    this.direction = -this.direction
+    this.direction = this.player.direction
     return this.move(terrain)
     // // this.hp = 0
     // return false
   }
 
-  this.position.y = terrain.drop(this.position.x)
-
   var material = terrain.get(this.position.x, this.position.y + 1)
 
   switch (material) {
     case DIRT:
+      if (Math.random() < 0.01) {
+        terrain.set(this.position.x, this.position.y + 1, AIR)
+      }
       break
     case WATER:
       // this.position.y += 1

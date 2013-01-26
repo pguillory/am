@@ -55,8 +55,8 @@ Base.prototype.move = function(terrain) {
         var material = terrain.get(this.position.x + dx, this.position.y + dy)
         if (material > DIRT) {
           this.player.gainGold(TERRAIN_VALUE[material])
+          terrain.set(this.position.x + dx, this.position.y + dy, AIR)
         }
-        terrain.set(this.position.x + dx, this.position.y + dy, AIR)
       }
     }
   }

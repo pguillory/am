@@ -63,6 +63,7 @@ function Game(options) {
   var units = Units(terrain)
 
   terrain.initialize()
+  units.initialize()
 
   var player1 = players.create(new Color(200, 50, 50), RIGHT)
   var player2 = players.create(new Color(50, 50, 150), LEFT)

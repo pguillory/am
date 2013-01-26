@@ -38,6 +38,18 @@ function Units(terrain) {
   //   return result
   // }
 
+  self.initialize = function() {
+    for (var i = 0; i < 50; i++) {
+      var x = Math.floor(Math.random() * (width - 1))
+      var y = terrain.drop(x)
+      explode(new Vector(x, y), 20)
+    }
+    smokes = []
+    for (var i = 0; i < 10; i++) {
+      terrain.move()
+    }
+  }
+
   self.createTroop = function(player, position) {
     troops.push(new Troop(player, position))
   }
@@ -286,7 +298,15 @@ function Units(terrain) {
     moveChoppers()
     moveSmokes()
     moveParatroops()
-    // moveLooters()
+
+    // rain()
+  }
+
+  function rain() {
+    for (var i = 0; i < 1; i++) {
+      var x = Math.floor(Math.random() * (width - 1))
+      self.createDust(new Vector(x, 0), new Vector(0, 5), WATER)
+    }
   }
 
   function moveTroops() {

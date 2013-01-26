@@ -128,8 +128,15 @@ function Terrain(width, height) {
     [0, 0, 95, 0, 0, 0, 0, 4, 1],
   ]
 
-  function randomMineral() {
+  function randomMineral(x) {
     var freq = frequencies[Math.min(Math.floor(level / 9), frequencies.length - 1)]
+
+    // concentrate minerials in the middle
+    var width2 = width / 2
+    var centerFactor = Math.abs(x - width2) / width2
+    if (Math.random() < centerFactor) {
+      return DIRT
+    }
 
     var r = Math.floor(Math.random() * 100)
     var r1 = r
@@ -153,7 +160,7 @@ function Terrain(width, height) {
     }
 
     for (var x = 0; x < width; x++) {
-      self.set(x, height - 1, randomMineral())
+      self.set(x, height - 1, randomMineral(x))
     }
     level += 1
 
@@ -173,7 +180,7 @@ function Terrain(width, height) {
 
     for (var y = surfaceY; y < height; y++) {
       for (var x = 0; x < width; x++) {
-        self.set(x, y, randomMineral())
+        self.set(x, y, randomMineral(x))
       }
       level += 1
     }

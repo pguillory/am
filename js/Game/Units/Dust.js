@@ -29,6 +29,8 @@ Dust.prototype.move = function(terrain) {
   if (terrain.get(p.x, p.y) !== AIR) {
     if (this.material !== DIRT) {
       x = p.x + Math.floor(Math.random() * 3) - 1
+      x = Math.max(x, 0)
+      x = Math.min(x, width - 1)
       y = terrain.drop(x)
       terrain.set(x, y, this.material)
     }
