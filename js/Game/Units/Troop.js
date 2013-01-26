@@ -9,7 +9,6 @@ function Troop(player, position) {
 
 Troop.prototype.addEvent('Loot')
 Troop.prototype.addEvent('Dig')
-Troop.prototype.addEvent('DeliveredLoot')
 
 Troop.prototype.collidesWithTroop = function(defender) {
   return Math.abs(this.position.x - defender.position.x) < 2
@@ -35,19 +34,26 @@ Troop.prototype.move = function(terrain) {
   }
 
   this.position.x += this.direction
+
+  if (this.position.x < 0) {
+    this.position.x = 0
+    this.direction = 1
+    return this.move(terrain)
+  } else if (this.position.x >= width) {
+    this.position.x = width - 1
+    this.direction = -1
+    return this.move(terrain)
+  }
+
   this.position.y = terrain.drop(this.position.x)
 
   if (this.position.x < 8 || this.position.x >= width - 8) {
     if (this.loot) {
-      // this.emitDeliveredLoot()
-      // this.player.gainGold(TERRAIN_VALUE[this.loot])
       terrain.set(this.position.x, this.position.y - 1, this.loot)
       this.loot = null
+      this.direction *= -1
+      return this.move(terrain)
     }
-    this.direction = this.player.direction
-    return this.move(terrain)
-    // // this.hp = 0
-    // return false
   }
 
   var material = terrain.get(this.position.x, this.position.y + 1)
