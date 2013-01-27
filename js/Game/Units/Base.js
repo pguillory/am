@@ -40,10 +40,6 @@ Base.prototype.move = function(terrain) {
     }
   }
 
-  if (this.player.id === 0) {
-    // console.log('player ' + this.player + ' air=' + airUnderBase + ' dirt=' + dirtUnderBase)
-  }
-
   if (airUnderBase) {
     if (dirtUnderBase) {
       for (var dx = -3; dx <= 3; dx++) {
@@ -68,18 +64,20 @@ Base.prototype.move = function(terrain) {
   if (this.timeToTroop == 1) {
     if (this.player.excavatorRequisitioned) {
       this.player.excavatorRequisitioned = false
+      this.player.deductGold(EXCAVATOR_VALUE)
       this.emitExcavator()
     } else {
       this.emitTroop()
     }
   }
   
-  this.origin.y = this.position.y - 3
+  this.origin.y = this.position.y - 4
   this.reticle.velocity = this.reticle.target.minus(this.origin).times(0.18)
 
   this.timeToFire -= 1
-  if (this.reticle && this.reticle.fire && this.timeToFire <= 0) {
-    SOUNDS.pistol()
+  if (this.reticle && this.reticle.fire && this.timeToFire <= 0 && this.player.gold > 0) {
+    SOUNDS.shoot()
+    this.player.deductGold(BASE_SHOT_VALUE)
     this.emitFire(this.origin, this.reticle.velocity.wiggle(1.0))
     this.timeToFire = 9
   }

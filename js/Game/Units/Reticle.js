@@ -16,9 +16,8 @@ Reticle.prototype.draw = function(canvas) {
   if (!this.lase) return
 
   var p = this.position.clone()
-  // p.y -= 3
   var d = this.velocity
-  // d.y -= 3
+
   var visible = true
   var done = false
   for (var i = 0; i < 50; i++) {

@@ -2,10 +2,12 @@ function Troop(player, position) {
   this.player = player
   this.position = position.clone()
   this.direction = player.direction
-  this.hp = 1
+  this.hp = this.level
   this.loot = null
   this.digging = false
 }
+
+Troop.prototype.level = 1
 
 Troop.prototype.addEvent('Loot')
 Troop.prototype.addEvent('Dig')

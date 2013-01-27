@@ -35,7 +35,8 @@ Gunship.prototype.move = function(terrain) {
 
   this.timeToFire -= 1
   if (this.reticle.fire && this.timeToFire <= 0) {
-    SOUNDS.pistol()
+    SOUNDS.shoot()
+    this.player.deductGold(BASE_SHOT_VALUE)
     this.emitShot(this.reticle.velocity.wiggle(1.0))
     // this.fireAt(this.reticle.target)
     this.timeToFire = 3

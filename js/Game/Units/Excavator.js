@@ -6,11 +6,11 @@ function Excavator(player, position) {
   this.player = player
   this.position = position.clone()
   this.direction = player.direction
-  this.hp = 1
+  this.hp = this.level * 20
   this.digging = false
 }
 
-Excavator.prototype.level = 2
+Excavator.prototype.level = 1
 
 Excavator.prototype.addEvent('Dig')
 Excavator.prototype.addEvent('Death')
@@ -64,6 +64,7 @@ Excavator.prototype.move = function(terrain) {
         terrain.set(this.position.x, this.position.y, AIR)
       }
     }
+    SOUNDS.drill()
   } else {
     this.position.y = terrain.drop(this.position.x)
   }

@@ -27,7 +27,7 @@ Bomber.prototype.move = function(terrain) {
       var position = this.position.plus(new Vector(this.player.direction, 0))
       var velocity = new Vector(this.player.direction * 2, 0)
 
-      this.emitBomb(position, velocity, 40)
+      this.emitBomb(position, velocity, 140)
       this.bombs -= 1
       this.timeToBomb = 3
     } else {

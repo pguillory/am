@@ -10,6 +10,10 @@ function soundPicker(choices) {
 }
 
 var SOUNDS = {
-  pistol: soundPicker([pistol1, pistol2, pistol3]),
-  explosion: soundPicker([explosion1, explosion2, explosion3]),
+  credit: soundPicker([credit]),
+  explosion_big: soundPicker([explosion_big]),
+  explosion_small: soundPicker([explosion_small]),
+  hurt: soundPicker([hurt]),
+  shoot: soundPicker([shoot]),
+  drill: soundPicker([drill]),
 }

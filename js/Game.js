@@ -30,20 +30,11 @@ var FUEL_SURCHARGE = 1
 
 var TURNS_PER_COMPUTER_SHOT = 37
 
+var BASE_SHOT_VALUE = 1
 var EXCAVATOR_VALUE = 1
 var CHOPPER_VALUE = 10
 
-var TERRAIN_VALUE = [
-  0,
-  0,
-  0,
-  1,
-  2,
-  5,
-  10,
-  20,
-  50,
-]
+var TERRAIN_VALUE = [0, 0, 0, 1, 2, 5, 10, 20, 50]
 
 var LEFT = -1
 var RIGHT = 1
@@ -71,43 +62,61 @@ function Game(options) {
   var base1 = units.dropBase(player1, 5)
   var base2 = units.dropBase(player2, width - 6)
 
-  var reticle = base1.reticle
+  var controller1 = new Controller(player1, base1)
 
-  var computer = new ComputerController(player2, base2, units)
+  var controllers = [controller1]
+
+  // var computer = new ComputerController(player2, base2, units)
 
   var display = Display(width, height, scale, terrain, players, units, base1)
 
+/*
+  def executeCommands(player) {
+    player.commands.each(function(command) {
+      switch (command[0]) {
+        case 'target':
+          reticle.target.x = command[1]
+          reticle.target.y = command[2]
+          break
+      }
+    })
+  }
+*/
+
   function doTurn() {
+    // executeCommands(player1)
     terrain.move()
     units.move()
     display.draw()
   }
 
   $(document).on('mousemove', function(event) {
-    reticle.target.x = Math.floor(event.pageX * width / event.target.clientWidth)
-    reticle.target.y = Math.floor(event.pageY * height / event.target.clientHeight)
+    controller1.reticle.target.x = Math.floor(event.pageX * width / event.target.clientWidth)
+    controller1.reticle.target.y = Math.floor(event.pageY * height / event.target.clientHeight)
+    // player1.command('target', x, y)
   })
 
   $(window).on('keyup', function(event) {
     // event.preventDefault()
     switch (event.keyCode) {
       case 16: // shift
-        reticle.lase = false
+        controller1.reticle.lase = false
         break
       case 17: //control
-        reticle.fire = false
+        controller1.reticle.fire = false
         break
     }
   })
 
   $(window).on('keydown', function(event) {
     // event.preventDefault()
+    console.log('event.keyCode', event.keyCode)
     switch (event.keyCode) {
       case 16: // shift
-        reticle.lase = true
+        controller1.reticle.lase = true
         break
       case 17: //control
-        reticle.fire = true
+        controller1.reticle.fire = true
         break
       // case 18: // alt
       // case 224: // command
@@ -118,21 +127,12 @@ function Game(options) {
       case 80: // p
         self.pause()
         break
-      case 173: // -
-        if (TURN_SPEED < 500) {
-          TURN_SPEED = Math.floor(TURN_SPEED * 2)
-        }
-        break
-      case 61: // =
-        if (TURN_SPEED > 100) {
-          TURN_SPEED = Math.floor(TURN_SPEED / 2)
-        }
-        break
       case 66: // b
         self.launchBomber()
         break
       case 67: // c
-        self.launchChopper()
+        controller1.requestChopper()
+        // self.launchChopper()
         break
       case 71: // g
         self.launchGunship()
@@ -141,19 +141,10 @@ function Game(options) {
         self.launchTransport()
         break
       case 83: // s
-        for (var y = 0; y < 10; y++) {
-          for (var x = 0; x < width; x++) {
-            terrain.set(x, y, AIR)
-          }
-        }
-        terrain.scroll()
+        terrain.hardScroll()
         break
       case 88: // x
-        if (activeExcavator) {
-          activeExcavator.activate()
-        } else {
-          player1.excavatorRequisitioned = true
-        }
+        controller1.excavate()
         break
       default:
         // console.log('key', event.keyCode)
@@ -163,21 +154,13 @@ function Game(options) {
 
   display.attach()
 
-  var goldCounter1 = $('<div class="gold-counter">')
-      .css({left: '0'})
-      .appendTo(document.body)
-
-  var goldCounter2 = $('<div class="gold-counter">')
-      .css({right: '0'})
-      .appendTo(document.body)
+  player1.goldDisplay = $('<div class="gold-counter">').css({ left: '0' }).appendTo(document.body)
+  player2.goldDisplay = $('<div class="gold-counter">').css({ right: '0' }).appendTo(document.body)
 
   Player.prototype.onGoldChanged(function() {
-    if (this === player1) {
-      goldCounter1.text(this.gold)
-    } else if (this === player2) {
-      goldCounter2.text(this.gold)
-    }
+    this.goldDisplay.text(this.gold)
   })
+
   player1.gainGold(STARTING_GOLD)
   player2.gainGold(STARTING_GOLD)
 
@@ -185,90 +168,88 @@ function Game(options) {
   //   base1.fireAt(new Vector(x, y))
   // })
 
-  var activeChopper = null
-
   self.launchChopper = function() {
-    if (activeChopper) {
-      activeChopper.activate()
+    if (controller1.chopper) {
+      controller1.chopper.activate()
     } else {
-      activeChopper = units.launchChopper(player1, 0, RIGHT)
+      controller1.chopper = units.launchChopper(player1, 0, RIGHT)
       player1.deductGold(CHOPPER_VALUE + FUEL_SURCHARGE)
     }
   }
-  
-  var activePlane = null
 
   self.launchBomber = function() {
-    if (activePlane) {
-      activePlane.activate()
+    if (controller1.plane) {
+      controller1.plane.activate()
     } else {
-      activePlane = units.launchBomber(player1, 0, RIGHT)
-      player1.deductGold(activePlane.goldValue() + FUEL_SURCHARGE)
+      controller1.plane = units.launchBomber(player1, 0, RIGHT)
+      player1.deductGold(controller1.plane.goldValue() + FUEL_SURCHARGE)
     }
   }
 
   self.launchTransport = function() {
-    if (activePlane) {
-      activePlane.activate()
+    if (controller1.plane) {
+      controller1.plane.activate()
     } else {
-      activePlane = units.launchTransport(player1, 0, RIGHT)
-      player1.deductGold(activePlane.goldValue() + FUEL_SURCHARGE)
+      controller1.plane = units.launchTransport(player1, 0, RIGHT)
+      player1.deductGold(controller1.plane.goldValue() + FUEL_SURCHARGE)
     }
   }
 
   self.launchGunship = function() {
-    if (activePlane) {
-      activePlane.activate()
+    if (controller1.plane) {
+      controller1.plane.activate()
     } else {
-      activePlane = units.launchGunship(player1, 0, RIGHT)
-      reticle = activePlane.reticle
-      player1.deductGold(activePlane.goldValue() + FUEL_SURCHARGE)
+      controller1.plane = units.launchGunship(player1, 0, RIGHT)
+      controller1.reticle = controller1.plane.reticle
+      player1.deductGold(controller1.plane.goldValue() + FUEL_SURCHARGE)
     }
   }
 
-  var activeExcavator = null
-
   units.onExcavatorSpawned(function(excavator) {
-    activeExcavator = excavator
+    controllers.forEach(function(controller) {
+      if (controller.player == excavator.player) {
+        controller.excavator = excavator
+      }
+    })
+  })
+      
+  units.onExcavatorSpawned(function(excavator) {
+    controller1.excavator = excavator
     excavator.player.deductGold(EXCAVATOR_VALUE)
   })
 
   units.onExcavatorDied(function(excavator) {
-    if (activeExcavator == excavator) {
-      activeExcavator = null
+    if (controller1.excavator == excavator) {
+      controller1.excavator = null
     }
   })
 
   units.onCrash(function(unit) {
     switch (unit) {
-      case activePlane:
-        activePlane = null
-        reticle = base1.reticle
+      case controller1.plane:
+        controller1.plane = null
+        controller1.reticle = base1.reticle
         break
-      case activeChopper:
-        activeChopper = null
+      case controller1.chopper:
+        controller1.chopper = null
         break
     }
   })
 
   units.onEgress(function(unit) {
     switch (unit) {
-      case activePlane:
+      case controller1.plane:
         unit.player.gainGold(unit.goldValue())
-        activePlane = null
-        reticle = base1.reticle
+        controller1.plane = null
+        controller1.reticle = base1.reticle
         break
-      case activeChopper:
+      case controller1.chopper:
         unit.player.gainGold(CHOPPER_VALUE)
-        activeChopper = null
+        controller1.chopper = null
         break
     }
   })
 
-  // self.createParatroop = function() {
-  //   units.createParatroop(player1, new Vector(Math.round(width / 2), 5))
-  // }
-  
   var turn = 0
 
   function incrementTurn() {

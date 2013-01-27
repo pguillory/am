@@ -166,6 +166,15 @@ function Terrain(width, height) {
 
     self.emitScrolled()
   }
+  
+  self.hardScroll = function() {
+    for (var y = 0; y < 10; y++) {
+      for (var x = 0; x < width; x++) {
+        self.set(x, y, AIR)
+      }
+    }
+    self.scroll()
+  }
 
   self.initialize = function initialize() {
     self.fill(AIR)

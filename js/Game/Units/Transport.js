@@ -7,7 +7,7 @@ function Transport(player, position, velocity) {
   this.troopCount = 2 + this.level * 2
 }
 
-Transport.prototype.level = 1
+Transport.prototype.level = 3
 
 Transport.prototype.addEvent('Troop')
 

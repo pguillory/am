@@ -4,7 +4,7 @@ function Dust(position, velocity, material) {
   this.velocity = velocity
   this.material = material
   this.color = TERRAIN_COLOR[material].clone()
-  // this.color.alpha = 200
+  this.color.alpha = 200
 
   // this.color = new Color(0, 255, 0)
   // this.ttl = 8
