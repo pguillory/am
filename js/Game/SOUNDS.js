@@ -9,7 +9,7 @@ function soundPicker(choices) {
   }
 }
 
-var SOUNDS = {
+return {
   credit: soundPicker([credit]),
   explosion_big: soundPicker([explosion_big]),
   explosion_small: soundPicker([explosion_small]),

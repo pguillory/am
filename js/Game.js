@@ -110,7 +110,8 @@ function Game(options) {
 
   $(window).on('keydown', function(event) {
     // event.preventDefault()
-    console.log('event.keyCode', event.keyCode)
+    // console.log('event.keyCode', event.keyCode)
+
     switch (event.keyCode) {
       case 16: // shift
         controller1.reticle.lase = true

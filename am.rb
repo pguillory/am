@@ -18,7 +18,10 @@ class MyApp < Sinatra::Base
     s << "/#{'*' * 80}/\n"
     s << "/*  /#{path.ljust(74)} */\n"
     s << "/#{'*' * 80}/\n"
-    s << "var #{basename} = (function() {\n"
+    s << "var #{basename};\n"
+    s << "function define_#{basename}() {\n"
+    s << "if (#{basename}) return;\n"
+    s << "#{basename} = (function(#{basename}, undefined){\n"
 
     Dir[File.join(File.dirname(path), basename, '*.wav')].sort.each do |child_path|
       s << load_wav_file(child_path)
@@ -27,8 +30,13 @@ class MyApp < Sinatra::Base
     Dir[File.join(File.dirname(path), basename, '*.js')].sort.each do |child_path|
       s << indent(load_js_file(child_path), 4)
     end
+
     s << indent(File.read(path), 4)
-    s << "\n;return #{basename} })();\n\n"
+
+    s << "    ;return #{basename}\n"
+    s << "})();\n"
+    s << "}\n"
+    s << "define_#{basename}();\n\n"
     s
   end
 
