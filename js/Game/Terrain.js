@@ -6,7 +6,13 @@ function Terrain(width, height) {
   level = 0
 
   self.get = function get(x, y) {
-    if (x < 0 || y < 0 || x >= width || y >= height) {
+    if (y < 0) {
+      return AIR
+    }
+    if (y >= height) {
+      return DIRT
+    }
+    if (x < 0 || x >= width) {
       return null
     }
     return values[y * width + x]
