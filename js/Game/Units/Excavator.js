@@ -99,6 +99,6 @@ Excavator.prototype.draw = function(canvas) {
     canvas.setPixel(x, y, BLACK)
     canvas.setPixel(x - 1, y - 1, BLACK)
     canvas.setPixel(x + 1, y - 1, BLACK)
-    // canvas.setPixel(x, y - 2, HARD_HAT_COLOR)
+    canvas.setPixel(x, y - 3, HARD_HAT_COLOR)
   })
 }

@@ -1,6 +1,6 @@
 var EXPLOSION_SIZE = 50
 
-function Units(terrain) {
+function Units() {
   var self = {}
 
   var troops = []
@@ -250,6 +250,7 @@ function Units(terrain) {
   self.addEvent('ExcavatorSpawned')
   Base.prototype.onExcavator(function() {
     var unit = self.createExcavator(this.player, this.position)
+    unit.player.deductGold(EXCAVATOR_VALUE)
     self.emitExcavatorSpawned(unit)
   })
 

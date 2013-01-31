@@ -33,6 +33,7 @@ Chopper.prototype.move = function(terrain) {
       }
       break
     case null:
+      this.player.gainGold(CHOPPER_VALUE)
       this.emitEgress()
       return false
     default:

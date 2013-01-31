@@ -44,14 +44,14 @@ var TURN_SPEED = 100
 var width = 160
 var height = 100
 
-function Game(options) {
+// function Game(options) {
   var self = {}
 
   var scale = 4
 
   var terrain = Terrain(width, height)
   var players = Players()
-  var units = Units(terrain)
+  var units = Units()
 
   terrain.initialize()
   units.initialize()
@@ -133,7 +133,6 @@ function Game(options) {
         break
       case 67: // c
         controller1.requestChopper()
-        // self.launchChopper()
         break
       case 71: // g
         self.launchGunship()
@@ -169,15 +168,6 @@ function Game(options) {
   //   base1.fireAt(new Vector(x, y))
   // })
 
-  self.launchChopper = function() {
-    if (controller1.chopper) {
-      controller1.chopper.activate()
-    } else {
-      controller1.chopper = units.launchChopper(player1, 0, RIGHT)
-      player1.deductGold(CHOPPER_VALUE + FUEL_SURCHARGE)
-    }
-  }
-
   self.launchBomber = function() {
     if (controller1.plane) {
       controller1.plane.activate()
@@ -206,51 +196,6 @@ function Game(options) {
     }
   }
 
-  units.onExcavatorSpawned(function(excavator) {
-    controllers.forEach(function(controller) {
-      if (controller.player == excavator.player) {
-        controller.excavator = excavator
-      }
-    })
-  })
-      
-  units.onExcavatorSpawned(function(excavator) {
-    controller1.excavator = excavator
-    excavator.player.deductGold(EXCAVATOR_VALUE)
-  })
-
-  units.onExcavatorDied(function(excavator) {
-    if (controller1.excavator == excavator) {
-      controller1.excavator = null
-    }
-  })
-
-  units.onCrash(function(unit) {
-    switch (unit) {
-      case controller1.plane:
-        controller1.plane = null
-        controller1.reticle = base1.reticle
-        break
-      case controller1.chopper:
-        controller1.chopper = null
-        break
-    }
-  })
-
-  units.onEgress(function(unit) {
-    switch (unit) {
-      case controller1.plane:
-        unit.player.gainGold(unit.goldValue())
-        controller1.plane = null
-        controller1.reticle = base1.reticle
-        break
-      case controller1.chopper:
-        unit.player.gainGold(CHOPPER_VALUE)
-        controller1.chopper = null
-        break
-    }
-  })
-
   var turn = 0
 
   function incrementTurn() {
@@ -276,7 +221,7 @@ function Game(options) {
     runTime = Date.now() - startTime
 
     // if (turn % 100 == 0) {
-    //   console.log('turn ' + turn + ' (' + runTime + 'ms) ' + player1 + ' ' + player2)
+    //   console.log('turn ' + turn + ' (' + runTime + 'ms)')
     // }
 
     turnTimeout = setTimeout(incrementTurn, Math.max(0, TURN_SPEED - runTime))
@@ -305,4 +250,4 @@ function Game(options) {
   }
 
   return self
-}
+// }

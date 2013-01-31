@@ -14,6 +14,7 @@ Plane.prototype.move = function(terrain) {
     case AIR:
       break
     case null:
+      this.player.gainGold(this.goldValue())
       this.emitEgress()
       return false
     default:
