@@ -1,1 +1,1 @@
-web: bundle exec rackup -o 127.0.0.1 -p $PORT
+web: bundle exec rackup -o "$HOST" -p "$PORT"
