@@ -10,7 +10,7 @@ function Excavator(player, position) {
   this.digging = false
 }
 
-Excavator.prototype.level = 1
+Excavator.prototype.level = 2
 
 Excavator.prototype.addEvent('Dig')
 Excavator.prototype.addEvent('Death')

@@ -7,11 +7,10 @@ var EMERALD = 5
 var SAPPHIRE = 6
 var AMETHYST = 7
 var DIAMOND = 8
-// RUBY, SAPPHIRE
 
 var TERRAIN_COLOR = [
   new Color(210, 210, 255), // air
-  new Color(100, 100, 200),   // water
+  new Color(100, 100, 200), // water
   new Color(145, 122, 92),  // dirt
   new Color(160, 160, 160), // iron
   new Color(60, 60, 60),    // obisidian
@@ -35,6 +34,8 @@ var EXCAVATOR_VALUE = 1
 var CHOPPER_VALUE = 10
 
 var TERRAIN_VALUE = [0, 0, 0, 1, 2, 5, 10, 20, 50]
+
+var TRAMPLE_RATE = 0.02
 
 var LEFT = -1
 var RIGHT = 1
@@ -70,19 +71,6 @@ var height = 100
 
   var display = Display(width, height, scale, terrain, players, units, base1)
 
-/*
-  def executeCommands(player) {
-    player.commands.each(function(command) {
-      switch (command[0]) {
-        case 'target':
-          reticle.target.x = command[1]
-          reticle.target.y = command[2]
-          break
-      }
-    })
-  }
-*/
-
   function doTurn() {
     // executeCommands(player1)
     terrain.move()
@@ -91,33 +79,32 @@ var height = 100
   }
 
   $(document).on('mousemove', function(event) {
-    controller1.reticle.target.x = Math.floor(event.pageX * width / event.target.clientWidth)
-    controller1.reticle.target.y = Math.floor(event.pageY * height / event.target.clientHeight)
-    // player1.command('target', x, y)
+    var x = Math.floor(event.pageX * width / event.target.clientWidth)
+    var y = Math.floor(event.pageY * height / event.target.clientHeight)
+    controller1.aim(x, y)
   })
 
   $(window).on('keyup', function(event) {
     // event.preventDefault()
     switch (event.keyCode) {
       case 16: // shift
-        controller1.reticle.lase = false
+        controller1.lase(false)
         break
       case 17: //control
-        controller1.reticle.fire = false
+        controller1.fire(false)
         break
     }
   })
 
   $(window).on('keydown', function(event) {
-    // event.preventDefault()
     // console.log('event.keyCode', event.keyCode)
 
     switch (event.keyCode) {
       case 16: // shift
-        controller1.reticle.lase = true
+        controller1.lase(true)
         break
       case 17: //control
-        controller1.reticle.fire = true
+        controller1.fire(true)
         break
       // case 18: // alt
       // case 224: // command

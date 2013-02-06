@@ -62,8 +62,9 @@ Troop.prototype.move = function(terrain) {
 
   switch (material) {
     case DIRT:
-      if (Math.random() < 0.01) {
+      if (Math.random() < TRAMPLE_RATE) {
         terrain.set(this.position.x, this.position.y + 1, AIR)
+        this.position.y += 1
       }
       break
     case WATER:

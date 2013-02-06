@@ -17,6 +17,10 @@ Dust.prototype.move = function(terrain) {
   //   return false
   // }
 
+  if (this.material <= DIRT) {
+    this.color.alpha -= 15
+  }
+
   this.velocity.y += 0.5
   this.position.add(this.velocity)
 

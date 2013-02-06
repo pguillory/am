@@ -90,8 +90,8 @@ Base.prototype.draw = function(canvas) {
 
   var color = this.player.color
   this.position.tap(function(x, y) {
-    for (var dy = -3; dy <= 0; dy++) {
-      for (var dx = -3; dx <= 3; dx++) {
+    for (var dy = -3; dy <= 0; dy += 3) {
+      for (var dx = -3; dx <= 3; dx += 3) {
         canvas.setPixel(x + dx, y + dy, color)
       }
     }
