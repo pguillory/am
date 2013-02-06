@@ -2,6 +2,9 @@ Object.prototype.addEvent = function(eventName) {
   var handlers = []
 
   this['on' + eventName] = function(handler) {
+    if (handler === undefined) {
+      throw 'handler is undefined'
+    }
     handlers.push(handler)
   }
 

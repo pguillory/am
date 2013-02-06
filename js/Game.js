@@ -84,59 +84,51 @@ var height = 100
     controller1.aim(x, y)
   })
 
-  $(window).on('keyup', function(event) {
-    // event.preventDefault()
-    switch (event.keyCode) {
-      case 16: // shift
-        controller1.lase(false)
-        break
-      case 17: //control
-        controller1.fire(false)
-        break
-    }
+  var keyboard = new Keyboard()
+  keyboard.bind($(window))
+
+  keyboard.onShiftChange(function(state) {
+    controller1.lase(state)
   })
 
-  $(window).on('keydown', function(event) {
-    // console.log('event.keyCode', event.keyCode)
+  keyboard.onControlChange(function(state) {
+    controller1.fire(state)
+  })
 
-    switch (event.keyCode) {
-      case 16: // shift
-        controller1.lase(true)
-        break
-      case 17: //control
-        controller1.fire(true)
-        break
-      // case 18: // alt
-      // case 224: // command
-      case 27: // escape
-      case 32: // space
-        self.pause()
-        break
-      case 80: // p
-        self.pause()
-        break
-      case 66: // b
-        self.launchBomber()
-        break
-      case 67: // c
-        controller1.requestChopper()
-        break
-      case 71: // g
-        self.launchGunship()
-        break
-      case 84: // t
-        self.launchTransport()
-        break
-      case 83: // s
-        terrain.hardScroll()
-        break
-      case 88: // x
-        controller1.excavate()
-        break
-      default:
-        // console.log('key', event.keyCode)
-        break
-    }
+  keyboard.onSpace(function() {
+    self.pause()
+  })
+
+  keyboard.onEscape(function() {
+    self.pause()
+  })
+
+  keyboard.onB(function() {
+    self.launchBomber()
+  })
+
+  keyboard.onP(function() {
+    self.pause()
+  })
+
+  keyboard.onC(function() {
+    controller1.requestChopper()
+  })
+
+  keyboard.onG(function() {
+    self.launchGunship()
+  })
+
+  keyboard.onT(function() {
+    self.launchTransport()
+  })
+
+  keyboard.onS(function() {
+    terrain.hardScroll()
+  })
+
+  keyboard.onX(function() {
+    controller1.excavate()
   })
 
   display.attach()
