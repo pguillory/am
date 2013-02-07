@@ -202,6 +202,7 @@ function Units() {
 
   Chopper.prototype.onEgress(function() {
     self.emitEgress(this)
+    this.player.chopper = null
   })
 
   Bomber.prototype.onBomb(function(position, velocity, warhead) {
@@ -227,6 +228,7 @@ function Units() {
 
   Chopper.prototype.onCrash(function() {
     explode(this.position, 50)
+    this.player.chopper = null
     self.emitCrash(this)
   })
 
@@ -287,6 +289,14 @@ function Units() {
   // })
 
   self.move = function() {
+    players.forEach(function(player) {
+      if (player.chopperRequisitioned) {
+        player.chopperRequisitioned = false
+        player.chopper = self.launchChopper(player, 0, RIGHT)
+        player.deductGold(CHOPPER_VALUE + FUEL_SURCHARGE)
+      }
+    })
+
     moveTroops()
     moveProjectiles()
     moveBases()

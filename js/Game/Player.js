@@ -7,6 +7,8 @@ function Player(id, color, direction) {
   self.gold = 0
   self.excavatorRequisitioned = false
   self.excavator = null
+  self.chopperRequisitioned = false
+  self.chopper = null
 
   self.addEvent('GoldChanged')
 
@@ -34,6 +36,14 @@ function Player(id, color, direction) {
       self.excavator.activate()
     } else {
       self.excavatorRequisitioned = true
+    }
+  }
+
+  self.requestChopper = function() {
+    if (this.chopper) {
+      this.chopper.activate()
+    } else {
+      this.chopperRequisitioned = true
     }
   }
 

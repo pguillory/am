@@ -111,7 +111,7 @@ var height = 100
   keyboard.onP(pause)
 
   keyboard.onC(function() {
-    controller1.requestChopper()
+    player1.requestChopper()
   })
 
   keyboard.onG(function() {
