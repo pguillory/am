@@ -4,6 +4,7 @@ function Player(id, color, direction) {
   this.direction = direction
   this.gold = 0
   this.excavatorRequisitioned = false
+  this.excavator = null
 }
 
 Player.prototype.addEvent('GoldChanged')
@@ -25,4 +26,12 @@ Player.prototype.deductGold = function(amount) {
 
 Player.prototype.toString = function() {
   return 'Player(' + this.id + ', ' + this.gold + 'g)'
+}
+
+Player.prototype.excavate = function() {
+  if (this.excavator) {
+    this.excavator.activate()
+  } else {
+    this.excavatorRequisitioned = true
+  }
 }

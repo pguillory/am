@@ -247,14 +247,14 @@ function Units() {
     self.createTroop(this.player, this.position)
   })
 
-  self.addEvent('ExcavatorSpawned')
   Base.prototype.onExcavator(function() {
-    var unit = self.createExcavator(this.player, this.position)
-    unit.player.deductGold(EXCAVATOR_VALUE)
-    self.emitExcavatorSpawned(unit)
+    this.player.excavator = self.createExcavator(this.player, this.position)
+    this.player.deductGold(EXCAVATOR_VALUE)
   })
 
-  // Excavator.prototype.
+  Excavator.prototype.onDeath(function() {
+    this.player.excavator = null
+  })
 
   Paratroop.prototype.onTouchdown(function() {
     self.createTroop(this.player, this.position)
@@ -271,11 +271,6 @@ function Units() {
       }
     }
     self.createDust(this.position, new Vector(0, -3).wiggle(2), material)
-  })
-
-  self.addEvent('ExcavatorDied')
-  Excavator.prototype.onDeath(function() {
-    self.emitExcavatorDied(this)
   })
 
   // Troop.prototype.onLoot(function() {

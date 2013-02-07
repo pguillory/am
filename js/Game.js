@@ -127,7 +127,7 @@ var height = 100
   })
 
   keyboard.onX(function() {
-    controller1.excavate()
+    player1.excavate()
   })
 
   display.attach()

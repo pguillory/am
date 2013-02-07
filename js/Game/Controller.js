@@ -3,21 +3,8 @@ function Controller(player, base) {
   this.base = base
   this.commands = []
   this.reticle = base.reticle
-  this.excavator = null
   this.chopper = null
   this.plane = null
-
-  units.onExcavatorSpawned(function(excavator) {
-    if (this.player == excavator.player) {
-      this.excavator = excavator
-    }
-  }.bind(this))
-
-  units.onExcavatorDied(function(excavator) {
-    if (this.excavator == excavator) {
-      this.excavator = null
-    }
-  }.bind(this))
 
   units.onCrash(function(unit) {
     switch (unit) {
@@ -42,14 +29,6 @@ function Controller(player, base) {
         break
     }
   }.bind(this))
-}
-
-Controller.prototype.excavate = function() {
-  if (this.excavator) {
-    this.excavator.activate()
-  } else {
-    this.player.excavatorRequisitioned = true
-  }
 }
 
 Controller.prototype.requestChopper = function() {
