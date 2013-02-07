@@ -1,37 +1,41 @@
 function Player(id, color, direction) {
-  this.id = id
-  this.color = color
-  this.direction = direction
-  this.gold = 0
-  this.excavatorRequisitioned = false
-  this.excavator = null
-}
+  var self = {}
 
-Player.prototype.addEvent('GoldChanged')
+  self.id = id
+  self.color = color
+  self.direction = direction
+  self.gold = 0
+  self.excavatorRequisitioned = false
+  self.excavator = null
 
-Player.prototype.gainGold = function(amount) {
-  this.gold += amount
-  this.emitGoldChanged()
-}
+  self.addEvent('GoldChanged')
 
-Player.prototype.deductGold = function(amount) {
-  // if (this.gold > amount) {
-    this.gold -= amount
-    this.emitGoldChanged()
-    return true
-  // } else {
-  //   return false
-  // }
-}
-
-Player.prototype.toString = function() {
-  return 'Player(' + this.id + ', ' + this.gold + 'g)'
-}
-
-Player.prototype.excavate = function() {
-  if (this.excavator) {
-    this.excavator.activate()
-  } else {
-    this.excavatorRequisitioned = true
+  self.gainGold = function(amount) {
+    self.gold += amount
+    self.emitGoldChanged()
   }
+
+  self.deductGold = function(amount) {
+    // if (self.gold > amount) {
+      self.gold -= amount
+      self.emitGoldChanged()
+      return true
+    // } else {
+    //   return false
+    // }
+  }
+
+  self.toString = function() {
+    return 'Player(' + self.id + ', ' + self.gold + 'g)'
+  }
+
+  self.excavate = function() {
+    if (self.excavator) {
+      self.excavator.activate()
+    } else {
+      self.excavatorRequisitioned = true
+    }
+  }
+
+  return self
 }

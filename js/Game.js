@@ -126,17 +126,18 @@ var height = 100
     terrain.hardScroll()
   })
 
-  keyboard.onX(function() {
-    player1.excavate()
-  })
+  keyboard.onX(player1.excavate)
 
   display.attach()
 
-  player1.goldDisplay = $('<div class="gold-counter">').css({ left: '0' }).appendTo(document.body)
-  player2.goldDisplay = $('<div class="gold-counter">').css({ right: '0' }).appendTo(document.body)
+  var goldDisplay1 = $('<div class="gold-counter">').css({ left: '0' }).appendTo(document.body)
+  var goldDisplay2 = $('<div class="gold-counter">').css({ right: '0' }).appendTo(document.body)
 
-  Player.prototype.onGoldChanged(function() {
-    this.goldDisplay.text(this.gold)
+  player1.onGoldChanged(function() {
+    goldDisplay1.text(this.gold)
+  })
+  player2.onGoldChanged(function() {
+    goldDisplay2.text(this.gold)
   })
 
   player1.gainGold(STARTING_GOLD)
