@@ -100,21 +100,15 @@ var height = 100
     controller1.fire(state)
   })
 
-  keyboard.onSpace(function() {
-    self.pause()
-  })
+  keyboard.onSpace(pause)
 
-  keyboard.onEscape(function() {
-    self.pause()
-  })
+  keyboard.onEscape(pause)
 
   keyboard.onB(function() {
     self.launchBomber()
   })
 
-  keyboard.onP(function() {
-    self.pause()
-  })
+  keyboard.onP(pause)
 
   keyboard.onC(function() {
     controller1.requestChopper()
@@ -181,35 +175,14 @@ var height = 100
   function incrementTurn() {
     startTime = Date.now()
     turn += 1
-    
-    // if (turn % TURNS_PER_COMPUTER_SHOT === 0) {
-    //   var x = Math.round((Math.random() * 0.2 + 0.7) * width)
-    //   var y = 0
-    //   var target = new Vector(x, y)
-    //   base2.fireAt(target)
-    //   units.createSmoke(target)
-    //   // units.createParatroop(player2, target)
-    // }
-
-    // if (turn % 327 === 0) {
-    //   var bomber = units.launchBomber(player2, width - 1, LEFT)
-    //   bomber.activate()
-    // }
-
     doTurn()
-
     runTime = Date.now() - startTime
-
-    // if (turn % 100 == 0) {
-    //   console.log('turn ' + turn + ' (' + runTime + 'ms)')
-    // }
-
     turnTimeout = setTimeout(incrementTurn, Math.max(0, TURN_SPEED - runTime))
   }
 
   var turnTimeout = null
 
-  self.pause = function() {
+  function pause() {
     if (turnTimeout) {
       clearTimeout(turnTimeout)
       turnTimeout = null
