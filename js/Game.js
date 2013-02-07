@@ -78,11 +78,16 @@ var height = 100
     display.draw()
   }
 
-  $(document).on('mousemove', function(event) {
-    var x = Math.floor(event.pageX * width / event.target.clientWidth)
-    var y = Math.floor(event.pageY * height / event.target.clientHeight)
+  var mouse = new Mouse()
+  mouse.bind($(document))
+  
+  mouse.onMove(function(x, y) {
     controller1.aim(x, y)
   })
+
+  // mouse.onClick(function(x, y) {
+  //   base1.fireAt(new Vector(x, y))
+  // })
 
   var keyboard = new Keyboard()
   keyboard.bind($(window))
@@ -142,10 +147,6 @@ var height = 100
 
   player1.gainGold(STARTING_GOLD)
   player2.gainGold(STARTING_GOLD)
-
-  // display.onClick(function(x, y) {
-  //   base1.fireAt(new Vector(x, y))
-  // })
 
   self.launchBomber = function() {
     if (controller1.plane) {
