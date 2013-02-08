@@ -3,25 +3,6 @@ function Controller(player, base) {
   this.base = base
   this.commands = []
   this.reticle = base.reticle
-  this.plane = null
-
-  units.onCrash(function(unit) {
-    switch (unit) {
-      case this.plane:
-        this.plane = null
-        this.reticle = this.base.reticle
-        break
-    }
-  }.bind(this))
-
-  units.onEgress(function(unit) {
-    switch (unit) {
-      case this.plane:
-        this.plane = null
-        this.reticle = this.base.reticle
-        break
-    }
-  }.bind(this))
 }
 
 Controller.prototype.aim = function(x, y) {

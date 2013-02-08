@@ -9,6 +9,8 @@ function Player(id, color, direction) {
   self.excavator = null
   self.chopperRequisitioned = false
   self.chopper = null
+  self.bomberRequisitioned = false
+  self.plane = null
 
   self.addEvent('GoldChanged')
 
@@ -18,13 +20,8 @@ function Player(id, color, direction) {
   }
 
   self.deductGold = function(amount) {
-    // if (self.gold > amount) {
-      self.gold -= amount
-      self.emitGoldChanged()
-      return true
-    // } else {
-    //   return false
-    // }
+    self.gold -= amount
+    self.emitGoldChanged()
   }
 
   self.toString = function() {
@@ -40,10 +37,34 @@ function Player(id, color, direction) {
   }
 
   self.requestChopper = function() {
-    if (this.chopper) {
-      this.chopper.activate()
+    if (self.chopper) {
+      self.chopper.activate()
     } else {
-      this.chopperRequisitioned = true
+      self.chopperRequisitioned = true
+    }
+  }
+
+  self.requestBomber = function() {
+    if (self.plane) {
+      self.plane.activate()
+    } else {
+      self.bomberRequisitioned = true
+    }
+  }
+
+  self.requestTransport = function() {
+    if (self.plane) {
+      self.plane.activate()
+    } else {
+      self.transportRequisitioned = true
+    }
+  }
+
+  self.requestGunship = function() {
+    if (self.plane) {
+      self.plane.activate()
+    } else {
+      self.gunshipRequisitioned = true
     }
   }
 

@@ -65,8 +65,6 @@ var height = 100
 
   var controller1 = new Controller(player1, base1)
 
-  var controllers = [controller1]
-
   // var computer = new ComputerController(player2, base2, units)
 
   var display = Display(width, height, scale, terrain, players, units, base1)
@@ -101,31 +99,13 @@ var height = 100
   })
 
   keyboard.onSpace(pause)
-
   keyboard.onEscape(pause)
-
-  keyboard.onB(function() {
-    self.launchBomber()
-  })
-
+  keyboard.onB(player1.requestBomber)
   keyboard.onP(pause)
-
-  keyboard.onC(function() {
-    player1.requestChopper()
-  })
-
-  keyboard.onG(function() {
-    self.launchGunship()
-  })
-
-  keyboard.onT(function() {
-    self.launchTransport()
-  })
-
-  keyboard.onS(function() {
-    terrain.hardScroll()
-  })
-
+  keyboard.onC(player1.requestChopper)
+  keyboard.onG(player1.requestGunship)
+  keyboard.onT(player1.requestTransport)
+  keyboard.onS(terrain.hardScroll)
   keyboard.onX(player1.excavate)
 
   display.attach()
@@ -142,34 +122,6 @@ var height = 100
 
   player1.gainGold(STARTING_GOLD)
   player2.gainGold(STARTING_GOLD)
-
-  self.launchBomber = function() {
-    if (controller1.plane) {
-      controller1.plane.activate()
-    } else {
-      controller1.plane = units.launchBomber(player1, 0, RIGHT)
-      player1.deductGold(controller1.plane.goldValue() + FUEL_SURCHARGE)
-    }
-  }
-
-  self.launchTransport = function() {
-    if (controller1.plane) {
-      controller1.plane.activate()
-    } else {
-      controller1.plane = units.launchTransport(player1, 0, RIGHT)
-      player1.deductGold(controller1.plane.goldValue() + FUEL_SURCHARGE)
-    }
-  }
-
-  self.launchGunship = function() {
-    if (controller1.plane) {
-      controller1.plane.activate()
-    } else {
-      controller1.plane = units.launchGunship(player1, 0, RIGHT)
-      controller1.reticle = controller1.plane.reticle
-      player1.deductGold(controller1.plane.goldValue() + FUEL_SURCHARGE)
-    }
-  }
 
   var turn = 0
 

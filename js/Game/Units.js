@@ -185,23 +185,17 @@ function Units() {
 
   self.addEvent('ProjectileMoved')
   Projectile.prototype.onMoved(self.emitProjectileMoved)
-  // Projectile.prototype.onImpact(function() {
-  // })
 
   Projectile.prototype.onImpact(function(p) {
     console.log('impact ' + p)
     // explode(p)
   })
 
-  self.addEvent('Crash')
-  self.addEvent('Egress')
-
   Plane.prototype.onEgress(function() {
-    self.emitEgress(this)
+    this.player.plane = null
   })
 
   Chopper.prototype.onEgress(function() {
-    self.emitEgress(this)
     this.player.chopper = null
   })
 
@@ -229,12 +223,11 @@ function Units() {
   Chopper.prototype.onCrash(function() {
     explode(this.position, 50)
     this.player.chopper = null
-    self.emitCrash(this)
   })
 
   Plane.prototype.onCrash(function() {
     explode(this.position, 50)
-    self.emitCrash(this)
+    this.player.plane = null
   })
 
   Base.prototype.onFire(function(position, velocity) {
@@ -292,8 +285,24 @@ function Units() {
     players.forEach(function(player) {
       if (player.chopperRequisitioned) {
         player.chopperRequisitioned = false
-        player.chopper = self.launchChopper(player, 0, RIGHT)
+        player.chopper = self.launchChopper(player, 0, player.direction)
         player.deductGold(CHOPPER_VALUE + FUEL_SURCHARGE)
+      }
+      if (player.bomberRequisitioned) {
+        player.bomberRequisitioned = false
+        player.plane = self.launchBomber(player, 0, player.direction)
+        player.deductGold(player.plane.goldValue() + FUEL_SURCHARGE)
+      }
+      if (player.transportRequisitioned) {
+        player.transportRequisitioned = false
+        player.plane = self.launchTransport(player, 0, player.direction)
+        player.deductGold(player.plane.goldValue() + FUEL_SURCHARGE)
+      }
+      if (player.transportRequisitioned) {
+        player.transportRequisitioned = false
+        player.plane = units.launchGunship(player, 0, player.direction)
+        player.deductGold(player.plane.goldValue() + FUEL_SURCHARGE)
+        // controller1.reticle = player.plane.reticle
       }
     })
 
@@ -395,35 +404,6 @@ function Units() {
     bombers.forEach(callback)
     choppers.forEach(callback)
     smokes.forEach(callback)
-    paratroops.forEach(callback)
-  }
-
-  self.forEachTroop = function(callback) {
-    troops.forEach(callback)
-    // looters.forEach(callback)
-  }
-
-  self.forEachProjectile = function(callback) {
-    projectiles.forEach(callback)
-  }
-
-  self.forEachBase = function(callback) {
-    bases.forEach(callback)
-  }
-
-  self.forEachBomber = function(callback) {
-    bombers.forEach(callback)
-  }
-
-  self.forEachChopper = function(callback) {
-    choppers.forEach(callback)
-  }
-
-  self.forEachSmoke = function(callback) {
-    smokes.forEach(callback)
-  }
-
-  self.forEachParatroop = function(callback) {
     paratroops.forEach(callback)
   }
 
