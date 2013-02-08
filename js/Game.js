@@ -110,15 +110,11 @@ var height = 100
 
   display.attach()
 
-  var goldDisplay1 = $('<div class="gold-counter">').css({ left: '0' }).appendTo(document.body)
-  var goldDisplay2 = $('<div class="gold-counter">').css({ right: '0' }).appendTo(document.body)
+  var goldDisplay1 = $('<div class="gold-counter player1">').appendTo(document.body)
+  var goldDisplay2 = $('<div class="gold-counter player2">').appendTo(document.body)
 
-  player1.onGoldChanged(function() {
-    goldDisplay1.text(this.gold)
-  })
-  player2.onGoldChanged(function() {
-    goldDisplay2.text(this.gold)
-  })
+  player1.onGoldChanged(function() { goldDisplay1.text(this.gold) })
+  player2.onGoldChanged(function() { goldDisplay2.text(this.gold) })
 
   player1.gainGold(STARTING_GOLD)
   player2.gainGold(STARTING_GOLD)

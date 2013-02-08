@@ -1,3 +1,7 @@
+Object.prototype.method = function(methodName) {
+  return this[methodName].bind(this)
+}
+
 Object.prototype.addEvent = function(eventName) {
   var handlers = []
 

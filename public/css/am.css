@@ -19,8 +19,8 @@ canvas {
 
 .gold-counter {
   position: absolute;
-  top: 0;
-/*  bottom: 0;*/
+/*  top: 0;*/
+  bottom: 0;
 
   color: black;
   text-shadow: 1px 1px 2px white;
@@ -28,12 +28,20 @@ canvas {
   color: white;
   text-shadow: 2px 2px 2px black;
 
-  font-size: 30px;
+  font-size: 40px;
   margin: 5px;
   -webkit-user-select: none;
   
   border: 1px solid black;
   border-radius: 6px;
   padding: 0.02em 0.3em;
-  background: rgba(0, 0, 0, 0.6)
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.gold-counter.player1 {
+  left: 0;
+}
+
+.gold-counter.player2 {
+  right: 0;
 }
