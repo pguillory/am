@@ -90,13 +90,8 @@ var height = 100
   var keyboard = new Keyboard()
   keyboard.bind($(window))
 
-  keyboard.onShiftChange(function(state) {
-    controller1.lase(state)
-  })
-
-  keyboard.onControlChange(function(state) {
-    controller1.fire(state)
-  })
+  keyboard.onShiftChange(controller1.method('lase'))
+  keyboard.onControlChange(controller1.method('fire'))
 
   keyboard.onSpace(pause)
   keyboard.onEscape(pause)
