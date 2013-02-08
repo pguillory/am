@@ -79,13 +79,8 @@ var height = 100
   var mouse = new Mouse()
   mouse.bind($(document))
   
-  mouse.onMove(function(x, y) {
-    controller1.aim(x, y)
-  })
-
-  // mouse.onClick(function(x, y) {
-  //   base1.fireAt(new Vector(x, y))
-  // })
+  mouse.onMove(controller1.method('aim'))
+  // mouse.onClick(base1.method('fireAt'))
 
   var keyboard = new Keyboard()
   keyboard.bind($(window))
