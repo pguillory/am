@@ -65,11 +65,11 @@ return (function() {
 
   var display = Display(width, height, scale, terrain, players, units)
 
-  function doTurn() {
+  var pacecar = new Pacecar(function(turn) {
     terrain.move()
     units.move()
     display.draw()
-  }
+  })
 
   var mouse = new Mouse().bind($(document))
   
@@ -80,10 +80,10 @@ return (function() {
   keyboard.onShiftChange(player1.lase)
   keyboard.onControlChange(player1.fire)
 
-  keyboard.onSpace(pause)
-  keyboard.onEscape(pause)
+  keyboard.onSpace(pacecar.togglePause)
+  keyboard.onEscape(pacecar.togglePause)
   keyboard.onB(player1.requestBomber)
-  keyboard.onP(pause)
+  keyboard.onP(pacecar.togglePause)
   keyboard.onC(player1.requestChopper)
   keyboard.onG(player1.requestGunship)
   keyboard.onT(player1.requestTransport)
@@ -101,37 +101,5 @@ return (function() {
   player1.gainGold(STARTING_GOLD)
   player2.gainGold(STARTING_GOLD)
 
-  var turn = 0
-
-  function incrementTurn() {
-    startTime = Date.now()
-    turn += 1
-    doTurn()
-    runTime = Date.now() - startTime
-    turnTimeout = setTimeout(incrementTurn, Math.max(0, TURN_SPEED - runTime))
-  }
-
-  var turnTimeout = null
-
-  function pause() {
-    if (turnTimeout) {
-      clearTimeout(turnTimeout)
-      turnTimeout = null
-    } else {
-      incrementTurn()
-    }
-  }
-
-  self.start = function() {
-    if (turnTimeout == null) {
-      incrementTurn()
-    }
-  }
-
-  self.stop = function() {
-    clearTimeout(turnTimeout)
-    turnTimeout = null
-  }
-
-  return self
+  pacecar.start()
 })()
