@@ -16,6 +16,8 @@ function Mouse() {
       var y = Math.floor(event.pageY * height / event.target.clientHeight)
       self.emitClick(x, y)
     })
+
+    return self
   }
 
   return self

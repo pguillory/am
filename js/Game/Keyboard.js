@@ -53,6 +53,8 @@ function Keyboard() {
         keychange[event.keyCode](true)
       }
     })
+
+    return self
   }
 
   return self

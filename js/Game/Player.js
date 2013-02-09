@@ -68,5 +68,18 @@ function Player(id, color, direction) {
     }
   }
 
+  self.aim = function(x, y) {
+    self.reticle.target.x = x
+    self.reticle.target.y = y
+  }
+
+  self.lase = function(state) {
+    self.reticle.lase = state
+  }
+
+  self.fire = function(state) {
+    self.reticle.fire = state
+  }
+
   return self
 }

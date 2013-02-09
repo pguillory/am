@@ -45,14 +45,14 @@ var TURN_SPEED = 100
 var width = 160
 var height = 100
 
-// function Game(options) {
+return (function() {
   var self = {}
 
   var scale = 4
 
   var terrain = Terrain(width, height)
   var players = Players()
-  var units = Units()
+  var units = Units(terrain, players)
 
   terrain.initialize()
   units.initialize()
@@ -60,33 +60,25 @@ var height = 100
   var player1 = players.create(new Color(200, 50, 50), RIGHT)
   var player2 = players.create(new Color(50, 50, 150), LEFT)
 
-  var base1 = units.dropBase(player1, 5)
-  var base2 = units.dropBase(player2, width - 6)
+  units.dropBase(player1, 5)
+  units.dropBase(player2, width - 6)
 
-  var controller1 = new Controller(player1, base1)
-
-  // var computer = new ComputerController(player2, base2, units)
-
-  var display = Display(width, height, scale, terrain, players, units, base1)
+  var display = Display(width, height, scale, terrain, players, units)
 
   function doTurn() {
-    // executeCommands(player1)
     terrain.move()
     units.move()
     display.draw()
   }
 
-  var mouse = new Mouse()
-  mouse.bind($(document))
+  var mouse = new Mouse().bind($(document))
   
-  mouse.onMove(controller1.method('aim'))
-  // mouse.onClick(base1.method('fireAt'))
+  mouse.onMove(player1.aim)
 
-  var keyboard = new Keyboard()
-  keyboard.bind($(window))
+  var keyboard = new Keyboard().bind($(window))
 
-  keyboard.onShiftChange(controller1.method('lase'))
-  keyboard.onControlChange(controller1.method('fire'))
+  keyboard.onShiftChange(player1.lase)
+  keyboard.onControlChange(player1.fire)
 
   keyboard.onSpace(pause)
   keyboard.onEscape(pause)
@@ -142,4 +134,4 @@ var height = 100
   }
 
   return self
-// }
+})()

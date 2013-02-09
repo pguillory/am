@@ -1,6 +1,6 @@
 var EXPLOSION_SIZE = 50
 
-function Units() {
+function Units(terrain, players) {
   var self = {}
 
   var troops = []
@@ -70,6 +70,7 @@ function Units() {
     var position = new Vector(x, terrain.drop(x))
     var base = new Base(player, position)
     bases.push(base)
+    player.reticle = base.reticle
     return base
   }
 

@@ -1,4 +1,4 @@
-function Display(width, height, scale, terrain, players, units, base1) {
+function Display(width, height, scale, terrain, players, units) {
   var self = {}
 
   var WHITE = new Color(255, 255, 255)
