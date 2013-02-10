@@ -70,6 +70,7 @@ function Player(id, color, direction, x) {
   }
 
   self.aim = function(x, y) {
+    if (x < 0 || x >= width || y < 0 || y >= height) return
     self.reticle.target.x = x
     self.reticle.target.y = y
   }

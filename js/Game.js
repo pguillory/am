@@ -40,12 +40,12 @@ var TRAMPLE_RATE = 0.02
 var LEFT = -1
 var RIGHT = 1
 
-var TURN_SPEED = 100
+var TURN_INTERVAL_MS = 100
 
 var width = 160
 var height = 100
 
-function Game(player_id) {
+function Game(pacecar, controller) {
   var self = {}
 
   var terrain = new Terrain(width, height)
@@ -65,39 +65,38 @@ function Game(player_id) {
   var display = new Display(width, height, terrain, players, units)
   display.attach()
 
-  var pacecar = new Pacecar(function(turn) {
+  pacecar.onTurn(function(commands) {
+    commands.forEach(function(command) {
+      players[command.player_id].method(command.method).apply(null, command.args)
+    })
     terrain.move()
     units.move()
     display.draw()
   })
 
-  var player1 = players[player_id]
-
   var mouse = new Mouse()
 
-  mouse.onMove(player1.aim)
+  mouse.onMove(controller.aim)
 
   var keyboard = new Keyboard()
 
-  keyboard.onShiftChange(player1.lase)
-  keyboard.onControlChange(player1.fire)
-  keyboard.onSpace(pacecar.togglePause)
-  keyboard.onEscape(pacecar.togglePause)
-  keyboard.onB(player1.requestBomber)
-  keyboard.onP(pacecar.togglePause)
-  keyboard.onC(player1.requestChopper)
-  keyboard.onG(player1.requestGunship)
-  keyboard.onT(player1.requestTransport)
+  keyboard.onShiftChange(controller.lase)
+  keyboard.onControlChange(controller.fire)
+  // keyboard.onSpace(pacecar.togglePause)
+  // keyboard.onEscape(pacecar.togglePause)
+  keyboard.onB(controller.requestBomber)
+  // keyboard.onP(pacecar.togglePause)
+  keyboard.onC(controller.requestChopper)
+  keyboard.onG(controller.requestGunship)
+  keyboard.onT(controller.requestTransport)
   keyboard.onS(terrain.hardScroll)
-  keyboard.onX(player1.excavate)
+  keyboard.onX(controller.excavate)
 
   players.forEach(function(player) {
     var goldDisplay = $('<div class="gold-counter player' + player.id + '">').appendTo(document.body)
     player.onGoldChanged(function() { goldDisplay.text(player.gold) })
     player.emitGoldChanged()
   })
-
-  pacecar.start()
 }
 
 var server = new RemoteServer()
@@ -105,11 +104,10 @@ var server = new RemoteServer()
 server.onInitialize(function(player_id, seed) {
   console.log('initialize', player_id, seed)
   Math.seedRandom(seed)
-  Game(player_id)
-})
 
-server.onCommand(function(command) {
-  console.log('command', command)
-  var player = players[command.player_id]
-  player[command.method].apply(player, command.args)
+  var controller = new Controller(player_id)
+  var commandBuffer = new CommandBuffer(controller)
+  var pacecar = new Pacecar(commandBuffer, server)
+  Game(pacecar, controller)
+  pacecar.start()
 })
