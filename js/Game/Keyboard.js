@@ -33,29 +33,25 @@ function Keyboard() {
     keychange[code] = self['emit' + name + 'Change'].bind(self)
   })
 
-  self.bind = function($window) {
-    $window.on('keypress', function(event) {
-      if (keypress[event.charCode]) {
-        keypress[event.charCode]()
-      }
-    })
+  $(window).on('keypress', function(event) {
+    if (keypress[event.charCode]) {
+      keypress[event.charCode]()
+    }
+  })
 
-    $window.on('keyup', function(event) {
-      if (keyup[event.keyCode]) {
-        keyup[event.keyCode]()
-        keychange[event.keyCode](false)
-      }
-    })
+  $(window).on('keyup', function(event) {
+    if (keyup[event.keyCode]) {
+      keyup[event.keyCode]()
+      keychange[event.keyCode](false)
+    }
+  })
 
-    $window.on('keydown', function(event) {
-      if (keydown[event.keyCode]) {
-        keydown[event.keyCode]()
-        keychange[event.keyCode](true)
-      }
-    })
-
-    return self
-  }
+  $(window).on('keydown', function(event) {
+    if (keydown[event.keyCode]) {
+      keydown[event.keyCode]()
+      keychange[event.keyCode](true)
+    }
+  })
 
   return self
 }

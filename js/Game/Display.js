@@ -1,10 +1,12 @@
-function Display(width, height, scale, terrain, players, units) {
+var SCALE = 4
+
+var WHITE = new Color(255, 255, 255)
+
+function Display(width, height, terrain, players, units) {
   var self = {}
 
-  var WHITE = new Color(255, 255, 255)
-
   var mainCanvas = new Canvas(width, height)
-  var scaledCanvas = mainCanvas.scaleBy(scale)
+  var scaledCanvas = mainCanvas.scaleBy(SCALE)
 
   self.addEvent('Click')
   mainCanvas.onClick(self.emitClick)

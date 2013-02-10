@@ -1,10 +1,11 @@
-function Player(id, color, direction) {
+function Player(id, color, direction, x) {
   var self = {}
 
   self.id = id
   self.color = color
   self.direction = direction
-  self.gold = 0
+  self.x = x
+  self.gold = STARTING_GOLD
   self.excavatorRequisitioned = false
   self.excavator = null
   self.chopperRequisitioned = false

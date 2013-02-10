@@ -1,3 +1,17 @@
+Math.seedRandom = function(seed) {
+  var constant = Math.pow(2, 13) + 1
+  var prime = 37
+  var maximum = Math.pow(2, 50)
+
+  Math.random = function() {
+    seed *= constant
+    seed += prime
+    seed %= maximum
+    return seed / maximum
+  }
+}
+
+
 Object.prototype.method = function(methodName) {
   return this[methodName].bind(this)
 }

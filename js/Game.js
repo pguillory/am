@@ -45,25 +45,25 @@ var TURN_SPEED = 100
 var width = 160
 var height = 100
 
-return (function() {
+function Game(player_id) {
   var self = {}
 
-  var scale = 4
-
-  var terrain = Terrain(width, height)
-  var players = Players()
-  var units = Units(terrain, players)
-
+  var terrain = new Terrain(width, height)
   terrain.initialize()
+
+  var players = []
+  function createPlayer(options) {
+    var player = new Player(players.length, options.color, options.direction, options.x)
+    players.push(player)
+  }
+  createPlayer({ color: new Color(200, 50, 50), direction: RIGHT, x: 0         })
+  createPlayer({ color: new Color(50, 50, 150), direction: LEFT,  x: width - 1 })
+
+  var units = new Units(terrain, players)
   units.initialize()
 
-  var player1 = players.create(new Color(200, 50, 50), RIGHT)
-  var player2 = players.create(new Color(50, 50, 150), LEFT)
-
-  units.dropBase(player1, 5)
-  units.dropBase(player2, width - 6)
-
-  var display = Display(width, height, scale, terrain, players, units)
+  var display = new Display(width, height, terrain, players, units)
+  display.attach()
 
   var pacecar = new Pacecar(function(turn) {
     terrain.move()
@@ -71,15 +71,16 @@ return (function() {
     display.draw()
   })
 
-  var mouse = new Mouse().bind($(document))
-  
+  var player1 = players[player_id]
+
+  var mouse = new Mouse()
+
   mouse.onMove(player1.aim)
 
-  var keyboard = new Keyboard().bind($(window))
+  var keyboard = new Keyboard()
 
   keyboard.onShiftChange(player1.lase)
   keyboard.onControlChange(player1.fire)
-
   keyboard.onSpace(pacecar.togglePause)
   keyboard.onEscape(pacecar.togglePause)
   keyboard.onB(player1.requestBomber)
@@ -90,16 +91,25 @@ return (function() {
   keyboard.onS(terrain.hardScroll)
   keyboard.onX(player1.excavate)
 
-  display.attach()
-
-  var goldDisplay1 = $('<div class="gold-counter player1">').appendTo(document.body)
-  var goldDisplay2 = $('<div class="gold-counter player2">').appendTo(document.body)
-
-  player1.onGoldChanged(function() { goldDisplay1.text(this.gold) })
-  player2.onGoldChanged(function() { goldDisplay2.text(this.gold) })
-
-  player1.gainGold(STARTING_GOLD)
-  player2.gainGold(STARTING_GOLD)
+  players.forEach(function(player) {
+    var goldDisplay = $('<div class="gold-counter player' + player.id + '">').appendTo(document.body)
+    player.onGoldChanged(function() { goldDisplay.text(player.gold) })
+    player.emitGoldChanged()
+  })
 
   pacecar.start()
-})()
+}
+
+var server = new RemoteServer()
+
+server.onInitialize(function(player_id, seed) {
+  console.log('initialize', player_id, seed)
+  Math.seedRandom(seed)
+  Game(player_id)
+})
+
+server.onCommand(function(command) {
+  console.log('command', command)
+  var player = players[command.player_id]
+  player[command.method].apply(player, command.args)
+})

@@ -38,10 +38,10 @@ canvas {
   background: rgba(0, 0, 0, 0.6);
 }
 
-.gold-counter.player1 {
+.gold-counter.player0 {
   left: 0;
 }
 
-.gold-counter.player2 {
+.gold-counter.player1 {
   right: 0;
 }

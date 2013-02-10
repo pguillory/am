@@ -10,7 +10,6 @@ function Units(terrain, players) {
   var choppers = []
   var smokes = []
   var paratroops = []
-  // var looters = []
 
   // self.selectNear = function(player, position) {
   //   var min = 10
@@ -48,6 +47,10 @@ function Units(terrain, players) {
     for (var i = 0; i < 10; i++) {
       terrain.move()
     }
+
+    players.forEach(function(player) {
+      self.dropBase(player, player.x + player.direction * 5)
+    })
   }
 
   self.createTroop = function(player, position) {
@@ -286,22 +289,22 @@ function Units(terrain, players) {
     players.forEach(function(player) {
       if (player.chopperRequisitioned) {
         player.chopperRequisitioned = false
-        player.chopper = self.launchChopper(player, 0, player.direction)
+        player.chopper = self.launchChopper(player, player.x, player.direction)
         player.deductGold(CHOPPER_VALUE + FUEL_SURCHARGE)
       }
       if (player.bomberRequisitioned) {
         player.bomberRequisitioned = false
-        player.plane = self.launchBomber(player, 0, player.direction)
+        player.plane = self.launchBomber(player, player.x, player.direction)
         player.deductGold(player.plane.goldValue() + FUEL_SURCHARGE)
       }
       if (player.transportRequisitioned) {
         player.transportRequisitioned = false
-        player.plane = self.launchTransport(player, 0, player.direction)
+        player.plane = self.launchTransport(player, player.x, player.direction)
         player.deductGold(player.plane.goldValue() + FUEL_SURCHARGE)
       }
       if (player.transportRequisitioned) {
         player.transportRequisitioned = false
-        player.plane = units.launchGunship(player, 0, player.direction)
+        player.plane = units.launchGunship(player, player.x, player.direction)
         player.deductGold(player.plane.goldValue() + FUEL_SURCHARGE)
         // controller1.reticle = player.plane.reticle
       }
