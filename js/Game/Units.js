@@ -338,7 +338,7 @@ function Units(terrain, players) {
         if (troop.player !== defender.player &&
             troop.collidesWithTroop(defender)) {
           detonate = true
-          SOUNDS.hurt()
+          // SOUNDS.hurt()
         }
       })
 
@@ -356,9 +356,9 @@ function Units(terrain, players) {
     projectiles = projectiles.filter(function(projectile) {
       return projectile.move(terrain, troops, function(position) {
         if (projectile.warheadSize > 10) {
-          SOUNDS.explosion_big()
+          // SOUNDS.explosion_big()
         } else {
-          SOUNDS.explosion_small()
+          // SOUNDS.explosion_small()
         }
         explode(position, projectile.warheadSize)
       })

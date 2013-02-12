@@ -64,7 +64,7 @@ Excavator.prototype.move = function(terrain) {
         terrain.set(this.position.x, this.position.y, AIR)
       }
     }
-    SOUNDS.drill()
+    // SOUNDS.drill()
   } else {
     this.position.y = terrain.drop(this.position.x)
   }
