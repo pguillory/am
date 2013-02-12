@@ -1,7 +1,7 @@
 function RemoteServer() {
   var self = {}
 
-  var socket = io.connect('http://localhost:8001')
+  var socket = io.connect()
   console.log('socket', socket)
 
   self.addEvent('Initialize')

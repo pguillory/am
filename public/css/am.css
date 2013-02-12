@@ -45,3 +45,7 @@ canvas {
 .gold-counter.player1 {
   right: 0;
 }
+
+.loading {
+  position: absolute;
+}

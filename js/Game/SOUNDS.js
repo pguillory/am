@@ -10,10 +10,10 @@ function soundPicker(choices) {
 }
 
 return {
-  credit: soundPicker([credit]),
-  explosion_big: soundPicker([explosion_big]),
-  explosion_small: soundPicker([explosion_small]),
-  hurt: soundPicker([hurt]),
-  shoot: soundPicker([shoot]),
-  drill: soundPicker([drill]),
+  // credit: soundPicker([credit]),
+  // explosion_big: soundPicker([explosion_big]),
+  // explosion_small: soundPicker([explosion_small]),
+  // hurt: soundPicker([hurt]),
+  // shoot: soundPicker([shoot]),
+  // drill: soundPicker([drill]),
 }
