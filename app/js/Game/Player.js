@@ -80,7 +80,14 @@ function Player(id, color, direction, x) {
   }
 
   self.fire = function(state) {
+    if (state) {
+      self.firedThisTurn = true
+    }
     self.reticle.fire = state
+  }
+
+  self.move = function() {
+    self.firedThisTurn = self.reticle.fire
   }
 
   return self

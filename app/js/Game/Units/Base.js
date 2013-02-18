@@ -75,7 +75,7 @@ Base.prototype.move = function(terrain) {
   this.reticle.velocity = this.reticle.target.minus(this.origin).times(0.18)
 
   this.timeToFire -= 1
-  if (this.reticle && this.reticle.fire && this.timeToFire <= 0 && this.player.gold > 0) {
+  if (this.reticle && this.player.firedThisTurn && this.timeToFire <= 0 && this.player.gold > 0) {
     // SOUNDS.shoot()
     this.player.deductGold(BASE_SHOT_VALUE)
     this.emitFire(this.origin, this.reticle.velocity.wiggle(1.0))

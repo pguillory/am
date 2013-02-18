@@ -56,11 +56,11 @@ function Pacecar(commandBuffer, server) {
   self.togglePause = function() {
     if (paused) {
       paused = false
-      self.emit('Unpause')
+      self.emitUnpause()
       incrementTurn()
     } else {
       paused = true
-      self.emit('Pause')
+      self.emitPause()
       clearTimeout(turnTimeout)
       turnTimeout = null
     }

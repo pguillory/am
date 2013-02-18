@@ -66,6 +66,9 @@ function Game(pacecar, controller) {
   display.attach()
 
   pacecar.onTurn(function(commands) {
+    players.forEach(function(player) {
+      player.move()
+    })
     commands.forEach(function(command) {
       players[command.player_id].method(command.method).apply(null, command.args)
     })
@@ -77,6 +80,11 @@ function Game(pacecar, controller) {
   var mouse = new Mouse()
 
   mouse.onMove(controller.aim)
+  // mouse.onClick(function() {
+  //   controller.fire(true)
+  //   controller.fire(false)
+  // })
+  mouse.onButton(controller.fire)
 
   var keyboard = new Keyboard()
 
