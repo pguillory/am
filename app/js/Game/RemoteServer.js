@@ -18,10 +18,6 @@ function RemoteServer() {
   self.sendTurn = function(commands) {
     socket.emit('turn', commands)
   }
-  
-  // socket.on('command', function(data) {
-  //   
-  // })
 
   return self
 }

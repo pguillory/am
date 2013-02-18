@@ -25,30 +25,7 @@ function Pacecar(commandBuffer, server) {
     }
   })
 
-  // function incrementTurn() {
-  //   var futureLocalCommands = commandBuffer.cycle()
-  //   buffer.push(futureLocalCommands)
-  //   server.sendTurn(futureLocalCommands)
-  //   localCommands = buffer.shift()
-  //
-  //   var commands = remoteCommands.concat(localCommands)
-  //
-  //   self.emitTurn(commands)
-  //
-  //   turnTimeout = setTimeout(incrementTurn, Math.max(0, nextTurnTime - Date.now()))
-  //
-  //   nextTurnTime += TURN_INTERVAL_MS
-  // })
 
-  // commandMuxer.onTurn(function(commands) {
-  //   turnTimeout = setTimeout(function() {
-  //     turn += 1
-  //     console.log('turn', turn, commands)
-  //     self.emitTurn(commands)
-  //   }, Math.max(0, nextTurnTime - Date.now()))
-  //
-  //   nextTurnTime += TURN_INTERVAL_MS
-  // })
 
   function incrementTurn() {
     turnTimeout = null

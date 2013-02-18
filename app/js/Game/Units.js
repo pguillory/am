@@ -11,32 +11,6 @@ function Units(terrain, players) {
   var smokes = []
   var paratroops = []
 
-  // self.selectNear = function(player, position) {
-  //   var min = 10
-  //   var result = null
-  //   bombers.forEach(function(bomber) {
-  //     if (bomber.player === player) {
-  //       var distance = bomber.position.minus(position).magnitude()
-  //       if (min > distance) {
-  //         min = distance
-  //         result = bomber
-  //       }
-  //     }
-  //   })
-  //   troops.forEach(function(troop) {
-  //     if (troop.player === player) {
-  //       if (troop.activatable()) {
-  //         var distance = troop.position.minus(position).magnitude()
-  //         if (min > distance) {
-  //           min = distance
-  //           result = troop
-  //         }
-  //       }
-  //     }
-  //   })
-  //   return result
-  // }
-
   self.initialize = function() {
     for (var i = 0; i < 50; i++) {
       var x = Math.floor(Math.random() * (width - 1))
