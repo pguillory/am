@@ -3,8 +3,11 @@ function Pacecar(commandBuffer, server) {
 
   var turn = 0
   var turnTimeout = null
+  var paused = false
 
   self.addEvent('Turn')
+  self.addEvent('Pause')
+  self.addEvent('Unpause')
 
 
 
@@ -19,7 +22,7 @@ function Pacecar(commandBuffer, server) {
   server.onTurn(function(remoteCommands) {
     remoteBuffer.push(remoteCommands)
 
-    if (turnTimeout == null) {
+    if (turnTimeout === null && paused === false) {
       console.log('jump start required')
       incrementTurn()
     }
@@ -51,11 +54,15 @@ function Pacecar(commandBuffer, server) {
   }
 
   self.togglePause = function() {
-    if (turnTimeout) {
+    if (paused) {
+      paused = false
+      self.emit('Unpause')
+      incrementTurn()
+    } else {
+      paused = true
+      self.emit('Pause')
       clearTimeout(turnTimeout)
       turnTimeout = null
-    } else {
-      incrementTurn()
     }
   }
 

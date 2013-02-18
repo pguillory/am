@@ -82,7 +82,7 @@ function Game(pacecar, controller) {
 
   keyboard.onShiftChange(controller.lase)
   keyboard.onControlChange(controller.fire)
-  // keyboard.onSpace(pacecar.togglePause)
+  keyboard.onSpace(pacecar.togglePause)
   // keyboard.onEscape(pacecar.togglePause)
   keyboard.onB(controller.requestBomber)
   // keyboard.onP(pacecar.togglePause)
