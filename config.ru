@@ -1,2 +1,0 @@
-require './am'
-run MyApp

@@ -4,7 +4,7 @@
   "name": "am-prototype",
   "subdomain": "am-prototype",
   "scripts": {
-    "start": "node server.js"
+    "start": "cd app; node server.js"
   },
   "version": "0.0.0-3",
   "engines": {
@@ -12,9 +12,7 @@
   },
   "bundledDependencies": [
     "socket.io",
-    "express"
-  ],
-  "dependencies": {
-    "async": "*"
-  }
+    "express",
+    "async"
+  ]
 }
